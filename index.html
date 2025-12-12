@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人成长游戏</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 使用可靠的Vue CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 15px;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px; 
+            margin-bottom: 40px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card h2 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn {
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: inline-block;
+            text-align: center;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .btn:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 14px;
+            width: auto;
+        }
+        .skill-progress { 
+            height: 12px; 
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 6px; 
+            margin: 10px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%); 
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .task-item { 
+            padding: 15px; 
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 10px; 
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        .task-item.completed { 
+            opacity: 0.6;
+            background: rgba(76, 217, 100, 0.1);
+        }
+        .xp-badge {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: black;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+            display: inline-block;
+        }
+        .level-display {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0;
+            text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+        .energy-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .energy-fill {
+            flex-grow: 1;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .energy-value {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+        }
+        .error {
+            background: rgba(255, 99, 99, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ff6363;
+        }
+        .skill-item {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .streak-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 107, 107, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-left: 10px;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <!-- 加载状态 -->
+        <div v-if="loading" class="loading">
+            <div>🎮 加载游戏中...</div>
+            <div style="margin-top: 20px; font-size: 0.9em; color: rgba(255,255,255,0.7)">
+                如果长时间未加载，请检查控制台 (F12)
+            </div>
+        </div>
+        
+        <!-- 错误提示 -->
+        <div v-if="error" class="error">
+            ⚠️ {{ error }}
+            <div style="margin-top: 10px;">
+                <button class="btn btn-sm" @click="retryLoad">重试</button>
+            </div>
+        </div>
+        
+        <!-- 主应用内容 -->
+        <template v-if="!loading && !error">
+            <div class="header">
+                <h1>🎮 个人成长游戏系统</h1>
+                <p>将成长可视化为游戏进度 | 数据自动保存到本地</p>
+            </div>
+
+            <div class="grid">
+                <!-- 玩家状态 -->
+                <div class="card">
+                    <h2>📊 玩家状态</h2>
+                    <div class="level-display">Lv. {{ player.level }}</div>
+                    
+                    <div style="margin: 20px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>经验值:</span>
+                            <span><strong>{{ player.xp }}</strong>/{{ player.nextLevelXp }}</span>
+                        </div>
+                        <div class="skill-progress">
+                            <div class="progress-fill" :style="{ width: xpPercentage + '%' }"></div>
+                        </div>
+                        <div style="text-align: center; margin-top: 5px; font-size: 0.9em;">
+                            还需 {{ player.nextLevelXp - player.xp }} XP 升级
+                        </div>
+                    </div>
+                    
+                    <div class="energy-bar">
+                        <span>⚡ 能量:</span>
+                        <div class="energy-fill">
+                            <div class="energy-value" :style="{ width: player.energy + '%' }"></div>
+                        </div>
+                        <span>{{ player.energy }}%</span>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <span>🔥 连续登录:</span>
+                        <span class="streak-counter">{{ player.streak }} 天</span>
+                    </div>
+                    
+                    <button class="btn" @click="resetGame" style="margin-top: 20px; background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);">
+                        🔄 重置游戏
+                    </button>
+                </div>
+
+                <!-- 任务列表 -->
+                <div class="card">
+                    <h2>🎯 今日任务</h2>
+                    <div style="margin-bottom: 15px; font-size: 1.1em;">
+                        完成度: <strong>{{ completedTasks }}</strong>/{{ tasks.length }}
+                        <div class="skill-progress" style="height: 8px;">
+                            <div class="progress-fill" :style="{ width: (completedTasks/tasks.length*100) + '%' }"></div>
+                        </div>
+                    </div>
+                    
+                    <div v-for="(task, index) in tasks" :key="task.id" 
+                         class="task-item" :class="{ completed: task.completed }">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" 
+                                   v-model="task.completed" 
+                                   @change="completeTask(task)"
+                                   style="width: 18px; height: 18px; cursor: pointer;">
+                            <div>
+                                <span style="margin-right: 5px;">{{ task.icon }}</span>
+                                {{ task.name }}
+                                <span class="xp-badge">+{{ task.xp }} XP</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm" @click="completeTask(task)" 
+                                :disabled="task.completed"
+                                :style="{ opacity: task.completed ? 0.5 : 1 }">
+                            {{ task.completed ? '已完成' : '完成' }}
+                        </button>
+                    </div>
+                    
+                    <button class="btn" @click="addTask" style="margin-top: 20px;">
+                        ➕ 添加新任务
+                    </button>
+                    
+                    <div style="margin-top: 15px; font-size: 0.9em; color: rgba(255,255,255,0.7);">
+                        提示：完成任务获得经验值，累计经验可升级
+                    </div>
+                </div>
+
+                <!-- 技能树 -->
+                <div class="card">
+                    <h2>🧠 技能树</h2>
+                    <div v-for="skill in skills" :key="skill.id" class="skill-item">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div>
+                                <span style="margin-right: 8px; font-size: 1.2em;">{{ skill.icon }}</span>
+                                <strong>{{ skill.name }}</strong>
+                            </div>
+                            <div>Lv.{{ skill.level }}</div>
+                        </div>
+                        <div class="skill-progress">
+                            <div class="progress-fill" :style="{ width: skill.progress + '%' }"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.9em;">
+                            <span>经验: {{ skill.xp }}/{{ skill.maxXp }}</span>
+                            <button class="btn btn-sm" 
+                                    @click="practiceSkill(skill.id)"
+                                    style="padding: 3px 10px; font-size: 12px;">
+                                练习 (+10 XP)
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" @click="addSkill" style="margin-top: 15px;">
+                        🌟 添加新技能
+                    </button>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="card">
+                <h2>📈 成长趋势 (最近7天)</h2>
+                <div class="chart-container">
+                    <canvas id="growthChart" width="400" height="300"></canvas>
+                </div>
+                <div style="margin-top: 15px; text-align: center; color: rgba(255,255,255,0.7);">
+                    每日经验值变化 | 鼠标悬停查看详情
+                </div>
+            </div>
+            
+            <!-- 数据统计 -->
+            <div class="grid" style="margin-top: 20px;">
+                <div class="card">
+                    <h2>🏆 成就</h2>
+                    <div v-for="achievement in achievements" :key="achievement.id" 
+                         class="task-item" :class="{ completed: achievement.unlocked }">
+                        <div>
+                            <span style="margin-right: 10px;">{{ achievement.icon }}</span>
+                            {{ achievement.name }}
+                            <div style="font-size: 0.8em; margin-top: 5px; color: rgba(255,255,255,0.7);">
+                                {{ achievement.description }}
+                            </div>
+                        </div>
+                        <div v-if="achievement.unlocked" style="color: gold; font-size: 1.5em;">
+                            ✓
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>💾 数据管理</h2>
+                    <div style="margin: 15px 0;">
+                        <div>数据状态: <span style="color: #4ade80;">已保存</span></div>
+                        <div style="font-size: 0.9em; margin-top: 10px;">
+                            最后保存: {{ lastSaved }}
+                        </div>
+                    </div>
+                    <button class="btn" @click="exportData" style="margin-bottom: 10px;">
+                        📥 导出数据
+                    </button>
+                    <button class="btn" @click="importData" 
+                            style="background: linear-gradient(90deg, #8e2de2 0%, #4a00e0 100%);">
+                        📤 导入数据
+                    </button>
+                    <div style="margin-top: 15px; font-size: 0.8em; color: rgba(255,255,255,0.6);">
+                        数据保存在浏览器本地，清除缓存会丢失数据
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- 调试信息（开发时可启用） -->
+    <!-- <div class="debug-info">
+        Vue加载: <span id="vue-status">检查中...</span><br>
+        数据加载: <span id="data-status">检查中...</span>
+    </div> -->
+
+    <script>
+        // 调试函数
+        function debugLog(message) {
+            console.log('[成长游戏]', message);
+            const now = new Date().toLocaleTimeString();
+            console.log(`[${now}] ${message}`);
+        }
+
+        // 等待DOM完全加载
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('DOM已加载，开始初始化应用');
+            
+            // 检查Vue是否加载成功
+            if (typeof Vue === 'undefined') {
+                console.error('Vue.js 未加载成功，请检查CDN链接');
+                document.getElementById('vue-status').textContent = '失败';
+                document.getElementById('app').innerHTML = 
+                    '<div class="error">错误：Vue.js 加载失败，请检查网络连接或刷新页面</div>';
+                return;
+            }
+            
+            document.getElementById('vue-status').textContent = '成功';
+            
+            const { createApp, ref, computed, onMounted, watch } = Vue;
+            
+            createApp({
+                setup() {
+                    debugLog('Vue应用初始化开始');
+                    
+                    // 响应式数据
+                    const loading = ref(true);
+                    const error = ref(null);
+                    const lastSaved = ref('从未保存');
+                    let growthChart = null;
+                    
+                    // 玩家数据
+                    const player = ref({
+                        level: 1,
+                        xp: 0,
+                        nextLevelXp: 100,
+                        energy: 100,
+                        streak: 1,
+                        lastLogin: new Date().toISOString().split('T')[0]
+                    });
+                    
+                    // 任务数据
+                    const tasks = ref([
+                        { id: 1, name: "学习编程1小时", icon: "💻", xp: 20, completed: false },
+                        { id: 2, name: "健身30分钟", icon: "💪", xp: 15, completed: false },
+                        { id: 3, name: "阅读30页书", icon: "📚", xp: 10, completed: true },
+                        { id: 4, name: "写日记", icon: "📝", xp: 5, completed: false }
+                    ]);
+                    
+                    // 技能数据
+                    const skills = ref([
+                        { id: 1, name: "Python编程", icon: "🐍", level: 3, xp: 150, maxXp: 200, progress: 75 },
+                        { id: 2, name: "数据分析", icon: "📊", level: 2, xp: 80, maxXp: 150, progress: 53 },
+                        { id: 3, name: "健身", icon: "💪", level: 4, xp: 300, maxXp: 400, progress: 75 },
+                        { id: 4, name: "英语学习", icon: "🇬🇧", level: 2, xp: 90, maxXp: 150, progress: 60 }
+                    ]);
+                    
+                    // 成就数据
+                    const achievements = ref([
+                        { id: 1, name: "初出茅庐", icon: "👶", description: "首次完成任务", unlocked: true },
+                        { id: 2, name: "小有成就", icon: "⭐", description: "完成10个任务", unlocked: false },
+                        { id: 3, name: "技能达人", icon: "🏆", description: "一个技能达到5级", unlocked: false },
+                        { id: 4, name: "坚持不懈", icon: "🔥", description: "连续7天登录", unlocked: false }
+                    ]);
+                    
+                    // 计算属性
+                    const xpPercentage = computed(() => {
+                        return Math.min((player.value.xp / player.value.nextLevelXp) * 100, 100);
+                    });
+                    
+                    const completedTasks = computed(() => {
+                        return tasks.value.filter(t => t.completed).length;
+                    });
+                    
+                    // 方法
+                    const completeTask = (task) => {
+                        if (!task.completed) {
+                            task.completed = true;
+                            player.value.xp += task.xp;
+                            player.value.energy = Math.max(0, player.value.energy - 5);
+                            
+                            // 检查成就
+                            checkAchievements();
+                            
+                            // 检查升级
+                            checkLevelUp();
+                            
+                            saveData();
+                            updateChart();
+                            
+                            // 触发视觉反馈
+                            const taskElement = event?.target?.closest('.task-item');
+                            if (taskElement) {
+                                taskElement.style.transform = 'scale(1.05)';
+                                setTimeout(() => {
+                                    taskElement.style.transform = '';
+                                }, 300);
+                            }
+                            
+                            debugLog(`完成任务: ${task.name}, 获得${task.xp}XP`);
+                        }
+                    };
+                    
+                    const practiceSkill = (skillId) => {
+                        const skill = skills.value.find(s => s.id === skillId);
+                        if (skill && player.value.energy >= 10) {
+                            skill.xp += 10;
+                            player.value.energy -= 10;
+                            
+                            // 更新技能进度
+                            skill.progress = Math.min((skill.xp / skill.maxXp) * 100, 100);
+                            
+                            // 检查技能升级
+                            if (skill.xp >= skill.maxXp) {
+                                skill.level++;
+                                skill.xp = skill.xp - skill.maxXp;
+                                skill.maxXp = Math.floor(skill.maxXp * 1.5);
+                                skill.progress = Math.min((skill.xp / skill.maxXp) * 100, 100);
+                                alert(`🎉 恭喜！${skill.name} 升级到 Lv.${skill.level}!`);
+                            }
+                            
+                            saveData();
+                            debugLog(`练习技能: ${skill.name}, 当前等级${skill.level}`);
+                        } else if (player.value.energy < 10) {
+                            alert('能量不足，请休息一下！');
+                        }
+                    };
+                    
+                    const checkLevelUp = () => {
+                        if (player.value.xp >= player.value.nextLevelXp) {
+                            player.value.level++;
+                            const oldNextLevel = player.value.nextLevelXp;
+                            player.value.nextLevelXp = Math.floor(player.value.nextLevelXp * 1.5);
+                            player.value.xp = player.value.xp - oldNextLevel;
+                            player.value.energy = 100; // 升级恢复能量
+                            
+                            // 显示升级动画
+                            showLevelUpAnimation();
+                            debugLog(`升级到 Lv.${player.value.level}`);
+                            
+                            // 再次检查（可能连续升级）
+                            checkLevelUp();
+                        }
+                    };
+                    
+                    const showLevelUpAnimation = () => {
+                        const levelElement = document.querySelector('.level-display');
+                        if (levelElement) {
+                            levelElement.style.transform = 'scale(1.2)';
+                            levelElement.style.color = '#FFD700';
+                            setTimeout(() => {
+                                levelElement.style.transform = '';
+                                levelElement.style.color = '';
+                            }, 500);
+                        }
+                    };
+                    
+                    const checkAchievements = () => {
+                        // 检查"小有成就"
+                        if (completedTasks.value >= 10 && !achievements.value[1].unlocked) {
+                            achievements.value[1].unlocked = true;
+                            alert('🏆 成就解锁：小有成就！');
+                        }
+                        
+                        // 检查"技能达人"
+                        const maxSkillLevel = Math.max(...skills.value.map(s => s.level));
+                        if (maxSkillLevel >= 5 && !achievements.value[2].unlocked) {
+                            achievements.value[2].unlocked = true;
+                            alert('🏆 成就解锁：技能达人！');
+                        }
+                    };
+                    
+                    const addTask = () => {
+                        const name = prompt("请输入新任务名称:");
+                        if (name && name.trim()) {
+                            const xp = parseInt(prompt("设置经验值奖励 (1-50):", "10")) || 10;
+                            const icon = prompt("选择一个图标:", "🎯");
+                            
+                            tasks.value.push({
+                                id: Date.now(),
+                                name: name.trim(),
+                                icon: icon || "🎯",
+                                xp: Math.min(Math.max(xp, 1), 50),
+                                completed: false
+                            });
+                            
+                            saveData();
+                            debugLog(`添加新任务: ${name}`);
+                        }
+                    };
+                    
+                    const addSkill = () => {
+                        const name = prompt("请输入新技能名称:");
+                        if (name && name.trim()) {
+                            const icon = prompt("选择一个图标:", "🌟");
+                            
+                            skills.value.push({
+                                id: Date.now(),
+                                name: name.trim(),
+                                icon: icon || "🌟",
+                                level: 1,
+                                xp: 0,
+                                maxXp: 100,
+                                progress: 0
+                            });
+                            
+                            saveData();
+                            debugLog(`添加新技能: ${name}`);
+                        }
+                    };
+                    
+                    const resetGame = () => {
+                        if (confirm('确定要重置游戏吗？所有进度将丢失！')) {
+                            localStorage.removeItem('growthGameData');
+                            window.location.reload();
+                        }
+                    };
+                    
+                    const exportData = () => {
+                        const data = {
+                            player: player.value,
+                            tasks: tasks.value,
+                            skills: skills.value,
+                            achievements: achievements.value,
+                            exportDate: new Date().toISOString()
+                        };
+                        
+                        const dataStr = JSON.stringify(data, null, 2);
+                        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                        
+                        const exportFileDefaultName = `成长游戏数据_${new Date().toLocaleDateString()}.json`;
+                        
+                        const linkElement = document.createElement('a');
+                        linkElement.setAttribute('href', dataUri);
+                        linkElement.setAttribute('download', exportFileDefaultName);
+                        linkElement.click();
+                        
+                        debugLog('数据已导出');
+                    };
+                    
+                    const importData = () => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = '.json';
+                        
+                        input.onchange = function(e) {
+                            const file = e.target.files[0];
+                            if (!file) return;
+                            
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                try {
+                                    const data = JSON.parse(e.target.result);
+                                    
+                                    if (confirm('导入数据将覆盖当前进度，确定继续？')) {
+                                        if (data.player) player.value = data.player;
+                                        if (data.tasks) tasks.value = data.tasks;
+                                        if (data.skills) skills.value = data.skills;
+                                        if (data.achievements) achievements.value = data.achievements;
+                                        
+                                        saveData();
+                                        window.location.reload();
+                                    }
+                                } catch (err) {
+                                    alert('文件格式错误，无法导入！');
+                                    console.error('导入错误:', err);
+                                }
+                            };
+                            reader.readAsText(file);
+                        };
+                        
+                        input.click();
+                    };
+                    
+                    // 数据持久化
+                    const saveData = () => {
+                        try {
+                            const data = {
+                                player: player.value,
+                                tasks: tasks.value,
+                                skills: skills.value,
+                                achievements: achievements.value,
+                                version: '1.0'
+                            };
+                            
+                            localStorage.setItem('growthGameData', JSON.stringify(data));
+                            lastSaved.value = new Date().toLocaleTimeString();
+                            document.getElementById('data-status').textContent = '已保存';
+                            
+                            debugLog('数据已保存');
+                        } catch (err) {
+                            console.error('保存数据失败:', err);
+                        }
+                    };
+                    
+                    const loadData = () => {
+                        try {
+                            const saved = localStorage.getItem('growthGameData');
+                            if (saved) {
+                                const data = JSON.parse(saved);
+                                
+                                if (data.player) {
+                                    player.value = data.player;
+                                    
+                                    // 检查连续登录
+                                    const today = new Date().toISOString().split('T')[0];
+                                    if (player.value.lastLogin !== today) {
+                                        player.value.streak = player.value.lastLogin === 
+                                            new Date(Date.now() - 86400000).toISOString().split('T')[0] 
+                                            ? player.value.streak + 1 
+                                            : 1;
+                                        player.value.lastLogin = today;
+                                        player.value.energy = 100;
+                                    }
+                                }
+                                
+                                if (data.tasks) tasks.value = data.tasks;
+                                if (data.skills) skills.value = data.skills;
+                                if (data.achievements) achievements.value = data.achievements;
+                                
+                                debugLog('数据加载成功');
+                                return true;
+                            }
+                        } catch (err) {
+                            console.error('加载数据失败:', err);
+                            error.value = '加载保存数据时出错，使用默认数据';
+                        }
+                        return false;
+                    };
+                    
+                    const retryLoad = () => {
+                        loading.value = true;
+                        error.value = null;
+                        setTimeout(initApp, 100);
+                    };
+                    
+                    // 图表
+                    const initChart = () => {
+                        try {
+                            const ctx = document.getElementById('growthChart');
+                            if (!ctx) {
+                                console.warn('图表canvas元素未找到');
+                                return;
+                            }
+                            
+                            growthChart = new Chart(ctx.getContext('2d'), {
+                                type: 'line',
+                                data: {
+                                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                                    datasets: [
+                                        {
+                                            label: '每日经验值',
+                                            data: [65, 80, 75, 90, player.value.xp || 110, 95, 120],
+                                            borderColor: '#4facfe',
+                                            backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                                            borderWidth: 3,
+                                            fill: true,
+                                            tension: 0.4,
+                                            pointBackgroundColor: '#00f2fe',
+                                            pointRadius: 5,
+                                            pointHoverRadius: 8
+                                        },
+                                        {
+                                            label: '能量值',
+                                            data: [85, 70, 90, 60, player.value.energy || 85, 95, 80],
+                                            borderColor: '#ff9a9e',
+                                            backgroundColor: 'rgba(255, 154, 158, 0.1)',
+                                            borderWidth: 2,
+                                            borderDash: [5, 5],
+                                            fill: false
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: {
+                                            labels: { 
+                                                color: 'white',
+                                                font: { size: 14 }
+                                            }
+                                        },
+                                        tooltip: {
+                                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                            titleColor: '#4facfe',
+                                            bodyColor: 'white'
+                                        }
+                                    },
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: { 
+                                                color: 'rgba(255, 255, 255, 0.8)',
+                                                callback: function(value) {
+                                                    return value + ' XP';
+                                                }
+                                            },
+                                            grid: { 
+                                                color: 'rgba(255, 255, 255, 0.1)' 
+                                            }
+                                        },
+                                        x: {
+                                            ticks: { 
+                                                color: 'rgba(255, 255, 255, 0.8)' 
+                                            },
+                                            grid: { 
+                                                color: 'rgba(255, 255, 255, 0.1)' 
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                            
+                            debugLog('图表初始化成功');
+                        } catch (err) {
+                            console.error('图表初始化失败:', err);
+                        }
+                    };
+                    
+                    const updateChart = () => {
+                        if (growthChart) {
+                            // 更新图表数据
+                            growthChart.data.datasets[0].data[4] = player.value.xp;
+                            growthChart.data.datasets[1].data[4] = player.value.energy;
+                            growthChart.update();
+                        }
+                    };
+                    
+                    // 自动保存
+                    const setupAutoSave = () => {
+                        // 每30秒自动保存
+                        setInterval(saveData, 30000);
+                        
+                        // 页面关闭前保存
+                        window.addEventListener('beforeunload', saveData);
+                        
+                        debugLog('自动保存已启用');
+                    };
+                    
+                    // 应用初始化
+                    const initApp = () => {
+                        try {
+                            debugLog('开始初始化应用...');
+                            
+                            // 加载数据
+                            loadData();
+                            
+                            // 初始化图表
+                            setTimeout(initChart, 100);
+                            
+                            // 设置自动保存
+                            setupAutoSave();
+                            
+                            loading.value = false;
+                            
+                            debugLog('应用初始化完成');
+                        } catch (err) {
+                            console.error('初始化失败:', err);
+                            error.value = `初始化失败: ${err.message}`;
+                            loading.value = false;
+                        }
+                    };
+                    
+                    // 监视数据变化自动保存
+                    watch([player, tasks, skills], () => {
+                        // 使用防抖，避免频繁保存
+                        if (saveData.debounceTimer) clearTimeout(saveData.debounceTimer);
+                        saveData.debounceTimer = setTimeout(saveData, 1000);
+                    }, { deep: true });
+                    
+                    // 生命周期
+                    onMounted(() => {
+                        debugLog('Vue组件已挂载');
+                        setTimeout(initApp, 100);
+                    });
+                    
+                    return {
+                        loading,
+                        error,
+                        player,
+                        tasks,
+                        skills,
+                        achievements,
+                        lastSaved,
+                        xpPercentage,
+                        completedTasks,
+                        completeTask,
+                        practiceSkill,
+                        addTask,
+                        addSkill,
+                        resetGame,
+                        exportData,
+                        importData,
+                        retryLoad
+                    };
+                }
+            }).mount('#app');
+            
+            debugLog('Vue应用创建完成');
+        });
+        
+        // 添加一些辅助函数到全局，方便调试
+        window.debugGame = function() {
+            const data = localStorage.getItem('growthGameData');
+            console.log('当前游戏数据:', data ? JSON.parse(data) : '无数据');
+            console.log('Vue状态:', typeof Vue !== 'undefined' ? '已加载' : '未加载');
+        };
+    </script>
+</body>
+</html>
