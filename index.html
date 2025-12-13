@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✏️ 成长手账 | GitHub智能同步版</title>
+    <title>✏️ 成长手账 | 智能同步版</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- 引入手绘风格字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 引入思维导图库 -->
+    <script src="https://cdn.jsdelivr.net/npm/@braintree/sanitize-html@2.7.2/dist/sanitize-html.min.js"></script>
     <style>
         /* ====== 手绘风格全局样式 ====== */
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,7 +20,7 @@
             padding: 20px;
             line-height: 1.6;
         }
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 1400px; margin: 0 auto; }
 
         /* ====== 手绘标题与导航 ====== */
         .header {
@@ -392,7 +394,7 @@
             border-color: #ffa94d;
         }
 
-        /* ====== 手绘统计信息（已修复布局） ====== */
+        /* ====== 手绘统计信息 ====== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -588,6 +590,309 @@
             margin-top: 15px;
             border-left: 4px solid #4ecdc4;
         }
+
+        /* ====== 新增：富文本编辑器样式 ====== */
+        .rich-text-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #fffaf5;
+            border-radius: 15px;
+            border: 2px solid #e0c9b8;
+            align-items: center;
+        }
+        .toolbar-btn {
+            padding: 8px 16px;
+            background: #fffefc;
+            border: 2px solid #e0c9b8;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: #5a4a42;
+            transition: all 0.2s;
+            font-family: 'Comic Neue', cursive;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .toolbar-btn:hover {
+            background: #ffd6cc;
+            border-color: #ff9a8b;
+            transform: translateY(-2px);
+        }
+        .toolbar-btn.active {
+            background: #ff9a8b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+        .color-picker {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 2px solid #e0c9b8;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .font-size-select {
+            padding: 6px 10px;
+            border: 2px solid #e0c9b8;
+            border-radius: 8px;
+            background: #fffefc;
+            font-family: 'Comic Neue', cursive;
+            color: #5a4a42;
+        }
+        .rich-text-editor {
+            min-height: 300px;
+            padding: 20px;
+            border: 2.5px solid #e0c9b8;
+            border-radius: 15px 5px 15px 5px;
+            background: #fffaf9;
+            font-family: 'Comic Neue', cursive;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #5a4a42;
+            outline: none;
+            overflow-y: auto;
+            margin-bottom: 25px;
+        }
+        .rich-text-editor:focus {
+            border-color: #ff9a8b;
+            box-shadow: 3px 3px 0px #ffd6cc;
+        }
+        .rich-text-editor b, .rich-text-editor strong {
+            color: #ff6b6b;
+            font-weight: 800;
+        }
+        .rich-text-editor i, .rich-text-editor em {
+            color: #4ecdc4;
+            font-style: italic;
+        }
+        .rich-text-editor u {
+            text-decoration: underline;
+            text-decoration-color: #ff9a8b;
+        }
+        .rich-text-editor .highlight {
+            background: linear-gradient(120deg, #ffd6cc 0%, #ffd6cc 100%);
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+        .rich-text-editor h1, .rich-text-editor h2, .rich-text-editor h3 {
+            font-family: 'Gochi Hand', cursive;
+            margin: 20px 0 10px 0;
+            color: #5a4a42;
+        }
+        .rich-text-editor h1 { font-size: 1.8em; }
+        .rich-text-editor h2 { font-size: 1.5em; }
+        .rich-text-editor h3 { font-size: 1.3em; }
+        .rich-text-editor ul, .rich-text-editor ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        .rich-text-editor li {
+            margin-bottom: 8px;
+        }
+        .rich-text-editor blockquote {
+            border-left: 4px solid #ff9a8b;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #7a6a62;
+            background: rgba(255, 214, 204, 0.1);
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* ====== 新增：思维导图样式 ====== */
+        .mindmap-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #fff9f0;
+            border-radius: 20px;
+            border: 3px solid #e0c9b8;
+        }
+        .mindmap-container {
+            width: 100%;
+            height: 500px;
+            border: 2px dashed #ffc8a3;
+            border-radius: 15px;
+            background: white;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .mindmap-node {
+            position: absolute;
+            padding: 12px 20px;
+            background: #fffefc;
+            border: 2px solid #ff9a8b;
+            border-radius: 10px 25px 10px 25px;
+            box-shadow: 3px 3px 0px #d4b8a7;
+            cursor: move;
+            min-width: 120px;
+            text-align: center;
+            font-family: 'Gochi Hand', cursive;
+            font-size: 18px;
+            color: #5a4a42;
+            z-index: 10;
+        }
+        .mindmap-node:hover {
+            transform: scale(1.05);
+            box-shadow: 5px 5px 0px #c9a58f;
+            z-index: 20;
+        }
+        .mindmap-line {
+            position: absolute;
+            background: #ff9a8b;
+            transform-origin: 0 0;
+            z-index: 5;
+        }
+        .mindmap-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .mindmap-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0c9b8;
+            border-radius: 10px;
+            font-family: 'Comic Neue', cursive;
+            background: #fffefc;
+            color: #5a4a42;
+        }
+        .mindmap-nodes-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #fffaf5;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #e0c9b8;
+        }
+        .mindmap-node-item {
+            padding: 8px 15px;
+            margin: 5px 0;
+            background: #fffefc;
+            border-radius: 8px;
+            border: 1px solid #e0c9b8;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mindmap-node-item:hover {
+            background: #ffd6cc;
+            border-color: #ff9a8b;
+        }
+
+        /* ====== 新增：高亮内容提取面板 ====== */
+        .highlight-extract-panel {
+            background: linear-gradient(135deg, #fff9f0 0%, #fffaf5 100%);
+            border: 3px solid #ffd6cc;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .highlight-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 12px;
+            border-left: 6px solid #ff9a8b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+        }
+        .highlight-content {
+            flex-grow: 1;
+            padding: 10px;
+            background: rgba(255, 214, 204, 0.2);
+            border-radius: 8px;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        .highlight-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .highlight-source {
+            font-size: 0.9em;
+            color: #7a6a62;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* ====== 新增：Word式文档预览 ====== */
+        .word-document {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            border: 1px solid #e0c9b8;
+            min-height: 800px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .word-document::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 40px;
+            right: 40px;
+            height: 1px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 2px,
+                #e0c9b8 2px,
+                #e0c9b8 4px
+            );
+        }
+        .word-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px double #e0c9b8;
+        }
+        .word-content {
+            font-size: 16px;
+            line-height: 1.8;
+            font-family: 'Comic Neue', cursive;
+        }
+        .word-page-number {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            color: #7a6a62;
+            font-size: 0.9em;
+        }
+
+        /* ====== 新增：代码块样式 ====== */
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            border-left: 4px solid #ff9a8b;
+        }
+        .code-block pre {
+            margin: 0;
+        }
+        .code-block .keyword { color: #ff6b6b; }
+        .code-block .string { color: #a3de83; }
+        .code-block .comment { color: #7a6a62; font-style: italic; }
+        .code-block .function { color: #4ecdc4; }
+        .code-block .number { color: #ffd166; }
     </style>
 </head>
 <body>
@@ -645,7 +950,7 @@
         <div v-else>
             <!-- 顶部状态栏 -->
             <div class="header">
-                <h1>✏️ 个人成长手账</h1>
+                <h1>✏️ 智能成长手账</h1>
                 <p>数据同步至: <strong>{{ config.username }}/{{ config.repo }}</strong></p>
                 
                 <div style="position: absolute; top: 30px; right: 30px; display: flex; gap: 10px;">
@@ -835,14 +1140,6 @@
     "description": "连续30天早上6点前起床",
     "requirement": 30,
     "reward": 150
-  },
-  {
-    "category": "reading",
-    "name": "读书破万卷",
-    "icon": "📚",
-    "description": "阅读100本书",
-    "requirement": 100,
-    "reward": 300
   }
 ]'>
                             </textarea>
@@ -913,11 +1210,11 @@
                 </div>
             </div>
 
-            <!-- 复盘与笔记系统 -->
+            <!-- 智能笔记系统 -->
             <div class="note-section">
                 <div class="card">
                     <h2>
-                        📝 复盘与笔记
+                        📝 智能笔记系统
                         <button class="collapse-btn" @click="collapseNotes = !collapseNotes">
                             {{ collapseNotes ? '展开' : '折叠' }}
                         </button>
@@ -960,6 +1257,17 @@
                                 <input type="text" v-model="noteFilter.keyword" placeholder="搜索标题或内容...">
                             </div>
                             
+                            <div class="filter-group">
+                                <label>✨ 格式筛选</label>
+                                <select v-model="noteFilter.formatType">
+                                    <option value="">所有格式</option>
+                                    <option value="highlight">包含高亮</option>
+                                    <option value="bold">包含加粗</option>
+                                    <option value="code">包含代码</option>
+                                    <option value="image">包含图片</option>
+                                </select>
+                            </div>
+                            
                             <button class="btn-sm" @click="resetNoteFilters" style="align-self: flex-end; background:linear-gradient(90deg, #a3a3a3, #7a7a7a);">
                                 重置筛选
                             </button>
@@ -967,9 +1275,12 @@
                         
                         <!-- 笔记分类标签页 -->
                         <div class="note-tabs">
-                            <div class="note-tab" :class="{active: activeNoteTab === 'all'}" @click="activeNoteTab = 'all'">全部笔记</div>
-                            <div class="note-tab" :class="{active: activeNoteTab === 'editor'}" @click="activeNoteTab = 'editor'">✍️ 写新笔记</div>
-                            <div v-for="cat in noteCategories.filter(c => c !== 'all' && c !== 'editor')" :key="cat" 
+                            <div class="note-tab" :class="{active: activeNoteTab === 'all'}" @click="activeNoteTab = 'all'">📚 全部笔记</div>
+                            <div class="note-tab" :class="{active: activeNoteTab === 'editor'}" @click="activeNoteTab = 'editor'">✍️ 富文本编辑</div>
+                            <div class="note-tab" :class="{active: activeNoteTab === 'mindmap'}" @click="activeNoteTab = 'mindmap'">🧠 思维导图</div>
+                            <div class="note-tab" :class="{active: activeNoteTab === 'highlights'}" @click="activeNoteTab = 'highlights'">🌟 高亮提取</div>
+                            <div class="note-tab" :class="{active: activeNoteTab === 'wordview'}" @click="activeNoteTab = 'wordview'">📄 Word预览</div>
+                            <div v-for="cat in noteCategories.filter(c => c !== 'all' && c !== 'editor' && c !== 'mindmap' && c !== 'highlights' && c !== 'wordview')" :key="cat" 
                                  class="note-tab" 
                                  :class="{active: activeNoteTab === cat}" 
                                  @click="activeNoteTab = cat">
@@ -977,11 +1288,81 @@
                             </div>
                         </div>
                         
-                        <!-- 笔记编辑器：仅在 activeNoteTab === 'editor' 时显示 -->
+                        <!-- 富文本编辑器 -->
                         <div v-if="activeNoteTab === 'editor'" class="note-editor">
                             <input type="text" class="note-input" v-model="newNote.title" placeholder="笔记标题...">
-                            <textarea class="note-input" v-model="newNote.content" placeholder="写下你的思考、复盘或灵感..." rows="6"></textarea>
-                            <input type="text" class="tag-input" v-model="newNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 八字, 复盘, 今日收获)">
+                            
+                            <!-- 富文本工具栏 -->
+                            <div class="rich-text-toolbar">
+                                <button class="toolbar-btn" @click="formatText('bold')" :class="{active: activeFormat === 'bold'}">
+                                    <strong>B</strong> 加粗
+                                </button>
+                                <button class="toolbar-btn" @click="formatText('italic')" :class="{active: activeFormat === 'italic'}">
+                                    <em>I</em> 斜体
+                                </button>
+                                <button class="toolbar-btn" @click="formatText('underline')" :class="{active: activeFormat === 'underline'}">
+                                    <u>U</u> 下划线
+                                </button>
+                                <button class="toolbar-btn" @click="formatText('highlight')" :class="{active: activeFormat === 'highlight'}">
+                                    <span style="background:#ffd6cc; padding:2px 5px;">📝</span> 高亮
+                                </button>
+                                
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <label style="font-weight: bold; color: #5a4a42;">标题:</label>
+                                    <button class="toolbar-btn" @click="formatText('h1')">H1</button>
+                                    <button class="toolbar-btn" @click="formatText('h2')">H2</button>
+                                    <button class="toolbar-btn" @click="formatText('h3')">H3</button>
+                                </div>
+                                
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <label style="font-weight: bold; color: #5a4a42;">列表:</label>
+                                    <button class="toolbar-btn" @click="formatText('ul')">• 无序</button>
+                                    <button class="toolbar-btn" @click="formatText('ol')">1. 有序</button>
+                                </div>
+                                
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <label style="font-weight: bold; color: #5a4a42;">引用:</label>
+                                    <button class="toolbar-btn" @click="formatText('blockquote')">" 引用</button>
+                                </div>
+                                
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <label style="font-weight: bold; color: #5a4a42;">颜色:</label>
+                                    <input type="color" v-model="textColor" class="color-picker" @change="changeTextColor">
+                                </div>
+                                
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <label style="font-weight: bold; color: #5a4a42;">字号:</label>
+                                    <select v-model="fontSize" class="font-size-select" @change="changeFontSize">
+                                        <option value="14">小</option>
+                                        <option value="16">正常</option>
+                                        <option value="18">中</option>
+                                        <option value="20">大</option>
+                                        <option value="24">特大</option>
+                                    </select>
+                                </div>
+                                
+                                <button class="toolbar-btn" @click="insertCodeBlock">
+                                    &lt;/&gt; 代码
+                                </button>
+                                <button class="toolbar-btn" @click="clearFormatting">
+                                    🗑️ 清除格式
+                                </button>
+                            </div>
+                            
+                            <!-- 富文本编辑区域 -->
+                            <div 
+                                ref="richTextEditor"
+                                class="rich-text-editor" 
+                                contenteditable="true"
+                                @input="updateRichTextContent"
+                                @focus="editorFocused = true"
+                                @blur="editorFocused = false"
+                                :style="{ fontSize: fontSize + 'px' }"
+                            >
+                                {{ newNote.content }}
+                            </div>
+                            
+                            <input type="text" class="tag-input" v-model="newNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 学习, 复盘, 灵感)">
                             
                             <!-- 图片上传区域 -->
                             <div class="image-upload-area">
@@ -999,40 +1380,250 @@
                             </div>
                             
                             <div style="display:flex; gap:15px; margin-top:25px;">
-                                <button class="btn" @click="saveNote" style="width:auto; padding:14px 45px; border-radius:50px 15px 50px 15px;">
-                                    💾 保存这条笔记
+                                <button class="btn" @click="saveRichTextNote" style="width:auto; padding:14px 45px; border-radius:50px 15px 50px 15px;">
+                                    💾 保存富文本笔记
                                 </button>
                                 <button class="btn" @click="clearNoteEditor" 
                                         style="width:auto; padding:14px 35px; background:linear-gradient(90deg, #a3a3a3, #7a7a7a); border-radius:50px 15px 50px 15px;">
                                     清空重写
                                 </button>
+                                <button class="btn" @click="previewNote" 
+                                        style="width:auto; padding:14px 35px; background:linear-gradient(90deg, #4a9fff, #2d73cc); border-radius:50px 15px 50px 15px;">
+                                    👁️ 预览效果
+                                </button>
                             </div>
                         </div>
                         
-                        <!-- 笔记列表：仅在 activeNoteTab !== 'editor' 时显示 -->
-                        <div v-if="activeNoteTab !== 'editor'" class="note-list">
+                        <!-- 思维导图编辑器 -->
+                        <div v-if="activeNoteTab === 'mindmap'" class="note-editor">
+                            <h3 style="margin-bottom:20px; color:#5a4a42; font-family:'Gochi Hand';">🧠 创建思维导图</h3>
+                            
+                            <div class="mindmap-controls">
+                                <input 
+                                    type="text" 
+                                    v-model="mindmapNodeText" 
+                                    class="mindmap-input" 
+                                    placeholder="输入节点内容..."
+                                    @keyup.enter="addMindmapNode"
+                                >
+                                <button class="btn-sm" @click="addMindmapNode" style="background:linear-gradient(90deg, #a3de83, #4ecdc4);">
+                                    ➕ 添加节点
+                                </button>
+                                <button class="btn-sm" @click="clearMindmap" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d);">
+                                    🗑️ 清空
+                                </button>
+                                <button class="btn-sm" @click="saveMindmapAsNote" style="background:linear-gradient(90deg, #4a9fff, #2d73cc);">
+                                    💾 保存为笔记
+                                </button>
+                                <button class="btn-sm" @click="loadSampleMindmap" style="background:linear-gradient(90deg, #ffd166, #ffb347); color:#5a4a42;">
+                                    📋 加载示例
+                                </button>
+                            </div>
+                            
+                            <!-- 思维导图节点列表 -->
+                            <div class="mindmap-nodes-list" v-if="mindmapNodes.length > 0">
+                                <h4 style="margin-bottom:10px; color:#5a4a42;">节点列表 ({{ mindmapNodes.length }})</h4>
+                                <div v-for="(node, index) in mindmapNodes" :key="node.id" class="mindmap-node-item">
+                                    <span>{{ node.text }}</span>
+                                    <div style="display:flex; gap:5px;">
+                                        <button class="toolbar-btn" @click="editMindmapNode(index)" style="padding:4px 10px; font-size:0.8em;">编辑</button>
+                                        <button class="toolbar-btn" @click="removeMindmapNode(index)" style="padding:4px 10px; font-size:0.8em; background:#ffd6cc;">删除</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 思维导图画布 -->
+                            <div class="mindmap-container" ref="mindmapContainer" @click="addNodeAtPosition">
+                                <div 
+                                    v-for="node in mindmapNodes" 
+                                    :key="node.id"
+                                    class="mindmap-node"
+                                    :style="{
+                                        left: node.x + 'px',
+                                        top: node.y + 'px',
+                                        backgroundColor: node.color || '#fffefc'
+                                    }"
+                                    @mousedown="startNodeDrag(node, $event)"
+                                    @dblclick="editMindmapNodeById(node.id)"
+                                >
+                                    {{ node.text }}
+                                </div>
+                                
+                                <!-- 连接线 -->
+                                <svg width="100%" height="100%" style="position:absolute; top:0; left:0; pointer-events:none;">
+                                    <line 
+                                        v-for="(line, index) in mindmapLines" 
+                                        :key="index"
+                                        :x1="line.x1" 
+                                        :y1="line.y1" 
+                                        :x2="line.x2" 
+                                        :y2="line.y2"
+                                        stroke="#ff9a8b" 
+                                        stroke-width="2"
+                                        stroke-dasharray="5,5"
+                                    />
+                                </svg>
+                            </div>
+                            
+                            <div style="margin-top:20px; padding:15px; background:#fffaf5; border-radius:10px;">
+                                <p style="font-weight:bold; color:#5a4a42; margin-bottom:10px;">💡 使用提示：</p>
+                                <ul style="color:#7a6a62; font-size:0.9em;">
+                                    <li>点击画布任意位置添加新节点</li>
+                                    <li>双击节点可以编辑内容</li>
+                                    <li>拖动节点可以重新布局</li>
+                                    <li>节点会自动连线到中心</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- 高亮内容提取 -->
+                        <div v-if="activeNoteTab === 'highlights'" class="note-editor">
+                            <h3 style="margin-bottom:20px; color:#5a4a42; font-family:'Gochi Hand';">🌟 高亮内容提取中心</h3>
+                            
+                            <div style="margin-bottom: 30px;">
+                                <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px;">
+                                    <select v-model="highlightSourceNote" class="note-input" style="flex-grow:1;">
+                                        <option value="">选择笔记来源...</option>
+                                        <option v-for="note in notes" :value="note.id">{{ note.title }}</option>
+                                    </select>
+                                    <button class="btn-sm" @click="extractHighlights" style="background:linear-gradient(90deg, #a3de83, #4ecdc4);">
+                                        🔍 提取高亮
+                                    </button>
+                                    <button class="btn-sm" @click="extractAllHighlights" style="background:linear-gradient(90deg, #4a9fff, #2d73cc);">
+                                        🌐 提取所有笔记
+                                    </button>
+                                </div>
+                                
+                                <div v-if="extractedHighlights.length > 0" class="highlight-extract-panel">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                                        <h4 style="color:#5a4a42;">已提取 {{ extractedHighlights.length }} 个高亮</h4>
+                                        <div style="display:flex; gap:10px;">
+                                            <button class="btn-sm" @click="createNoteFromHighlights" style="background:linear-gradient(90deg, #a3de83, #4ecdc4);">
+                                                📝 生成新笔记
+                                            </button>
+                                            <button class="btn-sm" @click="clearHighlights" style="background:linear-gradient(90deg, #a3a3a3, #7a7a7a);">
+                                                清空
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div v-for="(highlight, index) in extractedHighlights" :key="index" class="highlight-item">
+                                        <div class="highlight-content" v-html="highlight.content"></div>
+                                        <div class="highlight-actions">
+                                            <button class="toolbar-btn" @click="copyHighlight(highlight)" style="padding:6px 12px;">📋</button>
+                                            <button class="toolbar-btn" @click="removeHighlight(index)" style="padding:6px 12px; background:#ffd6cc;">🗑️</button>
+                                        </div>
+                                        <div class="highlight-source">
+                                            来源: {{ highlight.sourceTitle }}
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="margin-top: 25px; padding-top: 20px; border-top: 2px dashed #ffc8a3;">
+                                        <textarea 
+                                            v-model="newNoteFromHighlights" 
+                                            class="note-input" 
+                                            placeholder="在这里编辑高亮笔记内容..."
+                                            rows="6"
+                                        ></textarea>
+                                        <div style="display:flex; gap:15px; margin-top:15px;">
+                                            <button class="btn" @click="saveHighlightsNote" style="width:auto; padding:12px 30px;">
+                                                💾 保存为笔记
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div v-else style="text-align:center; padding:40px 20px; color:#c9b8a7;">
+                                    <div style="font-size:3.5em; margin-bottom:15px; transform:rotate(-5deg);">🌟</div>
+                                    <p style="font-weight:bold; font-size:1.2em;">还没有提取到高亮内容</p>
+                                    <p>选择一个笔记，然后点击"提取高亮"按钮</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Word式文档预览 -->
+                        <div v-if="activeNoteTab === 'wordview'" class="note-editor">
+                            <h3 style="margin-bottom:20px; color:#5a4a42; font-family:'Gochi Hand';">📄 Word式文档预览</h3>
+                            
+                            <div style="margin-bottom: 25px; display: flex; gap: 15px;">
+                                <select v-model="selectedNoteForPreview" class="note-input" style="flex-grow:1;">
+                                    <option value="">选择要预览的笔记...</option>
+                                    <option v-for="note in notes" :value="note.id">{{ note.title }}</option>
+                                </select>
+                                <button class="btn-sm" @click="printPreview" style="background:linear-gradient(90deg, #4a9fff, #2d73cc);">
+                                    🖨️ 打印预览
+                                </button>
+                                <button class="btn-sm" @click="exportAsDocument" style="background:linear-gradient(90deg, #a3de83, #4ecdc4);">
+                                    💾 导出文档
+                                </button>
+                            </div>
+                            
+                            <div v-if="selectedNoteForPreview" class="word-document">
+                                <div class="word-header">
+                                    <h1 style="font-family:'Gochi Hand', cursive; color:#5a4a42; margin-bottom:10px;">
+                                        {{ getNoteById(selectedNoteForPreview).title }}
+                                    </h1>
+                                    <div style="color:#7a6a62; font-size:0.9em;">
+                                        创建于: {{ formatDate(getNoteById(selectedNoteForPreview).createdAt) }}
+                                    </div>
+                                </div>
+                                
+                                <div class="word-content" v-html="getNoteById(selectedNoteForPreview).content"></div>
+                                
+                                <div class="word-page-number">
+                                    第 1 页
+                                </div>
+                            </div>
+                            
+                            <div v-else style="text-align:center; padding:40px 20px; color:#c9b8a7;">
+                                <div style="font-size:3.5em; margin-bottom:15px; transform:rotate(-5deg);">📄</div>
+                                <p style="font-weight:bold; font-size:1.2em;">选择笔记以预览</p>
+                                <p>从下拉列表中选择一个笔记查看Word式文档效果</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 笔记列表：其他标签页时显示 -->
+                        <div v-if="!['editor', 'mindmap', 'highlights', 'wordview'].includes(activeNoteTab)" class="note-list">
                             <div v-for="note in filteredAndSortedNotes" :key="note.id" class="note-card">
                                 <h3 style="margin-bottom:18px; color:#5a4a42; font-family:'Gochi Hand'; font-size:1.6em;">{{ note.title }}</h3>
                                 <div class="note-tags">
                                     <span class="note-tag" v-for="tag in note.tags" :key="tag">{{ tag }}</span>
                                 </div>
-                                <div style="color:#5a4a42; line-height:1.7; margin:25px 0; white-space: pre-line; font-weight:bold; font-size:1.05em;">{{ note.content }}</div>
+                                
+                                <!-- 富文本内容渲染 -->
+                                <div 
+                                    class="note-content-rich" 
+                                    v-html="sanitizeHtml(note.content)"
+                                    style="color:#5a4a42; line-height:1.7; margin:25px 0; white-space: pre-line;"
+                                ></div>
                                 
                                 <!-- 显示图片 -->
                                 <div v-if="note.imageData || note.imageUrl" style="margin-top:25px;">
                                     <img :src="note.imageData || note.imageUrl" alt="笔记图片" class="note-image" @error="handleImageError">
                                 </div>
                                 
+                                <!-- 笔记操作区 -->
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:30px; padding-top:25px; border-top:3px dotted #e0c9b8;">
                                     <div style="font-size:0.95em; color:#7a6a62; font-weight:bold;">
                                         📅 {{ formatDate(note.createdAt) }}
                                         <span style="margin-left:15px; background:#ffd6cc; padding:3px 10px; border-radius:10px; border:1px dashed #ff9a8b;">
                                             {{ getCategoryDisplayName(note.category) }}
                                         </span>
+                                        <span v-if="hasHighlights(note)" style="margin-left:10px; background:#ffd6cc; padding:3px 10px; border-radius:10px; border:1px dashed #ff9a8b; color:#ff6b6b;">
+                                            🌟 有高亮
+                                        </span>
                                     </div>
-                                    <button class="btn-sm" @click="deleteNote(note.id)" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d);">
-                                        删除
-                                    </button>
+                                    <div style="display:flex; gap:10px;">
+                                        <button class="btn-sm" @click="editNote(note.id)" style="background:linear-gradient(90deg, #4a9fff, #2d73cc);">
+                                            编辑
+                                        </button>
+                                        <button class="btn-sm" @click="extractHighlightsFromNote(note.id)" style="background:linear-gradient(90deg, #ffd166, #ffb347); color:#5a4a42;">
+                                            提取高亮
+                                        </button>
+                                        <button class="btn-sm" @click="deleteNote(note.id)" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d);">
+                                            删除
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1040,14 +1631,14 @@
                             <div v-if="filteredAndSortedNotes.length === 0" style="text-align:center; padding:50px 20px; color:#c9b8a7; grid-column: 1 / -1;">
                                 <div style="font-size:4em; margin-bottom:20px; transform:rotate(-5deg);">📝</div>
                                 <p style="font-weight:bold; font-size:1.3em; margin-bottom:10px;">没有找到符合条件的笔记</p>
-                                <p>尝试调整筛选条件或切换到"✍️ 写新笔记"标签开始记录吧！</p>
+                                <p>尝试调整筛选条件或切换到其他标签开始记录吧！</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 成长概览：已修复布局 -->
+            <!-- 成长概览 -->
             <div class="card" style="margin-top: 50px;">
                 <h2>📈 成长概览</h2>
                 <div class="stats-grid">
@@ -1067,17 +1658,21 @@
                         <div class="stat-value">{{ completedAchievementsCount }}</div>
                         <div class="stat-label">成就达成</div>
                     </div>
+                    <div class="stat-box">
+                        <div class="stat-value">{{ totalHighlights }}</div>
+                        <div class="stat-label">高亮内容</div>
+                    </div>
                 </div>
                 <p style="text-align:center; margin-top:35px; padding-top:30px; border-top:3px dotted #ffc8a3; color:#7a6a62; font-size:1em; font-weight:bold;">
-                    所有数据通过GitHub API同步至你的私有仓库，刷新页面后Token需重新输入。
+                    所有数据通过GitHub API同步至你的私有仓库，包含富文本笔记和思维导图功能。
                 </p>
             </div>
         </div>
     </div>
 
     <script>
-        // Vue 3 应用 - 手绘风格完整版
-        const { createApp, ref, computed, onMounted } = Vue;
+        // Vue 3 应用 - 增强版智能手账系统
+        const { createApp, ref, computed, onMounted, nextTick } = Vue;
 
         createApp({
             setup() {
@@ -1104,7 +1699,7 @@
                 const notes = ref([]);
                 const activeAchievementTab = ref('all');
                 const activeNoteTab = ref('editor');
-                const noteCategories = ref(['all', 'editor']);
+                const noteCategories = ref(['all', 'editor', 'mindmap', 'highlights', 'wordview']);
                 const newNote = ref({ 
                     title: '', 
                     content: '', 
@@ -1121,12 +1716,34 @@
                 const showBatchAdd = ref(false);
                 const batchAchievementInput = ref('');
                 
-                // 新增：笔记筛选器
+                // 新增：富文本编辑状态
+                const editorFocused = ref(false);
+                const activeFormat = ref('');
+                const textColor = ref('#5a4a42');
+                const fontSize = ref('16');
+                const richTextEditor = ref(null);
+                
+                // 新增：思维导图状态
+                const mindmapNodeText = ref('');
+                const mindmapNodes = ref([]);
+                const mindmapLines = ref([]);
+                const mindmapContainer = ref(null);
+                const draggingNode = ref(null);
+                const dragOffset = ref({ x: 0, y: 0 });
+                
+                // 新增：高亮提取状态
+                const extractedHighlights = ref([]);
+                const highlightSourceNote = ref('');
+                const newNoteFromHighlights = ref('');
+                const selectedNoteForPreview = ref('');
+                
+                // 笔记筛选器
                 const noteFilter = ref({
                     timeRange: 'all',
                     selectedTag: '',
                     selectedCategory: '',
-                    keyword: ''
+                    keyword: '',
+                    formatType: ''
                 });
                 
                 // 成就系统数据
@@ -1160,7 +1777,10 @@
 
                 const categoryDisplayNames = {
                     'all': '全部',
-                    'editor': '写笔记',
+                    'editor': '富文本编辑',
+                    'mindmap': '思维导图',
+                    'highlights': '高亮提取',
+                    'wordview': 'Word预览',
                     'bazi': '八字复盘',
                     'stock': '股票复盘',
                     'fitness': '健身记录',
@@ -1188,6 +1808,21 @@
                     achievements.value.filter(a => a.unlocked).length
                 );
 
+                // 计算高亮内容总数
+                const totalHighlights = computed(() => {
+                    let count = 0;
+                    notes.value.forEach(note => {
+                        if (note.content && note.content.includes('highlight')) {
+                            // 简单统计高亮标签
+                            const matches = note.content.match(/<span class="highlight">/g) || 
+                                          note.content.match(/<mark>/g) ||
+                                          note.content.match(/class="highlight"/g);
+                            if (matches) count += matches.length;
+                        }
+                    });
+                    return count;
+                });
+
                 // 所有笔记标签
                 const allNoteTags = computed(() => {
                     const tags = new Set();
@@ -1205,12 +1840,12 @@
                     return achievements.value.filter(a => a.category === activeAchievementTab.value);
                 });
 
-                // 新增：过滤和排序后的笔记
+                // 新增：过滤和排序后的笔记（支持格式筛选）
                 const filteredAndSortedNotes = computed(() => {
                     let filtered = notes.value;
                     
                     // 按分类筛选
-                    if (activeNoteTab.value !== 'all' && activeNoteTab.value !== 'editor') {
+                    if (activeNoteTab.value !== 'all' && !['editor', 'mindmap', 'highlights', 'wordview'].includes(activeNoteTab.value)) {
                         filtered = filtered.filter(note => {
                             if (note.category === activeNoteTab.value) return true;
                             const keywords = categoryRules[activeNoteTab.value];
@@ -1271,6 +1906,31 @@
                         );
                     }
                     
+                    // 格式筛选
+                    if (filter.formatType) {
+                        filtered = filtered.filter(note => {
+                            if (!note.content) return false;
+                            switch(filter.formatType) {
+                                case 'highlight':
+                                    return note.content.includes('class="highlight"') || 
+                                           note.content.includes('<mark>') ||
+                                           note.content.includes('background');
+                                case 'bold':
+                                    return note.content.includes('<b>') || 
+                                           note.content.includes('<strong>');
+                                case 'code':
+                                    return note.content.includes('<code>') || 
+                                           note.content.includes('<pre>');
+                                case 'image':
+                                    return note.content.includes('<img') || 
+                                           note.imageData || 
+                                           note.imageUrl;
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+                    
                     // 按时间倒序排序
                     return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 });
@@ -1289,9 +1949,32 @@
                     return categoryDisplayNames[cat] || cat;
                 };
 
+                // HTML安全过滤
+                const sanitizeHtml = (html) => {
+                    if (!html) return '';
+                    return html
+                        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                        .replace(/on\w+="[^"]*"/g, '')
+                        .replace(/on\w+='[^']*'/g, '')
+                        .replace(/javascript:/gi, '');
+                };
+
+                // 检查笔记是否有高亮
+                const hasHighlights = (note) => {
+                    if (!note.content) return false;
+                    return note.content.includes('class="highlight"') || 
+                           note.content.includes('<mark>') ||
+                           note.content.includes('background-color');
+                };
+
+                // 根据ID获取笔记
+                const getNoteById = (id) => {
+                    return notes.value.find(note => note.id == id) || {};
+                };
+
                 // 从现有笔记中提取所有分类，更新分类列表
                 const updateNoteCategoriesFromNotes = () => {
-                    const categories = new Set(['all', 'editor']);
+                    const categories = new Set(['all', 'editor', 'mindmap', 'highlights', 'wordview']);
                     notes.value.forEach(note => {
                         if (note.category && note.category !== 'general') {
                             categories.add(note.category);
@@ -1325,8 +2008,567 @@
                         timeRange: 'all',
                         selectedTag: '',
                         selectedCategory: '',
-                        keyword: ''
+                        keyword: '',
+                        formatType: ''
                     };
+                };
+
+                // ==================== 富文本编辑功能 ====================
+                const formatText = (command) => {
+                    if (!richTextEditor.value) return;
+                    
+                    activeFormat.value = command;
+                    const editor = richTextEditor.value;
+                    
+                    // 保存当前选区
+                    const selection = window.getSelection();
+                    const range = selection.getRangeAt(0);
+                    
+                    // 执行格式命令
+                    document.execCommand('styleWithCSS', false, true);
+                    
+                    switch(command) {
+                        case 'bold':
+                            document.execCommand('bold', false, null);
+                            break;
+                        case 'italic':
+                            document.execCommand('italic', false, null);
+                            break;
+                        case 'underline':
+                            document.execCommand('underline', false, null);
+                            break;
+                        case 'highlight':
+                            // 创建高亮样式
+                            const span = document.createElement('span');
+                            span.className = 'highlight';
+                            span.style.backgroundColor = '#ffd6cc';
+                            span.style.padding = '0 2px';
+                            span.style.borderRadius = '2px';
+                            try {
+                                document.execCommand('insertHTML', false, span.outerHTML);
+                            } catch (e) {
+                                // 如果insertHTML失败，用其他方法
+                                range.surroundContents(span);
+                            }
+                            break;
+                        case 'h1':
+                            document.execCommand('formatBlock', false, '<h1>');
+                            break;
+                        case 'h2':
+                            document.execCommand('formatBlock', false, '<h2>');
+                            break;
+                        case 'h3':
+                            document.execCommand('formatBlock', false, '<h3>');
+                            break;
+                        case 'ul':
+                            document.execCommand('insertUnorderedList', false, null);
+                            break;
+                        case 'ol':
+                            document.execCommand('insertOrderedList', false, null);
+                            break;
+                        case 'blockquote':
+                            document.execCommand('formatBlock', false, '<blockquote>');
+                            break;
+                    }
+                    
+                    // 恢复焦点
+                    editor.focus();
+                    updateRichTextContent();
+                };
+
+                const changeTextColor = () => {
+                    if (!richTextEditor.value) return;
+                    document.execCommand('foreColor', false, textColor.value);
+                    richTextEditor.value.focus();
+                    updateRichTextContent();
+                };
+
+                const changeFontSize = () => {
+                    if (!richTextEditor.value) return;
+                    // 这里我们通过CSS控制整体字体大小，execCommand对字体大小支持有限
+                    updateRichTextContent();
+                };
+
+                const insertCodeBlock = () => {
+                    if (!richTextEditor.value) return;
+                    
+                    const codeBlock = `
+                        <div class="code-block">
+                            <pre><span class="keyword">function</span> <span class="function">example</span>() {
+    <span class="comment">// 这里是代码</span>
+    <span class="keyword">const</span> <span class="variable">message</span> = <span class="string">"Hello World"</span>;
+    <span class="function">console</span>.<span class="function">log</span>(<span class="variable">message</span>);
+}</pre>
+                        </div>
+                    `;
+                    
+                    document.execCommand('insertHTML', false, codeBlock);
+                    richTextEditor.value.focus();
+                    updateRichTextContent();
+                };
+
+                const clearFormatting = () => {
+                    if (!richTextEditor.value) return;
+                    document.execCommand('removeFormat', false, null);
+                    activeFormat.value = '';
+                    richTextEditor.value.focus();
+                    updateRichTextContent();
+                };
+
+                const updateRichTextContent = () => {
+                    if (richTextEditor.value) {
+                        newNote.value.content = richTextEditor.value.innerHTML;
+                    }
+                };
+
+                const previewNote = () => {
+                    const previewWindow = window.open('', '_blank');
+                    previewWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>${newNote.value.title || '笔记预览'}</title>
+                            <style>
+                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; }
+                                h1, h2, h3 { font-family: 'Gochi Hand', cursive; }
+                                .highlight { background: #ffd6cc; padding: 0 2px; border-radius: 2px; }
+                                blockquote { border-left: 4px solid #ff9a8b; padding-left: 20px; margin: 20px 0; font-style: italic; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>${newNote.value.title || '无标题笔记'}</h1>
+                            <div>${newNote.value.content || ''}</div>
+                        </body>
+                        </html>
+                    `);
+                    previewWindow.document.close();
+                };
+
+                // ==================== 思维导图功能 ====================
+                const addMindmapNode = () => {
+                    if (!mindmapNodeText.value.trim()) return;
+                    
+                    const container = mindmapContainer.value;
+                    if (!container) return;
+                    
+                    const centerX = container.clientWidth / 2;
+                    const centerY = container.clientHeight / 2;
+                    
+                    // 如果有节点，围绕中心布局
+                    let x, y;
+                    if (mindmapNodes.value.length === 0) {
+                        x = centerX - 60;
+                        y = centerY - 30;
+                    } else {
+                        const angle = (mindmapNodes.value.length * 45) * (Math.PI / 180);
+                        const radius = 150;
+                        x = centerX + Math.cos(angle) * radius - 60;
+                        y = centerY + Math.sin(angle) * radius - 30;
+                    }
+                    
+                    const nodeId = Date.now();
+                    mindmapNodes.value.push({
+                        id: nodeId,
+                        text: mindmapNodeText.value.trim(),
+                        x: x,
+                        y: y,
+                        color: getRandomNodeColor()
+                    });
+                    
+                    mindmapNodeText.value = '';
+                    
+                    // 更新连接线
+                    updateMindmapLines();
+                };
+
+                const getRandomNodeColor = () => {
+                    const colors = [
+                        '#fffefc', '#fffaf5', '#ffd6cc', '#ff9a8b', 
+                        '#a3de83', '#4ecdc4', '#4a9fff', '#ffd166'
+                    ];
+                    return colors[Math.floor(Math.random() * colors.length)];
+                };
+
+                const editMindmapNode = (index) => {
+                    const newText = prompt('编辑节点内容:', mindmapNodes.value[index].text);
+                    if (newText !== null) {
+                        mindmapNodes.value[index].text = newText.trim();
+                    }
+                };
+
+                const editMindmapNodeById = (nodeId) => {
+                    const nodeIndex = mindmapNodes.value.findIndex(n => n.id === nodeId);
+                    if (nodeIndex !== -1) {
+                        editMindmapNode(nodeIndex);
+                    }
+                };
+
+                const removeMindmapNode = (index) => {
+                    if (confirm('确定删除这个节点吗？')) {
+                        mindmapNodes.value.splice(index, 1);
+                        updateMindmapLines();
+                    }
+                };
+
+                const clearMindmap = () => {
+                    if (confirm('确定清空整个思维导图吗？')) {
+                        mindmapNodes.value = [];
+                        mindmapLines.value = [];
+                    }
+                };
+
+                const loadSampleMindmap = () => {
+                    mindmapNodes.value = [
+                        { id: 1, text: '核心主题', x: 300, y: 200, color: '#fffefc' },
+                        { id: 2, text: '主要分支1', x: 150, y: 100, color: '#ffd6cc' },
+                        { id: 3, text: '主要分支2', x: 450, y: 100, color: '#a3de83' },
+                        { id: 4, text: '子分支1-1', x: 100, y: 50, color: '#ff9a8b' },
+                        { id: 5, text: '子分支2-1', x: 500, y: 50, color: '#4ecdc4' }
+                    ];
+                    updateMindmapLines();
+                };
+
+                const updateMindmapLines = () => {
+                    if (mindmapNodes.value.length <= 1) {
+                        mindmapLines.value = [];
+                        return;
+                    }
+                    
+                    const lines = [];
+                    const centerNode = mindmapNodes.value[0];
+                    
+                    for (let i = 1; i < mindmapNodes.value.length; i++) {
+                        const node = mindmapNodes.value[i];
+                        lines.push({
+                            x1: centerNode.x + 60, // 节点中心
+                            y1: centerNode.y + 15,
+                            x2: node.x + 60,
+                            y2: node.y + 15
+                        });
+                    }
+                    
+                    mindmapLines.value = lines;
+                };
+
+                const startNodeDrag = (node, event) => {
+                    draggingNode.value = node;
+                    const container = mindmapContainer.value.getBoundingClientRect();
+                    dragOffset.value = {
+                        x: event.clientX - container.left - node.x,
+                        y: event.clientY - container.top - node.y
+                    };
+                    
+                    document.addEventListener('mousemove', dragNode);
+                    document.addEventListener('mouseup', stopNodeDrag);
+                };
+
+                const dragNode = (event) => {
+                    if (!draggingNode.value) return;
+                    
+                    const container = mindmapContainer.value.getBoundingClientRect();
+                    draggingNode.value.x = event.clientX - container.left - dragOffset.value.x;
+                    draggingNode.value.y = event.clientY - container.top - dragOffset.value.y;
+                    
+                    // 限制在容器内
+                    draggingNode.value.x = Math.max(0, Math.min(draggingNode.value.x, container.width - 120));
+                    draggingNode.value.y = Math.max(0, Math.min(draggingNode.value.y, container.height - 60));
+                    
+                    updateMindmapLines();
+                };
+
+                const stopNodeDrag = () => {
+                    draggingNode.value = null;
+                    document.removeEventListener('mousemove', dragNode);
+                    document.removeEventListener('mouseup', stopNodeDrag);
+                };
+
+                const addNodeAtPosition = (event) => {
+                    if (event.target !== mindmapContainer.value) return;
+                    
+                    const container = mindmapContainer.value.getBoundingClientRect();
+                    const x = event.clientX - container.left - 60;
+                    const y = event.clientY - container.top - 30;
+                    
+                    const text = prompt('输入节点内容:', '新节点');
+                    if (text && text.trim()) {
+                        mindmapNodes.value.push({
+                            id: Date.now(),
+                            text: text.trim(),
+                            x: x,
+                            y: y,
+                            color: getRandomNodeColor()
+                        });
+                        updateMindmapLines();
+                    }
+                };
+
+                const saveMindmapAsNote = async () => {
+                    if (mindmapNodes.value.length === 0) {
+                        showStatusMessage('思维导图为空，无法保存', 'error');
+                        return;
+                    }
+                    
+                    const title = prompt('输入笔记标题:', '思维导图笔记');
+                    if (!title || !title.trim()) return;
+                    
+                    // 将思维导图转换为HTML描述
+                    let htmlContent = '<h2>思维导图结构</h2><ul>';
+                    mindmapNodes.value.forEach(node => {
+                        htmlContent += `<li><strong>${node.text}</strong></li>`;
+                    });
+                    htmlContent += '</ul>';
+                    
+                    const tags = prompt('输入标签，用逗号分隔:', '思维导图,脑图,思考').split(',').map(t => t.trim());
+                    
+                    const noteToSave = {
+                        id: Date.now(),
+                        title: title.trim(),
+                        content: htmlContent,
+                        tags: tags,
+                        category: 'study',
+                        createdAt: new Date().toISOString(),
+                        mindmapData: JSON.parse(JSON.stringify(mindmapNodes.value)) // 保存原始数据
+                    };
+                    
+                    notes.value.unshift(noteToSave);
+                    
+                    const saveSuccess = await saveGameDataToGitHub();
+                    if (saveSuccess) {
+                        showStatusMessage(`思维导图已保存为笔记"${title.trim()}"`, 'success');
+                    }
+                };
+
+                // ==================== 高亮提取功能 ====================
+                const extractHighlights = () => {
+                    if (!highlightSourceNote.value) {
+                        showStatusMessage('请选择笔记来源', 'error');
+                        return;
+                    }
+                    
+                    const note = getNoteById(highlightSourceNote.value);
+                    if (!note || !note.content) {
+                        showStatusMessage('笔记不存在或内容为空', 'error');
+                        return;
+                    }
+                    
+                    // 解析HTML内容提取高亮
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(note.content, 'text/html');
+                    
+                    // 查找所有高亮元素
+                    const highlightElements = doc.querySelectorAll('.highlight, mark, [style*="background"], [class*="highlight"]');
+                    
+                    if (highlightElements.length === 0) {
+                        showStatusMessage('该笔记中没有找到高亮内容', 'warning');
+                        return;
+                    }
+                    
+                    extractedHighlights.value = Array.from(highlightElements).map(el => ({
+                        content: el.outerHTML || el.textContent,
+                        sourceTitle: note.title,
+                        sourceId: note.id
+                    }));
+                    
+                    // 自动生成新的笔记内容
+                    newNoteFromHighlights.value = `<h2>从"${note.title}"提取的高亮内容</h2>\n\n`;
+                    extractedHighlights.value.forEach((h, i) => {
+                        newNoteFromHighlights.value += `<p><strong>高亮点 ${i + 1}:</strong> ${h.content}</p>\n`;
+                    });
+                    
+                    showStatusMessage(`成功提取 ${extractedHighlights.value.length} 个高亮内容`, 'success');
+                };
+
+                const extractAllHighlights = () => {
+                    const allHighlights = [];
+                    
+                    notes.value.forEach(note => {
+                        if (note.content) {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(note.content, 'text/html');
+                            const highlightElements = doc.querySelectorAll('.highlight, mark, [style*="background"]');
+                            
+                            Array.from(highlightElements).forEach(el => {
+                                allHighlights.push({
+                                    content: el.outerHTML || el.textContent,
+                                    sourceTitle: note.title,
+                                    sourceId: note.id
+                                });
+                            });
+                        }
+                    });
+                    
+                    if (allHighlights.length === 0) {
+                        showStatusMessage('所有笔记中都没有找到高亮内容', 'warning');
+                        return;
+                    }
+                    
+                    extractedHighlights.value = allHighlights;
+                    newNoteFromHighlights.value = `<h2>从所有笔记提取的高亮内容</h2>\n\n`;
+                    allHighlights.forEach((h, i) => {
+                        newNoteFromHighlights.value += `<p><strong>${i + 1}. [${h.sourceTitle}]:</strong> ${h.content}</p>\n`;
+                    });
+                    
+                    showStatusMessage(`从所有笔记中提取了 ${allHighlights.length} 个高亮内容`, 'success');
+                };
+
+                const extractHighlightsFromNote = (noteId) => {
+                    highlightSourceNote.value = noteId;
+                    activeNoteTab.value = 'highlights';
+                    setTimeout(() => {
+                        extractHighlights();
+                    }, 100);
+                };
+
+                const copyHighlight = (highlight) => {
+                    const text = highlight.content.replace(/<[^>]*>/g, ''); // 移除HTML标签
+                    navigator.clipboard.writeText(text).then(() => {
+                        showStatusMessage('高亮内容已复制到剪贴板', 'success');
+                    });
+                };
+
+                const removeHighlight = (index) => {
+                    extractedHighlights.value.splice(index, 1);
+                };
+
+                const clearHighlights = () => {
+                    extractedHighlights.value = [];
+                    newNoteFromHighlights.value = '';
+                };
+
+                const createNoteFromHighlights = () => {
+                    if (extractedHighlights.value.length === 0) {
+                        showStatusMessage('没有高亮内容可生成笔记', 'error');
+                        return;
+                    }
+                    
+                    newNoteFromHighlights.value = `<h2>高亮内容汇总</h2>\n\n`;
+                    extractedHighlights.value.forEach((h, i) => {
+                        newNoteFromHighlights.value += `<p><strong>${i + 1}. [${h.sourceTitle}]:</strong> ${h.content}</p>\n`;
+                    });
+                    
+                    showStatusMessage('已生成高亮笔记内容，请编辑后保存', 'info');
+                };
+
+                const saveHighlightsNote = async () => {
+                    if (!newNoteFromHighlights.value.trim()) {
+                        showStatusMessage('请先编辑笔记内容', 'error');
+                        return;
+                    }
+                    
+                    const title = prompt('输入笔记标题:', '高亮内容汇总');
+                    if (!title || !title.trim()) return;
+                    
+                    const tags = prompt('输入标签，用逗号分隔:', '高亮,汇总,摘要').split(',').map(t => t.trim());
+                    
+                    const noteToSave = {
+                        id: Date.now(),
+                        title: title.trim(),
+                        content: newNoteFromHighlights.value,
+                        tags: tags,
+                        category: 'study',
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    notes.value.unshift(noteToSave);
+                    
+                    const saveSuccess = await saveGameDataToGitHub();
+                    if (saveSuccess) {
+                        clearHighlights();
+                        showStatusMessage(`高亮笔记"${title.trim()}"已保存`, 'success');
+                        activeNoteTab.value = 'all';
+                    }
+                };
+
+                // ==================== Word预览功能 ====================
+                const printPreview = () => {
+                    if (!selectedNoteForPreview.value) {
+                        showStatusMessage('请选择要预览的笔记', 'error');
+                        return;
+                    }
+                    
+                    const note = getNoteById(selectedNoteForPreview.value);
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>打印: ${note.title}</title>
+                            <style>
+                                @media print {
+                                    body { font-family: 'Times New Roman', serif; padding: 2cm; }
+                                    h1 { text-align: center; margin-bottom: 2cm; }
+                                    .note-tags { display: none; }
+                                }
+                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; }
+                                h1, h2, h3 { font-family: 'Gochi Hand', cursive; }
+                                .highlight { background: #ffd6cc; padding: 0 2px; }
+                                .code-block { background: #f5f5f5; padding: 15px; border-left: 4px solid #ccc; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>${note.title}</h1>
+                            <div>${note.content || ''}</div>
+                            <div style="margin-top: 3cm; text-align: right; color: #666;">
+                                创建于: ${formatDate(note.createdAt)}
+                            </div>
+                        </body>
+                        </html>
+                    `);
+                    printWindow.document.close();
+                    setTimeout(() => {
+                        printWindow.print();
+                    }, 500);
+                };
+
+                const exportAsDocument = () => {
+                    if (!selectedNoteForPreview.value) {
+                        showStatusMessage('请选择要导出的笔记', 'error');
+                        return;
+                    }
+                    
+                    const note = getNoteById(selectedNoteForPreview.value);
+                    const content = `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>${note.title}</title>
+                            <style>
+                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; }
+                                h1, h2, h3 { font-family: 'Gochi Hand', cursive; color: #5a4a42; }
+                                .highlight { background: #ffd6cc; padding: 0 2px; border-radius: 2px; }
+                                blockquote { border-left: 4px solid #ff9a8b; padding-left: 20px; margin: 20px 0; font-style: italic; }
+                                .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 10px; overflow-x: auto; }
+                                .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #e0c9b8; }
+                                .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0c9b8; text-align: right; color: #7a6a62; font-size: 0.9em; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="header">
+                                <h1>${note.title}</h1>
+                                <div>创建于: ${formatDate(note.createdAt)}</div>
+                                ${note.tags && note.tags.length > 0 ? `<div>标签: ${note.tags.join(', ')}</div>` : ''}
+                            </div>
+                            <div>${note.content || ''}</div>
+                            <div class="footer">
+                                <div>导出时间: ${new Date().toLocaleString()}</div>
+                                <div>来自: 智能成长手账系统</div>
+                            </div>
+                        </body>
+                        </html>
+                    `;
+                    
+                    const blob = new Blob([content], { type: 'text/html' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${note.title.replace(/[^\w]/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showStatusMessage(`笔记"${note.title}"已导出为HTML文档`, 'success');
                 };
 
                 // ==================== GitHub API 函数 ====================
@@ -1396,7 +2638,7 @@
                         } catch (e) { /* 文件可能不存在 */ }
                         
                         const gameData = {
-                            version: '5.0',
+                            version: '6.0',
                             player: player.value,
                             skills: skills.value,
                             achievements: achievements.value,
@@ -1477,7 +2719,7 @@
                         { 
                             id: 1, 
                             title: "八字入门心得", 
-                            content: "今天学习了八字的基本排盘方法。\n重点：子午卯酉为四正，力量最强。", 
+                            content: '<h2>八字学习笔记</h2><p>今天学习了八字的<strong class="highlight">基本排盘方法</strong>。</p><p><strong>重点：</strong>子午卯酉为<em>四正</em>，力量最强。</p><blockquote>命理学博大精深，需要长期学习</blockquote>', 
                             tags: ["八字", "入门", "心得"], 
                             category: "bazi",
                             createdAt: new Date(Date.now() - 86400000).toISOString()
@@ -1485,7 +2727,7 @@
                         { 
                             id: 2, 
                             title: "今日健身记录", 
-                            content: "完成胸肌训练：\n1. 平板卧推 4组×12次\n2. 上斜哑铃推举 3组×10次\n3. 双杠臂屈伸 3组×力竭", 
+                            content: '<h3>胸肌训练</h3><p>完成<strong class="highlight">胸肌训练</strong>：</p><ul><li>平板卧推 4组×12次</li><li>上斜哑铃推举 3组×10次</li><li>双杠臂屈伸 3组×力竭</li></ul>', 
                             tags: ["健身", "胸肌", "计划"], 
                             category: "fitness",
                             createdAt: new Date().toISOString()
@@ -1589,8 +2831,8 @@
                     event.target.style.display = 'none';
                 };
 
-                // 保存笔记（核心：智能分类）
-                const saveNote = async () => {
+                // 保存富文本笔记
+                const saveRichTextNote = async () => {
                     if (!newNote.value.title.trim() || !newNote.value.content.trim()) {
                         showStatusMessage("请填写标题和内容", "error");
                         return;
@@ -1629,7 +2871,7 @@
                     const saveSuccess = await saveGameDataToGitHub();
                     if (saveSuccess) {
                         clearNoteEditor();
-                        showStatusMessage(`📒 笔记"${noteToSave.title}"保存成功！分类: ${getCategoryDisplayName(finalCategory)}`, "success", 5000);
+                        showStatusMessage(`📒 富文本笔记"${noteToSave.title}"保存成功！`, "success", 5000);
                     }
                 };
 
@@ -1641,6 +2883,35 @@
                         imageData: null,
                         category: 'general'
                     };
+                    if (richTextEditor.value) {
+                        richTextEditor.value.innerHTML = '';
+                    }
+                };
+
+                const editNote = (noteId) => {
+                    const note = getNoteById(noteId);
+                    if (!note) return;
+                    
+                    activeNoteTab.value = 'editor';
+                    setTimeout(() => {
+                        newNote.value = {
+                            title: note.title,
+                            content: note.content || '',
+                            tagsInput: note.tags ? note.tags.join(', ') : '',
+                            imageData: note.imageData || null,
+                            category: note.category
+                        };
+                        
+                        if (richTextEditor.value) {
+                            richTextEditor.value.innerHTML = note.content || '';
+                        }
+                        
+                        // 删除原笔记
+                        const noteIndex = notes.value.findIndex(n => n.id === noteId);
+                        if (noteIndex !== -1) {
+                            notes.value.splice(noteIndex, 1);
+                        }
+                    }, 100);
                 };
 
                 const deleteNote = async (noteId) => {
@@ -1743,30 +3014,6 @@
     "description": "阅读100本书",
     "requirement": 100,
     "reward": 300
-  },
-  {
-    "category": "finance",
-    "name": "理财小能手",
-    "icon": "💰",
-    "description": "坚持记账100天",
-    "requirement": 100,
-    "reward": 200
-  },
-  {
-    "category": "language",
-    "name": "多语种达人",
-    "icon": "🌍",
-    "description": "学习3门外语",
-    "requirement": 3,
-    "reward": 250
-  },
-  {
-    "category": "coding",
-    "name": "代码工匠",
-    "icon": "💻",
-    "description": "完成50个编程项目",
-    "requirement": 50,
-    "reward": 400
   }
 ]`;
                     showStatusMessage('已加载示例成就数据，请检查并修改后添加', 'info');
@@ -1865,11 +3112,12 @@
                     player.value = { level: 1, xp: 0, nextLevelXp: calculateNextLevelXp(1), streak: 1 };
                     skills.value = [];
                     notes.value = [];
-                    noteCategories.value = ['all', 'editor'];
+                    noteCategories.value = ['all', 'editor', 'mindmap', 'highlights', 'wordview'];
                     achievements.value.forEach(ach => {
                         ach.current = 0;
                         ach.unlocked = false;
                     });
+                    extractedHighlights.value = [];
                     
                     if (config.value.token) {
                         const saveSuccess = await saveGameDataToGitHub();
@@ -1895,7 +3143,7 @@
                         }
                     }
                     player.value.nextLevelXp = calculateNextLevelXp(player.value.level);
-                    console.log('✏️ 成长手账系统已启动！');
+                    console.log('✏️ 智能成长手账系统已启动！');
                 });
 
                 // ==================== 暴露给模板 ====================
@@ -1909,24 +3157,53 @@
                     collapseStatus, collapseSkills, collapseAchievements, collapseNotes,
                     showBatchAdd, batchAchievementInput, noteFilter,
                     
+                    // 富文本编辑器相关
+                    editorFocused, activeFormat, textColor, fontSize,
+                    richTextEditor, mindmapContainer,
+                    
+                    // 思维导图相关
+                    mindmapNodeText, mindmapNodes, mindmapLines,
+                    
+                    // 高亮提取相关
+                    extractedHighlights, highlightSourceNote, newNoteFromHighlights,
+                    selectedNoteForPreview,
+                    
                     // 计算属性
                     totalXpEarned, totalSkills, totalNotes, completedAchievementsCount,
-                    filteredAchievements, filteredAndSortedNotes, allNoteTags,
+                    totalHighlights, filteredAchievements, filteredAndSortedNotes, allNoteTags,
                     
                     // 配置和GitHub操作
                     saveConfigAndLoad, loadDemoData, 
                     openRepoInGitHub, forceLoadFromGitHub, forceSaveToGitHub,
                     exportLocalData, importLocalData,
                     
+                    // 富文本编辑功能
+                    formatText, changeTextColor, changeFontSize, insertCodeBlock,
+                    clearFormatting, updateRichTextContent, previewNote,
+                    
+                    // 思维导图功能
+                    addMindmapNode, editMindmapNode, editMindmapNodeById,
+                    removeMindmapNode, clearMindmap, loadSampleMindmap,
+                    startNodeDrag, addNodeAtPosition, saveMindmapAsNote,
+                    
+                    // 高亮提取功能
+                    extractHighlights, extractAllHighlights, extractHighlightsFromNote,
+                    copyHighlight, removeHighlight, clearHighlights,
+                    createNoteFromHighlights, saveHighlightsNote,
+                    
+                    // Word预览功能
+                    printPreview, exportAsDocument,
+                    
                     // 笔记系统
                     handleImageUpload, clearUploadedImage, handleImageError,
-                    getCategoryDisplayName, resetNoteFilters,
+                    getCategoryDisplayName, resetNoteFilters, sanitizeHtml,
+                    hasHighlights, getNoteById,
                     
                     // 技能系统
                     getSkillXpPerPractice, addNewSkill, practiceSkill, deleteSkill,
                     
                     // 笔记系统
-                    saveNote, clearNoteEditor, deleteNote, formatDate,
+                    saveRichTextNote, clearNoteEditor, editNote, deleteNote, formatDate,
                     
                     // 成就系统
                     loadExampleAchievements, clearBatchInput, addBatchAchievements, deleteAchievement,
