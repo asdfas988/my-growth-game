@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>成长系统 | 技能与成就追踪</title>
-    <!-- 使用官方Vue 3 CDN -->
+    <title>成长系统 | GitHub云端同步版</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
         /* ====== 全局样式 ====== */
@@ -236,11 +235,53 @@
         }
         .note-image {
             max-width: 100%;
+            max-height: 300px;
             border-radius: 12px;
             margin-top: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            display: block;
         }
-
+        
+        /* ====== 图片上传区域 ====== */
+        .image-upload-area {
+            margin: 15px 0;
+            padding: 20px;
+            border: 2px dashed #74b9ff;
+            border-radius: 12px;
+            background: rgba(116, 185, 255, 0.05);
+            text-align: center;
+        }
+        .image-preview {
+            margin-top: 15px;
+        }
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+        
+        /* ====== 配置面板 ====== */
+        .config-panel {
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        .config-info {
+            padding: 15px;
+            background: #fff8e1;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .config-info a {
+            color: #6a11cb;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .config-info a:hover {
+            text-decoration: underline;
+        }
+        
         /* ====== 统计信息 ====== */
         .stats-grid {
             display: grid;
@@ -269,236 +310,418 @@
             color: #6c757d;
             font-weight: 600;
         }
+        
+        /* ====== 状态提示 ====== */
+        .status-message {
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        .status-success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+            border-left: 4px solid #27ae60;
+        }
+        .status-error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+            border-left: 4px solid #c0392b;
+        }
+        .status-warning {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f39c12;
+            border-left: 4px solid #f39c12;
+        }
+        
+        /* ====== 加载动画 ====== */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(106, 17, 203, 0.3);
+            border-radius: 50%;
+            border-top-color: #6a11cb;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div id="app" class="container">
-        <!-- 头部区域 -->
-        <div class="header">
-            <h1>🧠 个人成长系统</h1>
-            <p>追踪技能发展 · 解锁成就 · 记录复盘笔记 · 可视化你的成长轨迹</p>
-        </div>
-
-        <!-- 主网格布局 -->
-        <div class="grid">
-            <!-- 玩家状态面板 -->
+        <!-- === 配置面板 (初始时显示) === -->
+        <div v-if="!isConfigured" class="config-panel">
             <div class="card">
-                <h2>📊 成长状态</h2>
-                <div class="level-display">Lv. {{ player.level }}</div>
-                <div style="margin: 25px 0;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>经验值 (XP):</span>
-                        <span><strong>{{ player.xp }}</strong> / {{ player.nextLevelXp }}</span>
-                    </div>
-                    <div class="xp-progress">
-                        <div class="xp-fill" :style="{ width: (player.xp / player.nextLevelXp * 100) + '%' }"></div>
-                    </div>
-                    <div style="text-align: center; margin-top: 15px; font-size: 1em; color: #6c757d;">
-                        还需 {{ player.nextLevelXp - player.xp }} XP 升级
-                    </div>
+                <h2>🔧 连接GitHub仓库</h2>
+                <p style="margin-bottom: 25px; color: #666;">请填写以下信息，系统将把你的成长数据同步到GitHub私有仓库中。</p>
+                
+                <div class="config-info">
+                    <p><strong>需要提前准备：</strong></p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>一个GitHub账号</li>
+                        <li>一个<strong>私有仓库</strong>用于存储数据（需提前创建）</li>
+                        <li>一个<strong>个人访问令牌 (Token)</strong>，需有 <code>repo</code> 权限
+                            <br><a href="https://github.com/settings/tokens" target="_blank">点击这里创建Token</a>
+                        </li>
+                    </ol>
                 </div>
                 
-                <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid rgba(0,0,0,0.05);">
-                    <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div>
-                            <div style="font-size: 2em; font-weight: bold; color: #6a11cb;">{{ totalSkills }}</div>
-                            <div style="color: #6c757d;">技能数量</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 2em; font-weight: bold; color: #00b09b;">{{ completedAchievementsCount }}</div>
-                            <div style="color: #6c757d;">成就达成</div>
-                        </div>
-                    </div>
-                    <button class="btn" @click="resetData" style="background:linear-gradient(90deg, #ff416c, #ff4b2b); margin-top:25px;">
-                        🔄 重置所有数据
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">GitHub 用户名</label>
+                    <input type="text" v-model="config.username" class="note-input" placeholder="例如：zhangsan">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">数据仓库名称</label>
+                    <input type="text" v-model="config.repo" class="note-input" placeholder="例如：my-growth-data">
+                    <p style="font-size: 0.9em; color: #888; margin-top: 5px;">用于存放游戏数据的<strong>私有仓库</strong>名称</p>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">个人访问令牌 (Token)</label>
+                    <input type="password" v-model="config.token" class="note-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                    <p style="font-size: 0.9em; color: #888; margin-top: 5px;">
+                        ⚠️ Token仅用于与你的仓库通信，本页面不会存储它（刷新页面后需重新输入）。
+                    </p>
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn" @click="saveConfigAndLoad" style="flex: 1;">
+                        <span v-if="isLoading">⌛ 连接中...</span>
+                        <span v-else>✅ 连接并加载数据</span>
+                    </button>
+                    <button class="btn" @click="loadDemoData" style="flex: 1; background: #95a5a6;" :disabled="isLoading">
+                        🎮 试用演示数据
                     </button>
                 </div>
-            </div>
-
-            <!-- 自定义技能树 -->
-            <div class="card">
-                <h2>🌱 我的技能树</h2>
-                <p style="margin-bottom:20px; color:#6c757d;">从零开始，自由添加你想培养的任何技能</p>
                 
-                <div v-if="skills.length === 0" style="text-align:center; padding:40px 20px; color:#adb5bd;">
-                    <div style="font-size:3em; margin-bottom:15px;">🌱</div>
-                    <p>技能树空空如也</p>
-                    <p>点击下方按钮添加你的第一个技能吧！</p>
+                <div v-if="configError" class="status-error status-message">
+                    {{ configError }}
                 </div>
                 
-                <div v-for="skill in skills" :key="skill.id" class="skill-item">
-                    <div style="flex-grow:1;">
-                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
-                            <span style="font-size:1.8em;">{{ skill.icon }}</span>
-                            <div>
-                                <strong style="font-size:1.2em; color:#2d3436;">{{ skill.name }}</strong>
-                                <div style="font-size:0.9em; color:#6c757d;">类别: {{ skill.category }} · 等级 {{ skill.level }}</div>
-                            </div>
-                        </div>
-                        <div class="xp-progress" style="height:12px; margin:10px 0;">
-                            <div class="xp-fill" :style="{ width: (skill.xp / skill.maxXp * 100) + '%' }"></div>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.9em; color:#6c757d;">
-                            <span>{{ skill.xp }} / {{ skill.maxXp }} XP</span>
-                            <span>{{ Math.round(skill.xp / skill.maxXp * 100) }}%</span>
-                        </div>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn-sm" @click="practiceSkill(skill.id)" style="background:linear-gradient(90deg, #6a11cb, #2575fc);">
-                            练习 +{{ skill.xpPerPractice }}
-                        </button>
-                        <button class="btn-sm" @click="deleteSkill(skill.id)" style="background:#e9ecef; color:#6c757d;">
-                            删除
-                        </button>
-                    </div>
-                </div>
-                
-                <button class="btn" @click="addNewSkill" style="background:linear-gradient(90deg, #00b09b, #96c93d);">
-                    🌟 添加新技能
-                </button>
-            </div>
-
-            <!-- 成就系统 -->
-            <div class="card">
-                <h2>🏆 成就系统</h2>
-                <div class="note-tabs" style="margin-bottom:20px;">
-                    <div class="note-tab" :class="{active: activeAchievementTab === 'all'}" @click="activeAchievementTab = 'all'">全部</div>
-                    <div class="note-tab" :class="{active: activeAchievementTab === 'yixue'}" @click="activeAchievementTab = 'yixue'">易学</div>
-                    <div class="note-tab" :class="{active: activeAchievementTab === 'english'}" @click="activeAchievementTab = 'english'">英语</div>
-                    <div class="note-tab" :class="{active: activeAchievementTab === 'fitness'}" @click="activeAchievementTab = 'fitness'">健身</div>
-                </div>
-                
-                <div class="achievement-grid">
-                    <div v-for="achievement in filteredAchievements" :key="achievement.id" 
-                         class="achievement-card" :class="{locked: !achievement.unlocked}">
-                        <div class="achievement-icon">{{ achievement.icon }}</div>
-                        <h3 style="margin-bottom:10px; color:#2d3436;">{{ achievement.name }}</h3>
-                        <p style="font-size:0.95em; color:#6c757d; margin-bottom:15px; min-height:40px;">{{ achievement.description }}</p>
-                        
-                        <div v-if="!achievement.unlocked">
-                            <div class="achievement-progress">
-                                <div class="achievement-progress-fill" 
-                                     :style="{ width: Math.min(100, (achievement.current / achievement.requirement * 100)) + '%' }"></div>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; font-size:0.9em; color:#6c757d;">
-                                <span>进度: {{ achievement.current }} / {{ achievement.requirement }}</span>
-                                <span>{{ Math.round(achievement.current / achievement.requirement * 100) }}%</span>
-                            </div>
-                        </div>
-                        
-                        <div v-if="achievement.unlocked" 
-                             style="text-align:center; padding:10px; background:rgba(0,176,155,0.1); border-radius:10px; margin-top:15px;">
-                            <span style="color:#00b09b; font-weight:bold;">🎉 已解锁</span>
-                            <div style="font-size:0.9em; color:#6c757d; margin-top:5px;">
-                                {{ achievement.reward }} XP
-                            </div>
-                        </div>
-                    </div>
+                <div v-if="configSuccess" class="status-success status-message">
+                    {{ configSuccess }}
                 </div>
             </div>
         </div>
 
-        <!-- 复盘与笔记系统 -->
-        <div class="note-section">
-            <div class="card">
-                <h2>📝 复盘与笔记</h2>
+        <!-- === 主应用界面 (配置完成后显示) === -->
+        <div v-else>
+            <!-- 顶部状态栏 -->
+            <div class="header" style="position: relative;">
+                <h1>🧠 个人成长系统</h1>
+                <p>数据同步至: <strong>{{ config.username }}/{{ config.repo }}</strong></p>
                 
-                <div class="note-tabs">
-                    <div class="note-tab" :class="{active: activeNoteTab === 'editor'}" @click="activeNoteTab = 'editor'">写笔记</div>
-                    <div class="note-tab" :class="{active: activeNoteTab === 'bazi'}" @click="activeNoteTab = 'bazi'">八字复盘</div>
-                    <div class="note-tab" :class="{active: activeNoteTab === 'stock'}" @click="activeNoteTab = 'stock'">股票复盘</div>
-                    <div class="note-tab" :class="{active: activeNoteTab === 'all'}" @click="activeNoteTab = 'all'">全部笔记</div>
+                <div style="position: absolute; top: 30px; right: 30px; display: flex; gap: 10px;">
+                    <button class="btn-sm" @click="forceLoadFromGitHub" :disabled="isSaving">
+                        <span v-if="isLoading">⌛ 加载中...</span>
+                        <span v-else>🔄 手动同步</span>
+                    </button>
+                    <button class="btn-sm" @click="showConfig=!showConfig" style="background: #636e72;">
+                        ⚙️ {{ showConfig ? '隐藏配置' : '显示配置' }}
+                    </button>
                 </div>
                 
-                <!-- 笔记编辑器 -->
-                <div v-if="activeNoteTab === 'editor'" class="note-editor">
-                    <input type="text" class="note-input" v-model="newNote.title" placeholder="笔记标题">
-                    <textarea class="note-input" v-model="newNote.content" placeholder="记录你的思考、复盘内容..." rows="6"></textarea>
-                    <input type="text" class="tag-input" v-model="newNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 八字, 复盘, 感悟)">
-                    <input type="text" class="note-input" v-model="newNote.imageUrl" placeholder="图片URL (可选)">
+                <div style="font-size: 0.9em; opacity: 0.9; margin-top: 10px;">
+                    <span>最后同步: {{ lastSyncTime || '从未同步' }}</span>
+                    <span v-if="isSaving" style="color: #00b894; margin-left: 15px;">
+                        <span class="loading-spinner" style="margin-right: 5px;"></span> 保存中...
+                    </span>
+                </div>
+            </div>
+
+            <!-- 配置抽屉 -->
+            <div v-if="showConfig" class="card" style="margin-bottom: 20px;">
+                <h3>⚙️ 同步配置</h3>
+                <p>当前仓库: <code>{{ config.username }}/{{ config.repo }}</code></p>
+                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">
+                    Token: {{ config.token ? '已设置 (' + config.token.substring(0, 8) + '...)' : '未设置' }}
+                </p>
+                <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                    <button class="btn-sm" @click="openRepoInGitHub" style="background: #0984e3;">📂 打开仓库</button>
+                    <button class="btn-sm" @click="exportLocalData" style="background: #00b894;">💾 备份数据</button>
+                    <button class="btn-sm" @click="showImport=!showImport" style="background: #fdcb6e; color: #2d3436;">📂 导入数据</button>
+                    <button class="btn-sm" @click="isConfigured=false" style="background: #dfe6e9; color:#2d3436;">✏️ 修改配置</button>
+                </div>
+                
+                <!-- 导入数据区域 -->
+                <div v-if="showImport" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <h4>导入备份数据</h4>
+                    <input type="file" accept=".json" @change="importLocalData" style="margin: 10px 0;">
+                    <p style="font-size: 0.9em; color: #666;">选择之前导出的JSON备份文件</p>
+                </div>
+            </div>
+            
+            <!-- 状态消息 -->
+            <div v-if="statusMessage" :class="['status-message', statusMessage.type === 'success' ? 'status-success' : statusMessage.type === 'error' ? 'status-error' : 'status-warning']">
+                {{ statusMessage.text }}
+            </div>
+
+            <!-- 主网格布局 -->
+            <div class="grid">
+                <!-- 玩家状态面板 -->
+                <div class="card">
+                    <h2>📊 成长状态</h2>
+                    <div class="level-display">Lv. {{ player.level }}</div>
+                    <div style="margin: 25px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>经验值 (XP):</span>
+                            <span><strong>{{ player.xp }}</strong> / {{ player.nextLevelXp }}</span>
+                        </div>
+                        <div class="xp-progress">
+                            <div class="xp-fill" :style="{ width: (player.xp / player.nextLevelXp * 100) + '%' }"></div>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px; font-size: 1em; color: #6c757d;">
+                            还需 {{ player.nextLevelXp - player.xp }} XP 升级
+                        </div>
+                    </div>
                     
-                    <div style="display:flex; gap:15px; margin-top:20px;">
-                        <button class="btn" @click="saveNote" style="width:auto; padding:12px 40px;">
-                            保存笔记
-                        </button>
-                        <button class="btn" @click="clearNoteEditor" 
-                                style="width:auto; padding:12px 30px; background:#6c757d;">
-                            清空
+                    <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid rgba(0,0,0,0.05);">
+                        <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div>
+                                <div style="font-size: 2em; font-weight: bold; color: #6a11cb;">{{ totalSkills }}</div>
+                                <div style="color: #6c757d;">技能数量</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2em; font-weight: bold; color: #00b09b;">{{ completedAchievementsCount }}</div>
+                                <div style="color: #6c757d;">成就达成</div>
+                            </div>
+                        </div>
+                        <button class="btn" @click="resetData" style="background:linear-gradient(90deg, #ff416c, #ff4b2b); margin-top:25px;">
+                            🔄 重置所有数据（谨慎！）
                         </button>
                     </div>
                 </div>
-                
-                <!-- 笔记列表 -->
-                <div v-if="activeNoteTab !== 'editor'" class="note-list">
-                    <div v-for="note in filteredNotes" :key="note.id" class="note-card">
-                        <h3 style="margin-bottom:15px; color:#2d3436;">{{ note.title }}</h3>
-                        <div class="note-tags">
-                            <span class="note-tag" v-for="tag in note.tags" :key="tag">{{ tag }}</span>
-                        </div>
-                        <div style="color:#495057; line-height:1.7; margin:20px 0;">{{ note.content }}</div>
-                        
-                        <div v-if="note.imageUrl" style="margin-top:20px;">
-                            <img :src="note.imageUrl" alt="笔记图片" class="note-image" @error="handleImageError">
-                        </div>
-                        
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:25px; padding-top:20px; border-top:1px solid #e9ecef;">
-                            <div style="font-size:0.9em; color:#6c757d;">
-                                {{ formatDate(note.createdAt) }}
+
+                <!-- 技能树 -->
+                <div class="card">
+                    <h2>🌱 我的技能树</h2>
+                    <p style="margin-bottom:20px; color:#6c757d;">从零开始，自由添加你想培养的任何技能</p>
+                    
+                    <div v-if="skills.length === 0" style="text-align:center; padding:40px 20px; color:#adb5bd;">
+                        <div style="font-size:3em; margin-bottom:15px;">🌱</div>
+                        <p>技能树空空如也</p>
+                        <p>点击下方按钮添加你的第一个技能吧！</p>
+                    </div>
+                    
+                    <div v-for="skill in skills" :key="skill.id" class="skill-item">
+                        <div style="flex-grow:1;">
+                            <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                                <span style="font-size:1.8em;">{{ skill.icon }}</span>
+                                <div>
+                                    <strong style="font-size:1.2em; color:#2d3436;">{{ skill.name }}</strong>
+                                    <div style="font-size:0.9em; color:#6c757d;">类别: {{ skill.category }} · 等级 {{ skill.level }}</div>
+                                </div>
                             </div>
-                            <button class="btn-sm" @click="deleteNote(note.id)" style="background:#f8d7da; color:#dc3545;">
+                            <div class="xp-progress" style="height:12px; margin:10px 0;">
+                                <div class="xp-fill" :style="{ width: (skill.xp / skill.maxXp * 100) + '%' }"></div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.9em; color:#6c757d;">
+                                <span>{{ skill.xp }} / {{ skill.maxXp }} XP</span>
+                                <span>{{ Math.round(skill.xp / skill.maxXp * 100) }}%</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn-sm" @click="practiceSkill(skill.id)" style="background:linear-gradient(90deg, #6a11cb, #2575fc);">
+                                练习 +{{ getSkillXpPerPractice(skill) }}
+                            </button>
+                            <button class="btn-sm" @click="deleteSkill(skill.id)" style="background:#e9ecef; color:#6c757d;">
                                 删除
                             </button>
                         </div>
                     </div>
+                    
+                    <button class="btn" @click="addNewSkill" style="background:linear-gradient(90deg, #00b09b, #96c93d);">
+                        🌟 添加新技能
+                    </button>
                 </div>
-            </div>
-        </div>
 
-        <!-- 统计数据概览 -->
-        <div class="card" style="margin-top: 40px;">
-            <h2>📈 成长概览</h2>
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-value">{{ totalXpEarned }}</div>
-                    <div class="stat-label">累计获得经验</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">{{ totalSkills }}</div>
-                    <div class="stat-label">技能数量</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">{{ totalNotes }}</div>
-                    <div class="stat-label">笔记数量</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">{{ completedAchievementsCount }}</div>
-                    <div class="stat-label">成就达成</div>
+                <!-- 成就系统 -->
+                <div class="card">
+                    <h2>🏆 成就系统</h2>
+                    <div class="note-tabs" style="margin-bottom:20px;">
+                        <div class="note-tab" :class="{active: activeAchievementTab === 'all'}" @click="activeAchievementTab = 'all'">全部</div>
+                        <div class="note-tab" :class="{active: activeAchievementTab === 'yixue'}" @click="activeAchievementTab = 'yixue'">易学</div>
+                        <div class="note-tab" :class="{active: activeAchievementTab === 'english'}" @click="activeAchievementTab = 'english'">英语</div>
+                        <div class="note-tab" :class="{active: activeAchievementTab === 'fitness'}" @click="activeAchievementTab = 'fitness'">健身</div>
+                    </div>
+                    
+                    <div class="achievement-grid">
+                        <div v-for="achievement in filteredAchievements" :key="achievement.id" 
+                             class="achievement-card" :class="{locked: !achievement.unlocked}">
+                            <div class="achievement-icon">{{ achievement.icon }}</div>
+                            <h3 style="margin-bottom:10px; color:#2d3436;">{{ achievement.name }}</h3>
+                            <p style="font-size:0.95em; color:#6c757d; margin-bottom:15px; min-height:40px;">{{ achievement.description }}</p>
+                            
+                            <div v-if="!achievement.unlocked">
+                                <div class="achievement-progress">
+                                    <div class="achievement-progress-fill" 
+                                         :style="{ width: Math.min(100, (achievement.current / achievement.requirement * 100)) + '%' }"></div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; font-size:0.9em; color:#6c757d;">
+                                    <span>进度: {{ achievement.current }} / {{ achievement.requirement }}</span>
+                                    <span>{{ Math.round(achievement.current / achievement.requirement * 100) }}%</span>
+                                </div>
+                            </div>
+                            
+                            <div v-if="achievement.unlocked" 
+                                 style="text-align:center; padding:10px; background:rgba(0,176,155,0.1); border-radius:10px; margin-top:15px;">
+                                <span style="color:#00b09b; font-weight:bold;">🎉 已解锁</span>
+                                <div style="font-size:0.9em; color:#6c757d; margin-top:5px;">
+                                    {{ achievement.reward }} XP
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <p style="text-align:center; margin-top:30px; padding-top:25px; border-top:1px solid rgba(0,0,0,0.05); color:#6c757d; font-size:0.95em;">
-                所有数据自动保存于浏览器本地存储中
-            </p>
+
+            <!-- 复盘与笔记系统 -->
+            <div class="note-section">
+                <div class="card">
+                    <h2>📝 复盘与笔记</h2>
+                    
+                    <div class="note-tabs">
+                        <div class="note-tab" :class="{active: activeNoteTab === 'editor'}" @click="activeNoteTab = 'editor'">写笔记</div>
+                        <div class="note-tab" :class="{active: activeNoteTab === 'bazi'}" @click="activeNoteTab = 'bazi'">八字复盘</div>
+                        <div class="note-tab" :class="{active: activeNoteTab === 'stock'}" @click="activeNoteTab = 'stock'">股票复盘</div>
+                        <div class="note-tab" :class="{active: activeNoteTab === 'all'}" @click="activeNoteTab = 'all'">全部笔记</div>
+                    </div>
+                    
+                    <!-- 笔记编辑器 -->
+                    <div v-if="activeNoteTab === 'editor'" class="note-editor">
+                        <input type="text" class="note-input" v-model="newNote.title" placeholder="笔记标题">
+                        <textarea class="note-input" v-model="newNote.content" placeholder="记录你的思考、复盘内容..." rows="6"></textarea>
+                        <input type="text" class="tag-input" v-model="newNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 八字, 复盘, 感悟)">
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-area">
+                            <label style="display: block; margin-bottom: 10px; font-weight: bold;">📸 添加图片</label>
+                            <input type="file" accept="image/*" @change="handleImageUpload" style="display: block; margin: 0 auto 15px;">
+                            <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">支持 JPG, PNG, GIF 格式，最大 2MB</p>
+                            
+                            <div v-if="newNote.imageData" class="image-preview">
+                                <p>图片预览：</p>
+                                <img :src="newNote.imageData" alt="预览">
+                                <button class="btn-sm" @click="clearUploadedImage" style="background: #ffeaa7; color: #2d3436; margin-top: 10px;">
+                                    清除图片
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="display:flex; gap:15px; margin-top:20px;">
+                            <button class="btn" @click="saveNote" style="width:auto; padding:12px 40px;">
+                                保存笔记
+                            </button>
+                            <button class="btn" @click="clearNoteEditor" 
+                                    style="width:auto; padding:12px 30px; background:#6c757d;">
+                                清空
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 笔记列表 -->
+                    <div v-if="activeNoteTab !== 'editor'" class="note-list">
+                        <div v-for="note in filteredNotes" :key="note.id" class="note-card">
+                            <h3 style="margin-bottom:15px; color:#2d3436;">{{ note.title }}</h3>
+                            <div class="note-tags">
+                                <span class="note-tag" v-for="tag in note.tags" :key="tag">{{ tag }}</span>
+                            </div>
+                            <div style="color:#495057; line-height:1.7; margin:20px 0; white-space: pre-line;">{{ note.content }}</div>
+                            
+                            <!-- 显示图片（支持Base64和URL） -->
+                            <div v-if="note.imageData || note.imageUrl" style="margin-top:20px;">
+                                <img :src="note.imageData || note.imageUrl" alt="笔记图片" class="note-image" @error="handleImageError">
+                            </div>
+                            
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:25px; padding-top:20px; border-top:1px solid #e9ecef;">
+                                <div style="font-size:0.9em; color:#6c757d;">
+                                    {{ formatDate(note.createdAt) }}
+                                </div>
+                                <button class="btn-sm" @click="deleteNote(note.id)" style="background:#f8d7da; color:#dc3545;">
+                                    删除
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div v-if="filteredNotes.length === 0" style="text-align:center; padding:40px 20px; color:#adb5bd; grid-column: 1 / -1;">
+                            <div style="font-size:3em; margin-bottom:15px;">📝</div>
+                            <p>暂无笔记</p>
+                            <p>切换到"写笔记"标签开始记录吧！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计数据概览 -->
+            <div class="card" style="margin-top: 40px;">
+                <h2>📈 成长概览</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value">{{ totalXpEarned }}</div>
+                        <div class="stat-label">累计获得经验</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">{{ totalSkills }}</div>
+                        <div class="stat-label">技能数量</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">{{ totalNotes }}</div>
+                        <div class="stat-label">笔记数量</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">{{ completedAchievementsCount }}</div>
+                        <div class="stat-label">成就达成</div>
+                    </div>
+                </div>
+                <p style="text-align:center; margin-top:30px; padding-top:25px; border-top:1px solid rgba(0,0,0,0.05); color:#6c757d; font-size:0.95em;">
+                    所有数据通过GitHub API同步至你的私有仓库，刷新页面Token会失效需重新输入。
+                </p>
+            </div>
         </div>
     </div>
 
     <script>
-        // Vue 3 应用 - 重构版个人成长系统
         const { createApp, ref, computed, onMounted, watch } = Vue;
 
         createApp({
             setup() {
-                // ---------- 核心数据模型 ----------
-                const player = ref({
-                    level: 1,
-                    xp: 0,
-                    nextLevelXp: 100, // 动态计算
-                    streak: 1
+                // ==================== 状态与配置 ====================
+                const isConfigured = ref(false);
+                const showConfig = ref(false);
+                const showImport = ref(false);
+                const isSaving = ref(false);
+                const isLoading = ref(false);
+                const configError = ref('');
+                const configSuccess = ref('');
+                const lastSyncTime = ref('');
+                const statusMessage = ref(null);
+                
+                // 用户配置（首次需要填写）
+                const config = ref({
+                    username: '',
+                    repo: '',
+                    token: ''
                 });
 
-                // 技能树 - 初始为空，完全自定义
+                // 核心游戏数据（初始为空）
+                const player = ref({ level: 1, xp: 0, nextLevelXp: 100, streak: 1 });
                 const skills = ref([]);
-
-                // 成就系统
+                const notes = ref([]);
+                const activeAchievementTab = ref('all');
+                const activeNoteTab = ref('editor');
+                const newNote = ref({ 
+                    title: '', 
+                    content: '', 
+                    tagsInput: '', 
+                    imageUrl: '', 
+                    imageData: null, // 用于存储Base64图片数据
+                    category: 'general' 
+                });
+                
+                // 成就系统数据
                 const achievements = ref([
                     // 易学类成就
                     { id: 1, category: 'yixue', name: '八字入门', icon: '🌌', description: '完成10次八字学习', requirement: 10, current: 0, unlocked: false, reward: 100 },
@@ -525,26 +748,10 @@
                     { id: 14, category: 'skill', name: '技能大师', icon: '👑', description: '拥有3个达到5级的技能', requirement: 3, current: 0, unlocked: false, reward: 500 }
                 ]);
 
-                // 笔记与复盘系统
-                const notes = ref([]);
-                const newNote = ref({
-                    title: '',
-                    content: '',
-                    tagsInput: '',
-                    imageUrl: '',
-                    category: 'general'
-                });
-
-                // UI状态
-                const activeAchievementTab = ref('all');
-                const activeNoteTab = ref('editor');
-
-                // ---------- 计算属性 ----------
+                // ==================== 计算属性 ====================
                 const totalXpEarned = computed(() => {
                     let total = player.value.xp;
-                    skills.value.forEach(skill => {
-                        total += skill.xp;
-                    });
+                    skills.value.forEach(skill => total += skill.xp);
                     achievements.value.forEach(ach => {
                         if (ach.unlocked) total += ach.reward;
                     });
@@ -553,11 +760,11 @@
 
                 const totalSkills = computed(() => skills.value.length);
 
+                const totalNotes = computed(() => notes.value.length);
+
                 const completedAchievementsCount = computed(() => {
                     return achievements.value.filter(a => a.unlocked).length;
                 });
-
-                const totalNotes = computed(() => notes.value.length);
 
                 const filteredAchievements = computed(() => {
                     if (activeAchievementTab.value === 'all') return achievements.value;
@@ -568,15 +775,327 @@
                     if (activeNoteTab.value === 'all') return notes.value;
                     if (activeNoteTab.value === 'editor') return [];
                     return notes.value.filter(n => 
-                        n.tags.some(tag => tag.includes(activeNoteTab.value)) || 
+                        n.tags && n.tags.some(tag => tag.toLowerCase().includes(activeNoteTab.value)) || 
                         n.category === activeNoteTab.value
                     );
                 });
 
-                // ---------- 游戏逻辑方法 ----------
-                // 非线性升级曲线：前期容易，后期困难
+                // ==================== GitHub API 核心函数 ====================
+                const DATA_FILE_PATH = 'growth_system_data.json';
+
+                // 显示状态消息
+                const showStatusMessage = (text, type = 'info', duration = 5000) => {
+                    statusMessage.value = { text, type };
+                    if (duration > 0) {
+                        setTimeout(() => {
+                            statusMessage.value = null;
+                        }, duration);
+                    }
+                };
+
+                // 1. 从GitHub加载数据
+                const loadGameDataFromGitHub = async () => {
+                    const { username, repo, token } = config.value;
+                    if (!username || !repo) return;
+                    
+                    isLoading.value = true;
+                    configError.value = '';
+                    
+                    try {
+                        const url = `https://api.github.com/repos/${username}/${repo}/contents/${DATA_FILE_PATH}`;
+                        const headers = { 
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Authorization': token ? `token ${token}` : ''
+                        };
+                        
+                        const response = await fetch(url, { headers });
+                        
+                        if (response.status === 404) {
+                            // 首次使用，文件不存在
+                            configSuccess.value = '首次使用，已创建初始数据。进行任何操作后将自动保存到GitHub。';
+                            showStatusMessage('首次使用，数据文件将在首次保存时创建。', 'info');
+                            return;
+                        }
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            throw new Error(errorData.message || `读取失败 (状态码: ${response.status})`);
+                        }
+                        
+                        const fileData = await response.json();
+                        const decodedContent = atob(fileData.content.replace(/\n/g, ''));
+                        const gameData = JSON.parse(decodedContent);
+                        
+                        // 恢复数据
+                        if (gameData.player) player.value = gameData.player;
+                        if (gameData.skills) skills.value = gameData.skills;
+                        if (gameData.achievements) achievements.value = gameData.achievements;
+                        if (gameData.notes) notes.value = gameData.notes;
+                        
+                        lastSyncTime.value = new Date().toLocaleTimeString();
+                        showStatusMessage('数据从GitHub加载成功！', 'success');
+                        console.log('✅ 数据从GitHub加载成功！');
+                    } catch (error) {
+                        console.error('加载数据失败:', error);
+                        configError.value = `加载失败: ${error.message}`;
+                        showStatusMessage(`加载失败: ${error.message}`, 'error');
+                        
+                        // 如果是因为token问题，建议用户重新输入
+                        if (error.message.includes('Bad credentials') || error.message.includes('401')) {
+                            configError.value += '。请检查Token是否正确或已过期。';
+                        }
+                    } finally {
+                        isLoading.value = false;
+                    }
+                };
+
+                // 2. 保存数据到GitHub（核心！）
+                const saveGameDataToGitHub = async () => {
+                    if (isSaving.value) return; // 防止重复保存
+                    if (!config.value.token) {
+                        showStatusMessage('未提供Token，无法保存到GitHub。请在配置中设置Token。', 'warning');
+                        return;
+                    }
+                    
+                    isSaving.value = true;
+                    const { username, repo, token } = config.value;
+                    
+                    try {
+                        // 1. 获取文件SHA（如果存在）
+                        const getUrl = `https://api.github.com/repos/${username}/${repo}/contents/${DATA_FILE_PATH}`;
+                        let sha = null;
+                        try {
+                            const getRes = await fetch(getUrl, {
+                                headers: { 'Authorization': `token ${token}` }
+                            });
+                            if (getRes.ok) {
+                                const info = await getRes.json();
+                                sha = info.sha;
+                            }
+                        } catch (e) { 
+                            // 文件可能不存在，这是正常的
+                        }
+                        
+                        // 2. 构建要保存的数据
+                        const gameData = {
+                            version: '3.0',
+                            player: player.value,
+                            skills: skills.value,
+                            achievements: achievements.value,
+                            notes: notes.value,
+                            savedAt: new Date().toISOString()
+                        };
+                        
+                        // 注意：Base64编码
+                        const contentString = JSON.stringify(gameData, null, 2);
+                        const content = btoa(unescape(encodeURIComponent(contentString)));
+                        
+                        // 3. 推送更新
+                        const updateUrl = `https://api.github.com/repos/${username}/${repo}/contents/${DATA_FILE_PATH}`;
+                        const updateRes = await fetch(updateUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Authorization': `token ${token}`
+                            },
+                            body: JSON.stringify({
+                                message: `成长系统数据更新 @ ${new Date().toLocaleString()}`,
+                                content: content,
+                                sha: sha // 如果sha为null，GitHub会创建新文件
+                            })
+                        });
+                        
+                        if (!updateRes.ok) {
+                            const err = await updateRes.json().catch(() => ({}));
+                            throw new Error(err.message || '保存失败');
+                        }
+                        
+                        lastSyncTime.value = new Date().toLocaleTimeString();
+                        showStatusMessage('数据已保存至GitHub！', 'success');
+                        console.log('💾 数据已保存至GitHub！');
+                    } catch (error) {
+                        console.error('保存数据失败:', error);
+                        showStatusMessage(`保存失败: ${error.message}`, 'error');
+                        
+                        // 如果是权限问题，提示用户
+                        if (error.message.includes('403') || error.message.includes('permission')) {
+                            showStatusMessage('Token权限不足，请确保Token有repo权限且仓库存在。', 'error');
+                        }
+                    } finally {
+                        isSaving.value = false;
+                    }
+                };
+
+                // ==================== 配置管理 ====================
+                const saveConfigAndLoad = async () => {
+                    configError.value = '';
+                    configSuccess.value = '';
+                    
+                    if (!config.value.username || !config.value.repo) {
+                        configError.value = '请填写用户名和仓库名。';
+                        return;
+                    }
+                    
+                    if (!config.value.token) {
+                        if (!confirm('未提供Token，将只能读取公开仓库数据，无法保存。是否继续？')) {
+                            return;
+                        }
+                    }
+                    
+                    // 保存配置到本地（仅用户名和仓库，不存Token）
+                    localStorage.setItem('growthSystem_config', JSON.stringify({
+                        username: config.value.username,
+                        repo: config.value.repo
+                    }));
+                    
+                    isConfigured.value = true;
+                    showConfig.value = false;
+                    
+                    // 尝试加载数据
+                    await loadGameDataFromGitHub();
+                };
+
+                const loadDemoData = () => {
+                    if (!confirm('加载演示数据将替换当前所有数据（如果已连接GitHub，演示数据不会自动保存）。是否继续？')) {
+                        return;
+                    }
+                    
+                    // 加载演示数据
+                    player.value = { level: 3, xp: 240, nextLevelXp: 500, streak: 7 };
+                    
+                    skills.value = [
+                        { id: 1, name: "八字命理", icon: "🌌", category: "易学", level: 2, xp: 80, maxXp: 200, xpPerPractice: 15, practiceCount: 12 },
+                        { id: 2, name: "英语词汇", icon: "📘", category: "英语", level: 3, xp: 180, maxXp: 300, xpPerPractice: 10, practiceCount: 25 },
+                        { id: 3, name: "健身训练", icon: "💪", category: "健身", level: 4, xp: 320, maxXp: 400, xpPerPractice: 20, practiceCount: 18 }
+                    ];
+                    
+                    notes.value = [
+                        { 
+                            id: 1, 
+                            title: "八字入门心得", 
+                            content: "今天学习了八字的基本排盘方法，了解了天干地支的相生相克关系。\n重点：子午卯酉为四正，力量最强。", 
+                            tags: ["八字", "入门", "心得"], 
+                            category: "bazi",
+                            createdAt: new Date(Date.now() - 86400000).toISOString() // 1天前
+                        },
+                        { 
+                            id: 2, 
+                            title: "今日健身计划", 
+                            content: "完成胸肌训练：\n1. 平板卧推 4组×12次\n2. 上斜哑铃推举 3组×10次\n3. 双杠臂屈伸 3组×力竭", 
+                            tags: ["健身", "计划"], 
+                            category: "general",
+                            createdAt: new Date().toISOString()
+                        }
+                    ];
+                    
+                    // 设置一些成就进度
+                    achievements.value.forEach(ach => {
+                        if (ach.category === 'yixue') ach.current = 5;
+                        if (ach.category === 'english') ach.current = 1500;
+                        if (ach.category === 'fitness') ach.current = 18;
+                    });
+                    
+                    isConfigured.value = true;
+                    showConfig.value = false;
+                    showStatusMessage('已加载演示数据！如需同步到GitHub，请先配置Token并进行一次保存。', 'success');
+                };
+
+                const openRepoInGitHub = () => {
+                    window.open(`https://github.com/${config.value.username}/${config.value.repo}`, '_blank');
+                };
+
+                const forceLoadFromGitHub = async () => {
+                    await loadGameDataFromGitHub();
+                };
+
+                // ==================== 数据导入/导出 ====================
+                const exportLocalData = () => {
+                    const gameData = {
+                        player: player.value,
+                        skills: skills.value,
+                        achievements: achievements.value,
+                        notes: notes.value,
+                        exportedAt: new Date().toISOString()
+                    };
+                    
+                    const dataStr = JSON.stringify(gameData, null, 2);
+                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    
+                    const exportFileDefaultName = `成长系统备份_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+                    
+                    const linkElement = document.createElement('a');
+                    linkElement.setAttribute('href', dataUri);
+                    linkElement.setAttribute('download', exportFileDefaultName);
+                    linkElement.click();
+                    
+                    showStatusMessage('数据已导出为JSON文件，请妥善保存。', 'success');
+                };
+
+                const importLocalData = (event) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        try {
+                            const importedData = JSON.parse(e.target.result);
+                            if (confirm("导入数据将覆盖当前所有数据，确定继续吗？")) {
+                                if (importedData.player) player.value = importedData.player;
+                                if (importedData.skills) skills.value = importedData.skills;
+                                if (importedData.achievements) achievements.value = importedData.achievements;
+                                if (importedData.notes) notes.value = importedData.notes;
+                                
+                                // 保存到GitHub
+                                await saveGameDataToGitHub();
+                                showStatusMessage('数据导入成功并已同步到GitHub！', 'success');
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            showStatusMessage('文件格式错误，导入失败。', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                    // 清空input，以便再次导入同一文件
+                    event.target.value = '';
+                };
+
+                // ==================== 图片上传处理 ====================
+                const handleImageUpload = (event) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    // 文件类型和大小检查
+                    if (!file.type.startsWith('image/')) {
+                        showStatusMessage('请选择图片文件！', 'error');
+                        return;
+                    }
+                    if (file.size > 2 * 1024 * 1024) {
+                        showStatusMessage('图片大小不能超过2MB，请压缩后上传。', 'error');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        // 将图片转换为Base64字符串
+                        newNote.value.imageData = e.target.result;
+                        newNote.value.imageUrl = ''; // 清空URL字段
+                        showStatusMessage('图片已加载，可以保存笔记了。', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                };
+
+                const clearUploadedImage = () => {
+                    newNote.value.imageData = null;
+                    newNote.value.imageUrl = '';
+                };
+
+                const handleImageError = (event) => {
+                    event.target.style.display = 'none';
+                };
+
+                // ==================== 游戏逻辑函数 ====================
+                // 非线性升级曲线
                 const calculateNextLevelXp = (level) => {
-                    // 基础公式：100 * (1.5^(level-1))
                     return Math.floor(100 * Math.pow(1.5, level - 1));
                 };
 
@@ -586,14 +1105,15 @@
                         player.value.xp -= player.value.nextLevelXp;
                         player.value.nextLevelXp = calculateNextLevelXp(player.value.level);
                         
-                        // 升级奖励
-                        alert(`🎉 祝贺！你已升到 ${player.value.level} 级！`);
-                        saveGameData();
+                        showStatusMessage(`🎉 祝贺！你已升到 ${player.value.level} 级！`, 'success');
                     }
                 };
 
-                // ---------- 技能管理 ----------
-                const addNewSkill = () => {
+                const getSkillXpPerPractice = (skill) => {
+                    return skill.xpPerPractice || 10;
+                };
+
+                const addNewSkill = async () => {
                     const name = prompt("请输入新技能名称：", "例如：Python编程");
                     if (!name || !name.trim()) return;
                     
@@ -614,35 +1134,38 @@
                         createdAt: new Date().toISOString()
                     });
                     
+                    // 更新成就进度
                     updateAchievementProgress('skill', skills.value.length);
-                    saveGameData();
+                    
+                    // 保存到GitHub
+                    await saveGameDataToGitHub();
+                    showStatusMessage('技能添加成功！', 'success');
                 };
 
-                const practiceSkill = (skillId) => {
+                const practiceSkill = async (skillId) => {
                     const skill = skills.value.find(s => s.id === skillId);
                     if (!skill) return;
                     
                     // 增加技能经验
-                    skill.xp += skill.xpPerPractice;
+                    skill.xp += getSkillXpPerPractice(skill);
                     skill.practiceCount++;
                     
                     // 增加玩家经验
-                    player.value.xp += Math.floor(skill.xpPerPractice * 0.5);
+                    player.value.xp += Math.floor(getSkillXpPerPractice(skill) * 0.5);
                     
                     // 检查技能升级
                     if (skill.xp >= skill.maxXp) {
                         skill.level++;
                         skill.xp = 0;
-                        skill.maxXp = Math.floor(skill.maxXp * 1.8); // 升级需要更多经验
-                        alert(`🎯 【${skill.name}】已提升到 ${skill.level} 级！`);
+                        skill.maxXp = Math.floor(skill.maxXp * 1.8);
+                        showStatusMessage(`🎯 【${skill.name}】已提升到 ${skill.level} 级！`, 'success');
                     }
                     
                     // 更新相关成就进度
                     if (skill.category === '易学' || skill.category === 'yixue') {
                         updateAchievementProgress('yixue', 1);
                     } else if (skill.category === '英语') {
-                        // 假设每次英语练习增加50个单词
-                        updateAchievementProgress('english', 50);
+                        updateAchievementProgress('english', 50); // 假设每次英语练习增加50个单词
                     } else if (skill.category === '健身') {
                         updateAchievementProgress('fitness', 1);
                     } else if (skill.category === '冥想') {
@@ -650,16 +1173,17 @@
                     }
                     
                     checkLevelUp();
-                    saveGameData();
+                    await saveGameDataToGitHub();
                 };
 
-                const deleteSkill = (skillId) => {
+                const deleteSkill = async (skillId) => {
                     if (!confirm("确定要删除这个技能吗？相关的进度将丢失。")) return;
                     skills.value = skills.value.filter(s => s.id !== skillId);
-                    saveGameData();
+                    await saveGameDataToGitHub();
+                    showStatusMessage('技能删除成功！', 'success');
                 };
 
-                // ---------- 成就系统 ----------
+                // ==================== 成就系统 ====================
                 const updateAchievementProgress = (category, amount) => {
                     achievements.value.forEach(achievement => {
                         if (achievement.category === category && !achievement.unlocked) {
@@ -668,17 +1192,17 @@
                             if (achievement.current >= achievement.requirement) {
                                 achievement.unlocked = true;
                                 player.value.xp += achievement.reward;
-                                alert(`🏆 成就解锁：【${achievement.name}】！\n获得 ${achievement.reward} XP！`);
+                                showStatusMessage(`🏆 成就解锁：【${achievement.name}】！获得 ${achievement.reward} XP！`, 'success');
                                 checkLevelUp();
                             }
                         }
                     });
                 };
 
-                // ---------- 笔记系统 ----------
-                const saveNote = () => {
+                // ==================== 笔记系统 ====================
+                const saveNote = async () => {
                     if (!newNote.value.title.trim() || !newNote.value.content.trim()) {
-                        alert("请填写标题和内容");
+                        showStatusMessage("请填写标题和内容", "error");
                         return;
                     }
                     
@@ -687,19 +1211,28 @@
                         .map(tag => tag.trim())
                         .filter(tag => tag.length > 0);
                     
-                    notes.value.unshift({
+                    // 构建笔记对象
+                    const noteToSave = {
                         id: Date.now(),
                         title: newNote.value.title,
                         content: newNote.value.content,
                         tags: tags,
-                        imageUrl: newNote.value.imageUrl,
                         category: activeNoteTab.value === 'editor' ? 'general' : activeNoteTab.value,
                         createdAt: new Date().toISOString()
-                    });
+                    };
                     
+                    // 如果有上传的图片数据，则存入
+                    if (newNote.value.imageData) {
+                        noteToSave.imageData = newNote.value.imageData;
+                    } else if (newNote.value.imageUrl) {
+                        // 如果用户仍然输入了URL，也支持
+                        noteToSave.imageUrl = newNote.value.imageUrl;
+                    }
+                    
+                    notes.value.unshift(noteToSave);
+                    await saveGameDataToGitHub();
                     clearNoteEditor();
-                    saveGameData();
-                    alert("笔记保存成功！");
+                    showStatusMessage("笔记保存成功！", "success");
                 };
 
                 const clearNoteEditor = () => {
@@ -708,14 +1241,16 @@
                         content: '',
                         tagsInput: '',
                         imageUrl: '',
+                        imageData: null,
                         category: 'general'
                     };
                 };
 
-                const deleteNote = (noteId) => {
+                const deleteNote = async (noteId) => {
                     if (!confirm("确定要删除这条笔记吗？")) return;
                     notes.value = notes.value.filter(n => n.id !== noteId);
-                    saveGameData();
+                    await saveGameDataToGitHub();
+                    showStatusMessage('笔记删除成功！', 'success');
                 };
 
                 const formatDate = (dateString) => {
@@ -723,102 +1258,76 @@
                     return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
                 };
 
-                const handleImageError = (event) => {
-                    event.target.style.display = 'none';
-                };
-
-                // ---------- 数据持久化 ----------
-                const saveGameData = () => {
-                    const gameData = {
-                        version: '2.0',
-                        player: player.value,
-                        skills: skills.value,
-                        achievements: achievements.value,
-                        notes: notes.value,
-                        savedAt: new Date().toISOString()
-                    };
-                    localStorage.setItem('growthSystemData', JSON.stringify(gameData));
-                };
-
-                const loadGameData = () => {
-                    const saved = localStorage.getItem('growthSystemData');
-                    if (saved) {
-                        try {
-                            const data = JSON.parse(saved);
-                            if (data.player) player.value = data.player;
-                            if (data.skills) skills.value = data.skills;
-                            if (data.achievements) achievements.value = data.achievements;
-                            if (data.notes) notes.value = data.notes;
-                            console.log('成长系统数据加载成功！');
-                        } catch (e) {
-                            console.error('加载数据时出错:', e);
-                        }
-                    }
-                };
-
-                const resetData = () => {
-                    if (!confirm("⚠️  确定要重置所有数据吗？所有进度和笔记将永久丢失！")) return;
+                // ==================== 重置数据 ====================
+                const resetData = async () => {
+                    if (!confirm("⚠️  这将清空所有技能、成就和笔记，并重置玩家等级！此操作会立即同步到GitHub仓库，不可撤销！")) return;
                     
                     player.value = { level: 1, xp: 0, nextLevelXp: calculateNextLevelXp(1), streak: 1 };
                     skills.value = [];
+                    notes.value = [];
+                    
+                    // 重置成就
                     achievements.value.forEach(ach => {
                         ach.current = 0;
                         ach.unlocked = false;
                     });
-                    notes.value = [];
-                    newNote.value = { title: '', content: '', tagsInput: '', imageUrl: '', category: 'general' };
                     
-                    localStorage.removeItem('growthSystemData');
-                    alert("数据已重置，系统重新开始！");
+                    await saveGameDataToGitHub();
+                    showStatusMessage("数据已重置并同步到云端！", "success");
                 };
 
-                // ---------- 初始化 ----------
+                // ==================== 初始化 ====================
                 onMounted(() => {
-                    loadGameData();
-                    player.value.nextLevelXp = calculateNextLevelXp(player.value.level);
-                    
-                    // 初始化成就进度
-                    achievements.value.forEach(ach => {
-                        if (ach.category === 'skill') {
-                            ach.current = skills.value.length;
-                            if (ach.current >= ach.requirement) {
-                                ach.unlocked = true;
-                            }
+                    // 1. 尝试加载本地保存的配置（用户名和仓库）
+                    const savedConfig = localStorage.getItem('growthSystem_config');
+                    if (savedConfig) {
+                        try {
+                            const { username, repo } = JSON.parse(savedConfig);
+                            config.value.username = username;
+                            config.value.repo = repo;
+                            isConfigured.value = true;
+                        } catch (e) {
+                            console.log('本地配置读取失败');
                         }
-                    });
+                    }
+                    
+                    // 设置玩家下一级所需经验
+                    player.value.nextLevelXp = calculateNextLevelXp(player.value.level);
                     
                     console.log('🧠 个人成长系统已启动！');
                 });
 
-                // ---------- 自动保存 ----------
-                watch([player, skills, achievements, notes], () => {
-                    saveGameData();
-                }, { deep: true });
+                // ==================== 自动保存监听 ====================
+                // 由于GitHub API调用有频率限制，我们不使用watch自动保存
+                // 改为在每个操作后手动调用 saveGameDataToGitHub()
 
-                // ---------- 暴露给模板 ----------
+                // ==================== 暴露给模板 ====================
                 return {
-                    player,
-                    skills,
-                    achievements,
-                    notes,
-                    newNote,
-                    activeAchievementTab,
-                    activeNoteTab,
-                    totalXpEarned,
-                    totalSkills,
-                    totalNotes,
-                    completedAchievementsCount,
-                    filteredAchievements,
-                    filteredNotes,
-                    addNewSkill,
-                    practiceSkill,
-                    deleteSkill,
-                    saveNote,
-                    clearNoteEditor,
-                    deleteNote,
-                    formatDate,
-                    handleImageError,
-                    resetData
+                    isConfigured, showConfig, showImport, isSaving, isLoading, 
+                    configError, configSuccess, lastSyncTime, statusMessage,
+                    config, player, skills, achievements, notes, newNote,
+                    activeAchievementTab, activeNoteTab,
+                    
+                    // 计算属性
+                    totalXpEarned, totalSkills, totalNotes, completedAchievementsCount,
+                    filteredAchievements, filteredNotes,
+                    
+                    // 配置相关
+                    saveConfigAndLoad, loadDemoData, resetLocalConfig: () => {
+                        localStorage.removeItem('growthSystem_config');
+                        window.location.reload();
+                    },
+                    openRepoInGitHub, forceLoadFromGitHub,
+                    
+                    // 数据导入导出
+                    exportLocalData, importLocalData,
+                    
+                    // 图片处理
+                    handleImageUpload, clearUploadedImage, handleImageError,
+                    
+                    // 游戏逻辑
+                    getSkillXpPerPractice, addNewSkill, practiceSkill, deleteSkill,
+                    saveNote, clearNoteEditor, deleteNote, formatDate, resetData
                 };
             }
         }).mount('#app');
