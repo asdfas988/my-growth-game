@@ -705,89 +705,152 @@
             border-radius: 0 10px 10px 0;
         }
 
-        /* ====== 新增：思维导图样式 ====== */
-        .mindmap-section {
-            margin: 30px 0;
-            padding: 25px;
-            background: #fff9f0;
-            border-radius: 20px;
-            border: 3px solid #e0c9b8;
+        // 在思维导图状态部分修改
+// 找到这部分（大约在第253行）：
+// 新增：思维导图状态
+const mindmapNodeText = ref('');
+const mindmapNodes = ref([]);
+const mindmapLines = ref([]);
+
+// 修改为：
+const mindmapNodeText = ref('');
+const mindmapNodes = ref([]);
+const mindmapLines = ref([]);
+const mindmapSelectedNode = ref(null);
+const mindmapRootNode = ref(null);
+
+// 添加节点时支持层级
+const addMindmapNode = () => {
+    if (!mindmapNodeText.value.trim()) return;
+    
+    const container = mindmapContainer.value;
+    if (!container) return;
+    
+    const centerX = container.clientWidth / 2;
+    const centerY = container.clientHeight / 2;
+    
+    let x, y;
+    if (mindmapNodes.value.length === 0) {
+        // 第一个节点作为根节点
+        x = centerX - 60;
+        y = centerY - 30;
+        mindmapRootNode.value = Date.now();
+    } else if (mindmapSelectedNode.value) {
+        // 作为选中节点的子节点
+        const parentNode = mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value);
+        if (parentNode) {
+            const angle = (parentNode.children?.length || 0) * 30 * (Math.PI / 180);
+            const radius = 120;
+            x = parentNode.x + Math.cos(angle) * radius;
+            y = parentNode.y + Math.sin(angle) * radius;
+        } else {
+            x = centerX + (Math.random() - 0.5) * 200;
+            y = centerY + (Math.random() - 0.5) * 200;
         }
-        .mindmap-container {
-            width: 100%;
-            height: 500px;
-            border: 2px dashed #ffc8a3;
-            border-radius: 15px;
-            background: white;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
+    } else {
+        // 随机位置
+        const angle = (mindmapNodes.value.length * 45) * (Math.PI / 180);
+        const radius = 150;
+        x = centerX + Math.cos(angle) * radius - 60;
+        y = centerY + Math.sin(angle) * radius - 30;
+    }
+    
+    const nodeId = Date.now();
+    const newNode = {
+        id: nodeId,
+        text: mindmapNodeText.value.trim(),
+        x: x,
+        y: y,
+        color: getRandomNodeColor(),
+        parentId: mindmapSelectedNode.value,
+        children: [],
+        level: mindmapSelectedNode.value ? 
+            (mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value)?.level || 0) + 1 : 0
+    };
+    
+    mindmapNodes.value.push(newNode);
+    
+    // 如果是子节点，添加到父节点的children中
+    if (mindmapSelectedNode.value) {
+        const parentIndex = mindmapNodes.value.findIndex(n => n.id === mindmapSelectedNode.value);
+        if (parentIndex !== -1) {
+            if (!mindmapNodes.value[parentIndex].children) {
+                mindmapNodes.value[parentIndex].children = [];
+            }
+            mindmapNodes.value[parentIndex].children.push(nodeId);
         }
-        .mindmap-node {
-            position: absolute;
-            padding: 12px 20px;
-            background: #fffefc;
-            border: 2px solid #ff9a8b;
-            border-radius: 10px 25px 10px 25px;
-            box-shadow: 3px 3px 0px #d4b8a7;
-            cursor: move;
-            min-width: 120px;
-            text-align: center;
-            font-family: 'Gochi Hand', cursive;
-            font-size: 18px;
-            color: #5a4a42;
-            z-index: 10;
+    }
+    
+    mindmapNodeText.value = '';
+    mindmapSelectedNode.value = nodeId;
+    
+    // 更新连接线
+    updateMindmapLines();
+};
+
+// 更新连接线函数
+const updateMindmapLines = () => {
+    if (mindmapNodes.value.length <= 1) {
+        mindmapLines.value = [];
+        return;
+    }
+    
+    const lines = [];
+    
+    // 连接所有父子节点
+    mindmapNodes.value.forEach(node => {
+        if (node.parentId) {
+            const parentNode = mindmapNodes.value.find(n => n.id === node.parentId);
+            if (parentNode) {
+                lines.push({
+                    x1: parentNode.x + 60,
+                    y1: parentNode.y + 15,
+                    x2: node.x + 60,
+                    y2: node.y + 15,
+                    type: 'parent-child'
+                });
+            }
+        } else if (mindmapRootNode.value && node.id !== mindmapRootNode.value) {
+            // 如果设置了根节点，连接到根节点
+            const rootNode = mindmapNodes.value.find(n => n.id === mindmapRootNode.value);
+            if (rootNode) {
+                lines.push({
+                    x1: rootNode.x + 60,
+                    y1: rootNode.y + 15,
+                    x2: node.x + 60,
+                    y2: node.y + 15,
+                    type: 'to-root'
+                });
+            }
         }
-        .mindmap-node:hover {
-            transform: scale(1.05);
-            box-shadow: 5px 5px 0px #c9a58f;
-            z-index: 20;
-        }
-        .mindmap-line {
-            position: absolute;
-            background: #ff9a8b;
-            transform-origin: 0 0;
-            z-index: 5;
-        }
-        .mindmap-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        .mindmap-input {
-            flex-grow: 1;
-            padding: 12px 15px;
-            border: 2px solid #e0c9b8;
-            border-radius: 10px;
-            font-family: 'Comic Neue', cursive;
-            background: #fffefc;
-            color: #5a4a42;
-        }
-        .mindmap-nodes-list {
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 15px;
-            background: #fffaf5;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 2px solid #e0c9b8;
-        }
-        .mindmap-node-item {
-            padding: 8px 15px;
-            margin: 5px 0;
-            background: #fffefc;
-            border-radius: 8px;
-            border: 1px solid #e0c9b8;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .mindmap-node-item:hover {
-            background: #ffd6cc;
-            border-color: #ff9a8b;
-        }
+    });
+    
+    mindmapLines.value = lines;
+};
+
+// 选择节点
+const selectMindmapNode = (nodeId) => {
+    mindmapSelectedNode.value = nodeId;
+    showStatusMessage(`已选择节点: ${mindmapNodes.value.find(n => n.id === nodeId)?.text}`, 'info');
+};
+
+// 设置/取消根节点
+const toggleRootNode = (nodeId) => {
+    if (mindmapRootNode.value === nodeId) {
+        mindmapRootNode.value = null;
+        showStatusMessage('已取消根节点', 'info');
+    } else {
+        mindmapRootNode.value = nodeId;
+        showStatusMessage('已设置为根节点', 'info');
+    }
+    updateMindmapLines();
+};
+
+// 在思维导图控制面板中添加相关按钮
+// 在 mindmap-controls 部分添加：
+const mindmapControls = () => {
+    // 在 mindmap-controls div 中添加这些按钮
+};
 
         /* ====== 新增：高亮内容提取面板 ====== */
         .highlight-extract-panel {
@@ -3216,3 +3279,4 @@
     </script>
 </body>
 </html>
+
