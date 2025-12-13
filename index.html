@@ -99,10 +99,30 @@
             border-bottom: 3px dotted #ff9a8b;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
             color: #5a4a42;
             font-size: 1.6em;
             font-family: 'Gochi Hand', cursive;
+        }
+        .card h2 .collapse-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #ff6b6b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 2px solid #ff9a8b;
+            background: #fffaf5;
+            transition: all 0.3s;
+            font-family: 'Comic Neue', cursive;
+            font-weight: bold;
+        }
+        .card h2 .collapse-btn:hover {
+            background: #ff9a8b;
+            color: white;
+            transform: scale(1.05);
         }
 
         /* ====== 手绘玩家等级显示 ====== */
@@ -474,6 +494,100 @@
             border-radius: 6px;
             transition: width 0.8s ease;
         }
+
+        /* ====== 新增：折叠面板样式 ====== */
+        .collapse-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #ff6b6b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 2px solid #ff9a8b;
+            background: #fffaf5;
+            transition: all 0.3s;
+            font-family: 'Comic Neue', cursive;
+            font-weight: bold;
+        }
+        .collapse-btn:hover {
+            background: #ff9a8b;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* ====== 新增：笔记筛选器样式 ====== */
+        .note-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 20px;
+            background: #fffaf5;
+            border-radius: 15px;
+            border: 2px solid #e0c9b8;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+        .filter-group label {
+            font-weight: bold;
+            color: #5a4a42;
+            font-family: 'Comic Neue', cursive;
+        }
+        .filter-group select, .filter-group input {
+            padding: 12px 15px;
+            border: 2px solid #e0c9b8;
+            border-radius: 10px;
+            font-family: 'Comic Neue', cursive;
+            background: #fffefc;
+            color: #5a4a42;
+        }
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #ff9a8b;
+            box-shadow: 2px 2px 0px #ffd6cc;
+        }
+
+        /* ====== 新增：批量添加成就面板样式 ====== */
+        .batch-add-panel {
+            background: #fff9f0;
+            border: 3px dashed #ffc8a3;
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+        .batch-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e0c9b8;
+            border-radius: 15px;
+            font-family: 'Comic Neue', cursive;
+            font-size: 14px;
+            background: #fffefc;
+            color: #5a4a42;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        .batch-textarea:focus {
+            outline: none;
+            border-color: #ff9a8b;
+            box-shadow: 3px 3px 0px #ffd6cc;
+        }
+        .batch-example {
+            font-size: 0.9em;
+            color: #7a6a62;
+            background: #fffaf5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #4ecdc4;
+        }
     </style>
 </head>
 <body>
@@ -587,119 +701,213 @@
             <div class="grid">
                 <!-- 玩家状态面板 -->
                 <div class="card">
-                    <h2>📊 成长状态</h2>
-                    <div class="level-display">Lv. {{ player.level }}</div>
-                    <div style="margin: 25px 0;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-weight:bold;">
-                            <span>经验值 (XP):</span>
-                            <span><strong>{{ player.xp }}</strong> / {{ player.nextLevelXp }}</span>
-                        </div>
-                        <div class="xp-progress">
-                            <div class="xp-fill" :style="{ width: (player.xp / player.nextLevelXp * 100) + '%' }"></div>
-                        </div>
-                        <div style="text-align: center; margin-top: 18px; font-size: 1.05em; color: #7a6a62; font-weight:bold;">
-                            还需 {{ player.nextLevelXp - player.xp }} XP 升级
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 30px; padding-top: 30px; border-top: 3px dotted #ffc8a3;">
-                        <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
-                            <div>
-                                <div style="font-size: 2.2em; font-weight: bold; color: #ff6b6b; font-family:'Gochi Hand';">{{ totalSkills }}</div>
-                                <div style="color: #7a6a62; font-weight:bold;">技能数量</div>
+                    <h2>
+                        📊 成长状态
+                        <button class="collapse-btn" @click="collapseStatus = !collapseStatus">
+                            {{ collapseStatus ? '展开' : '折叠' }}
+                        </button>
+                    </h2>
+                    <div v-if="!collapseStatus">
+                        <div class="level-display">Lv. {{ player.level }}</div>
+                        <div style="margin: 25px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-weight:bold;">
+                                <span>经验值 (XP):</span>
+                                <span><strong>{{ player.xp }}</strong> / {{ player.nextLevelXp }}</span>
                             </div>
-                            <div>
-                                <div style="font-size: 2.2em; font-weight: bold; color: #4ecdc4; font-family:'Gochi Hand';">{{ completedAchievementsCount }}</div>
-                                <div style="color: #7a6a62; font-weight:bold;">成就达成</div>
+                            <div class="xp-progress">
+                                <div class="xp-fill" :style="{ width: (player.xp / player.nextLevelXp * 100) + '%' }"></div>
+                            </div>
+                            <div style="text-align: center; margin-top: 18px; font-size: 1.05em; color: #7a6a62; font-weight:bold;">
+                                还需 {{ player.nextLevelXp - player.xp }} XP 升级
                             </div>
                         </div>
-                        <button class="btn" @click="forceSaveToGitHub" style="background:linear-gradient(90deg, #4ecdc4, #2ba69b); margin-top:20px;">
-                            💾 立即保存到云端
-                        </button>
-                        <button class="btn" @click="resetData" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d); margin-top:15px;">
-                            🔄 重置所有数据（谨慎！）
-                        </button>
+                        
+                        <div style="margin-top: 30px; padding-top: 30px; border-top: 3px dotted #ffc8a3;">
+                            <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div>
+                                    <div style="font-size: 2.2em; font-weight: bold; color: #ff6b6b; font-family:'Gochi Hand';">{{ totalSkills }}</div>
+                                    <div style="color: #7a6a62; font-weight:bold;">技能数量</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 2.2em; font-weight: bold; color: #4ecdc4; font-family:'Gochi Hand';">{{ completedAchievementsCount }}</div>
+                                    <div style="color: #7a6a62; font-weight:bold;">成就达成</div>
+                                </div>
+                            </div>
+                            <button class="btn" @click="forceSaveToGitHub" style="background:linear-gradient(90deg, #4ecdc4, #2ba69b); margin-top:20px;">
+                                💾 立即保存到云端
+                            </button>
+                            <button class="btn" @click="resetData" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d); margin-top:15px;">
+                                🔄 重置所有数据（谨慎！）
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 技能树 -->
                 <div class="card">
-                    <h2>🌱 我的技能树</h2>
-                    <p style="margin-bottom:20px; color:#7a6a62; font-weight:bold;">从零开始，自由添加你想培养的任何技能</p>
-                    
-                    <div v-if="skills.length === 0" style="text-align:center; padding:40px 20px; color:#c9b8a7;">
-                        <div style="font-size:3.5em; margin-bottom:15px; transform:rotate(-5deg);">🌱</div>
-                        <p style="font-weight:bold; font-size:1.1em;">技能树空空如也</p>
-                        <p>点击下方按钮添加你的第一个技能吧！</p>
-                    </div>
-                    
-                    <div v-for="skill in skills" :key="skill.id" class="skill-item">
-                        <div style="flex-grow:1;">
-                            <div style="display:flex; align-items:center; gap:15px; margin-bottom:10px;">
-                                <span style="font-size:2em; transform:rotate(3deg);">{{ skill.icon }}</span>
-                                <div>
-                                    <strong style="font-size:1.3em; color:#5a4a42;">{{ skill.name }}</strong>
-                                    <div style="font-size:0.95em; color:#7a6a62; font-weight:bold;">类别: {{ skill.category }} · 等级 {{ skill.level }}</div>
+                    <h2>
+                        🌱 我的技能树
+                        <button class="collapse-btn" @click="collapseSkills = !collapseSkills">
+                            {{ collapseSkills ? '展开' : '折叠' }}
+                        </button>
+                    </h2>
+                    <div v-if="!collapseSkills">
+                        <p style="margin-bottom:20px; color:#7a6a62; font-weight:bold;">从零开始，自由添加你想培养的任何技能</p>
+                        
+                        <div v-if="skills.length === 0" style="text-align:center; padding:40px 20px; color:#c9b8a7;">
+                            <div style="font-size:3.5em; margin-bottom:15px; transform:rotate(-5deg);">🌱</div>
+                            <p style="font-weight:bold; font-size:1.1em;">技能树空空如也</p>
+                            <p>点击下方按钮添加你的第一个技能吧！</p>
+                        </div>
+                        
+                        <div v-for="skill in skills" :key="skill.id" class="skill-item">
+                            <div style="flex-grow:1;">
+                                <div style="display:flex; align-items:center; gap:15px; margin-bottom:10px;">
+                                    <span style="font-size:2em; transform:rotate(3deg);">{{ skill.icon }}</span>
+                                    <div>
+                                        <strong style="font-size:1.3em; color:#5a4a42;">{{ skill.name }}</strong>
+                                        <div style="font-size:0.95em; color:#7a6a62; font-weight:bold;">类别: {{ skill.category }} · 等级 {{ skill.level }}</div>
+                                    </div>
+                                </div>
+                                <div class="xp-progress" style="height:14px; margin:12px 0;">
+                                    <div class="xp-fill" :style="{ width: (skill.xp / skill.maxXp * 100) + '%' }"></div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; font-size:0.95em; color:#7a6a62; font-weight:bold;">
+                                    <span>{{ skill.xp }} / {{ skill.maxXp }} XP</span>
+                                    <span>{{ Math.round(skill.xp / skill.maxXp * 100) }}%</span>
                                 </div>
                             </div>
-                            <div class="xp-progress" style="height:14px; margin:12px 0;">
-                                <div class="xp-fill" :style="{ width: (skill.xp / skill.maxXp * 100) + '%' }"></div>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; font-size:0.95em; color:#7a6a62; font-weight:bold;">
-                                <span>{{ skill.xp }} / {{ skill.maxXp }} XP</span>
-                                <span>{{ Math.round(skill.xp / skill.maxXp * 100) }}%</span>
+                            <div style="display:flex; gap:12px;">
+                                <button class="btn-sm" @click="practiceSkill(skill.id)" style="background:linear-gradient(90deg, #ff9a8b, #ff6b6b); box-shadow:3px 3px 0px #d45d5d;">
+                                    练习 +{{ getSkillXpPerPractice(skill) }}
+                                </button>
+                                <button class="btn-sm" @click="deleteSkill(skill.id)" style="background:#f0e6dc; color:#7a6a62; border:2px solid #d4b8a7; box-shadow:3px 3px 0px #c9b8a7;">
+                                    删除
+                                </button>
                             </div>
                         </div>
-                        <div style="display:flex; gap:12px;">
-                            <button class="btn-sm" @click="practiceSkill(skill.id)" style="background:linear-gradient(90deg, #ff9a8b, #ff6b6b); box-shadow:3px 3px 0px #d45d5d;">
-                                练习 +{{ getSkillXpPerPractice(skill) }}
-                            </button>
-                            <button class="btn-sm" @click="deleteSkill(skill.id)" style="background:#f0e6dc; color:#7a6a62; border:2px solid #d4b8a7; box-shadow:3px 3px 0px #c9b8a7;">
-                                删除
-                            </button>
-                        </div>
+                        
+                        <button class="btn" @click="addNewSkill" style="background:linear-gradient(90deg, #a3de83, #4ecdc4); margin-top:25px;">
+                            🌟 添加新技能
+                        </button>
                     </div>
-                    
-                    <button class="btn" @click="addNewSkill" style="background:linear-gradient(90deg, #a3de83, #4ecdc4); margin-top:25px;">
-                        🌟 添加新技能
-                    </button>
                 </div>
 
                 <!-- 成就系统 -->
                 <div class="card">
-                    <h2>🏆 成就系统</h2>
-                    <div class="note-tabs" style="margin-bottom:25px;">
-                        <div class="note-tab" :class="{active: activeAchievementTab === 'all'}" @click="activeAchievementTab = 'all'">全部</div>
-                        <div class="note-tab" :class="{active: activeAchievementTab === 'yixue'}" @click="activeAchievementTab = 'yixue'">易学</div>
-                        <div class="note-tab" :class="{active: activeAchievementTab === 'english'}" @click="activeAchievementTab = 'english'">英语</div>
-                        <div class="note-tab" :class="{active: activeAchievementTab === 'fitness'}" @click="activeAchievementTab = 'fitness'">健身</div>
-                    </div>
+                    <h2>
+                        🏆 成就系统
+                        <button class="collapse-btn" @click="collapseAchievements = !collapseAchievements">
+                            {{ collapseAchievements ? '展开' : '折叠' }}
+                        </button>
+                    </h2>
                     
-                    <div class="achievement-grid">
-                        <div v-for="achievement in filteredAchievements" :key="achievement.id" 
-                             class="achievement-card" :class="{locked: !achievement.unlocked}">
-                            <div class="achievement-icon">{{ achievement.icon }}</div>
-                            <h3 style="margin-bottom:12px; color:#5a4a42; font-family:'Gochi Hand';">{{ achievement.name }}</h3>
-                            <p style="font-size:0.95em; color:#7a6a62; margin-bottom:20px; min-height:45px; font-weight:bold;">{{ achievement.description }}</p>
-                            
-                            <div v-if="!achievement.unlocked">
-                                <div class="achievement-progress">
-                                    <div class="achievement-progress-fill" 
-                                         :style="{ width: Math.min(100, (achievement.current / achievement.requirement * 100)) + '%' }"></div>
+                    <div v-if="!collapseAchievements">
+                        <!-- 成就筛选与批量添加区域 -->
+                        <div style="margin-bottom: 25px; display: flex; gap: 15px; align-items: center;">
+                            <div class="note-tabs" style="margin-bottom: 0; flex-grow: 1;">
+                                <div class="note-tab" :class="{active: activeAchievementTab === 'all'}" @click="activeAchievementTab = 'all'">全部</div>
+                                <div class="note-tab" :class="{active: activeAchievementTab === 'yixue'}" @click="activeAchievementTab = 'yixue'">易学</div>
+                                <div class="note-tab" :class="{active: activeAchievementTab === 'english'}" @click="activeAchievementTab = 'english'">英语</div>
+                                <div class="note-tab" :class="{active: activeAchievementTab === 'fitness'}" @click="activeAchievementTab = 'fitness'">健身</div>
+                                <div class="note-tab" :class="{active: activeAchievementTab === 'custom'}" @click="activeAchievementTab = 'custom'">自定义</div>
+                            </div>
+                            <button class="btn-sm" @click="showBatchAdd = !showBatchAdd" style="background:linear-gradient(90deg, #ffd166, #ffb347); color:#5a4a42;">
+                                📥 批量添加成就
+                            </button>
+                        </div>
+                        
+                        <!-- 批量添加成就面板 -->
+                        <div v-if="showBatchAdd" class="batch-add-panel">
+                            <h3 style="margin-bottom: 15px; color: #5a4a42;">📥 批量添加成就</h3>
+                            <p style="margin-bottom: 15px; color: #7a6a62; font-weight: bold;">
+                                请按照JSON格式输入成就数据，每个成就包含以下字段：
+                            </p>
+                            <textarea 
+                                v-model="batchAchievementInput" 
+                                class="batch-textarea" 
+                                placeholder='例如：
+[
+  {
+    "category": "custom",
+    "name": "早起达人",
+    "icon": "🌅",
+    "description": "连续30天早上6点前起床",
+    "requirement": 30,
+    "reward": 150
+  },
+  {
+    "category": "reading",
+    "name": "读书破万卷",
+    "icon": "📚",
+    "description": "阅读100本书",
+    "requirement": 100,
+    "reward": 300
+  }
+]'>
+                            </textarea>
+                            <div class="batch-example">
+                                <strong>字段说明：</strong><br>
+                                • <code>category</code>: 分类（自定义分类会自动创建）<br>
+                                • <code>name</code>: 成就名称<br>
+                                • <code>icon</code>: 图标表情<br>
+                                • <code>description</code>: 描述<br>
+                                • <code>requirement</code>: 达成要求（数字）<br>
+                                • <code>reward</code>: 奖励经验值
+                            </div>
+                            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                                <button class="btn-sm" @click="addBatchAchievements" style="background:linear-gradient(90deg, #a3de83, #4ecdc4);">
+                                    ✅ 添加这些成就
+                                </button>
+                                <button class="btn-sm" @click="loadExampleAchievements" style="background:linear-gradient(90deg, #4a9fff, #2d73cc);">
+                                    📋 加载示例
+                                </button>
+                                <button class="btn-sm" @click="clearBatchInput" style="background:linear-gradient(90deg, #a3a3a3, #7a7a7a);">
+                                    清空
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement-grid">
+                            <div v-for="achievement in filteredAchievements" :key="achievement.id" 
+                                 class="achievement-card" :class="{locked: !achievement.unlocked}">
+                                <div class="achievement-icon">{{ achievement.icon }}</div>
+                                <h3 style="margin-bottom:12px; color:#5a4a42; font-family:'Gochi Hand';">{{ achievement.name }}</h3>
+                                <p style="font-size:0.95em; color:#7a6a62; margin-bottom:20px; min-height:45px; font-weight:bold;">{{ achievement.description }}</p>
+                                
+                                <div v-if="!achievement.unlocked">
+                                    <div class="achievement-progress">
+                                        <div class="achievement-progress-fill" 
+                                             :style="{ width: Math.min(100, (achievement.current / achievement.requirement * 100)) + '%' }"></div>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; font-size:0.9em; color:#7a6a62; font-weight:bold;">
+                                        <span>进度: {{ achievement.current }} / {{ achievement.requirement }}</span>
+                                        <span>{{ Math.round(achievement.current / achievement.requirement * 100) }}%</span>
+                                    </div>
                                 </div>
-                                <div style="display:flex; justify-content:space-between; font-size:0.9em; color:#7a6a62; font-weight:bold;">
-                                    <span>进度: {{ achievement.current }} / {{ achievement.requirement }}</span>
-                                    <span>{{ Math.round(achievement.current / achievement.requirement * 100) }}%</span>
+                                
+                                <div v-if="achievement.unlocked" 
+                                     style="text-align:center; padding:15px; background:rgba(163,222,131,0.2); border-radius:15px; margin-top:20px; border:2px dashed #4ecdc4;">
+                                    <span style="color:#2d5a27; font-weight:bold; font-family:'Gochi Hand';">🎉 已解锁</span>
+                                    <div style="font-size:0.95em; color:#2d5a27; margin-top:8px; font-weight:bold;">
+                                        {{ achievement.reward }} XP
+                                    </div>
+                                </div>
+                                
+                                <!-- 删除成就按钮（仅自定义成就显示） -->
+                                <div v-if="achievement.category === 'custom'" style="margin-top: 15px; text-align: right;">
+                                    <button class="btn-sm" @click="deleteAchievement(achievement.id)" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d); padding: 5px 15px; font-size: 0.8em;">
+                                        删除
+                                    </button>
                                 </div>
                             </div>
-                            
-                            <div v-if="achievement.unlocked" 
-                                 style="text-align:center; padding:15px; background:rgba(163,222,131,0.2); border-radius:15px; margin-top:20px; border:2px dashed #4ecdc4;">
-                                <span style="color:#2d5a27; font-weight:bold; font-family:'Gochi Hand';">🎉 已解锁</span>
-                                <div style="font-size:0.95em; color:#2d5a27; margin-top:8px; font-weight:bold;">
-                                    {{ achievement.reward }} XP
-                                </div>
-                            </div>
+                        </div>
+                        
+                        <!-- 空状态提示 -->
+                        <div v-if="filteredAchievements.length === 0" style="text-align:center; padding:50px 20px; color:#c9b8a7; margin-top: 30px;">
+                            <div style="font-size:4em; margin-bottom:20px; transform:rotate(-5deg);">🏆</div>
+                            <p style="font-weight:bold; font-size:1.3em; margin-bottom:10px;">这个分类还没有成就</p>
+                            <p>点击"批量添加成就"按钮创建你的第一个成就吧！</p>
                         </div>
                     </div>
                 </div>
@@ -708,84 +916,132 @@
             <!-- 复盘与笔记系统 -->
             <div class="note-section">
                 <div class="card">
-                    <h2>📝 复盘与笔记</h2>
+                    <h2>
+                        📝 复盘与笔记
+                        <button class="collapse-btn" @click="collapseNotes = !collapseNotes">
+                            {{ collapseNotes ? '展开' : '折叠' }}
+                        </button>
+                    </h2>
                     
-                    <!-- 笔记分类标签页：已修复重复问题 -->
-                    <div class="note-tabs">
-                        <div class="note-tab" :class="{active: activeNoteTab === 'all'}" @click="activeNoteTab = 'all'">全部笔记</div>
-                        <div class="note-tab" :class="{active: activeNoteTab === 'editor'}" @click="activeNoteTab = 'editor'">✍️ 写新笔记</div>
-                        <div v-for="cat in noteCategories.filter(c => c !== 'all' && c !== 'editor')" :key="cat" 
-                             class="note-tab" 
-                             :class="{active: activeNoteTab === cat}" 
-                             @click="activeNoteTab = cat">
-                            {{ getCategoryDisplayName(cat) }}
-                        </div>
-                    </div>
-                    
-                    <!-- 笔记编辑器：仅在 activeNoteTab === 'editor' 时显示 -->
-                    <div v-if="activeNoteTab === 'editor'" class="note-editor">
-                        <input type="text" class="note-input" v-model="newNote.title" placeholder="笔记标题...">
-                        <textarea class="note-input" v-model="newNote.content" placeholder="写下你的思考、复盘或灵感..." rows="6"></textarea>
-                        <input type="text" class="tag-input" v-model="newNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 八字, 复盘, 今日收获)">
-                        
-                        <!-- 图片上传区域 -->
-                        <div class="image-upload-area">
-                            <label style="display: block; margin-bottom: 12px; font-weight: bold; font-size:1.1em;">📸 添加图片</label>
-                            <input type="file" accept="image/*" @change="handleImageUpload" style="display: block; margin: 0 auto 15px; padding:10px; border:2px dashed #ff9a8b; border-radius:10px; background:#fffaf9; cursor:pointer;">
-                            <p style="font-size: 0.95em; color: #7a6a62; margin-bottom: 10px; font-weight:bold;">支持 JPG, PNG, GIF 格式，最大 2MB</p>
-                            
-                            <div v-if="newNote.imageData" class="image-preview">
-                                <p style="font-weight:bold; margin-bottom:10px;">图片预览：</p>
-                                <img :src="newNote.imageData" alt="预览">
-                                <button class="btn-sm" @click="clearUploadedImage" style="background: #ffd6cc; color: #5a4a42; margin-top: 15px; border:2px solid #ff9a8b;">
-                                    清除图片
-                                </button>
+                    <div v-if="!collapseNotes">
+                        <!-- 笔记筛选器 -->
+                        <div class="note-filters" v-if="activeNoteTab !== 'editor' && notes.length > 0">
+                            <div class="filter-group">
+                                <label>📅 时间范围</label>
+                                <select v-model="noteFilter.timeRange">
+                                    <option value="all">全部时间</option>
+                                    <option value="today">今天</option>
+                                    <option value="week">本周</option>
+                                    <option value="month">本月</option>
+                                    <option value="year">今年</option>
+                                </select>
                             </div>
-                        </div>
-                        
-                        <div style="display:flex; gap:15px; margin-top:25px;">
-                            <button class="btn" @click="saveNote" style="width:auto; padding:14px 45px; border-radius:50px 15px 50px 15px;">
-                                💾 保存这条笔记
+                            
+                            <div class="filter-group">
+                                <label>🏷️ 标签筛选</label>
+                                <select v-model="noteFilter.selectedTag">
+                                    <option value="">所有标签</option>
+                                    <option v-for="tag in allNoteTags" :value="tag">{{ tag }}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label>📁 分类筛选</label>
+                                <select v-model="noteFilter.selectedCategory">
+                                    <option value="">所有分类</option>
+                                    <option v-for="cat in noteCategories.filter(c => c !== 'all' && c !== 'editor')" :value="cat">
+                                        {{ getCategoryDisplayName(cat) }}
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label>🔍 关键词搜索</label>
+                                <input type="text" v-model="noteFilter.keyword" placeholder="搜索标题或内容...">
+                            </div>
+                            
+                            <button class="btn-sm" @click="resetNoteFilters" style="align-self: flex-end; background:linear-gradient(90deg, #a3a3a3, #7a7a7a);">
+                                重置筛选
                             </button>
-                            <button class="btn" @click="clearNoteEditor" 
-                                    style="width:auto; padding:14px 35px; background:linear-gradient(90deg, #a3a3a3, #7a7a7a); border-radius:50px 15px 50px 15px;">
-                                清空重写
-                            </button>
                         </div>
-                    </div>
-                    
-                    <!-- 笔记列表：仅在 activeNoteTab !== 'editor' 时显示 -->
-                    <div v-if="activeNoteTab !== 'editor'" class="note-list">
-                        <div v-for="note in filteredNotes" :key="note.id" class="note-card">
-                            <h3 style="margin-bottom:18px; color:#5a4a42; font-family:'Gochi Hand'; font-size:1.6em;">{{ note.title }}</h3>
-                            <div class="note-tags">
-                                <span class="note-tag" v-for="tag in note.tags" :key="tag">{{ tag }}</span>
+                        
+                        <!-- 笔记分类标签页 -->
+                        <div class="note-tabs">
+                            <div class="note-tab" :class="{active: activeNoteTab === 'all'}" @click="activeNoteTab = 'all'">全部笔记</div>
+                            <div class="note-tab" :class="{active: activeNoteTab === 'editor'}" @click="activeNoteTab = 'editor'">✍️ 写新笔记</div>
+                            <div v-for="cat in noteCategories.filter(c => c !== 'all' && c !== 'editor')" :key="cat" 
+                                 class="note-tab" 
+                                 :class="{active: activeNoteTab === cat}" 
+                                 @click="activeNoteTab = cat">
+                                {{ getCategoryDisplayName(cat) }}
                             </div>
-                            <div style="color:#5a4a42; line-height:1.7; margin:25px 0; white-space: pre-line; font-weight:bold; font-size:1.05em;">{{ note.content }}</div>
+                        </div>
+                        
+                        <!-- 笔记编辑器：仅在 activeNoteTab === 'editor' 时显示 -->
+                        <div v-if="activeNoteTab === 'editor'" class="note-editor">
+                            <input type="text" class="note-input" v-model="newNote.title" placeholder="笔记标题...">
+                            <textarea class="note-input" v-model="newNote.content" placeholder="写下你的思考、复盘或灵感..." rows="6"></textarea>
+                            <input type="text" class="tag-input" v-model="newNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 八字, 复盘, 今日收获)">
                             
-                            <!-- 显示图片 -->
-                            <div v-if="note.imageData || note.imageUrl" style="margin-top:25px;">
-                                <img :src="note.imageData || note.imageUrl" alt="笔记图片" class="note-image" @error="handleImageError">
-                            </div>
-                            
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:30px; padding-top:25px; border-top:3px dotted #e0c9b8;">
-                                <div style="font-size:0.95em; color:#7a6a62; font-weight:bold;">
-                                    📅 {{ formatDate(note.createdAt) }}
-                                    <span style="margin-left:15px; background:#ffd6cc; padding:3px 10px; border-radius:10px; border:1px dashed #ff9a8b;">
-                                        {{ getCategoryDisplayName(note.category) }}
-                                    </span>
+                            <!-- 图片上传区域 -->
+                            <div class="image-upload-area">
+                                <label style="display: block; margin-bottom: 12px; font-weight: bold; font-size:1.1em;">📸 添加图片</label>
+                                <input type="file" accept="image/*" @change="handleImageUpload" style="display: block; margin: 0 auto 15px; padding:10px; border:2px dashed #ff9a8b; border-radius:10px; background:#fffaf9; cursor:pointer;">
+                                <p style="font-size: 0.95em; color: #7a6a62; margin-bottom: 10px; font-weight:bold;">支持 JPG, PNG, GIF 格式，最大 2MB</p>
+                                
+                                <div v-if="newNote.imageData" class="image-preview">
+                                    <p style="font-weight:bold; margin-bottom:10px;">图片预览：</p>
+                                    <img :src="newNote.imageData" alt="预览">
+                                    <button class="btn-sm" @click="clearUploadedImage" style="background: #ffd6cc; color: #5a4a42; margin-top: 15px; border:2px solid #ff9a8b;">
+                                        清除图片
+                                    </button>
                                 </div>
-                                <button class="btn-sm" @click="deleteNote(note.id)" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d);">
-                                    删除
+                            </div>
+                            
+                            <div style="display:flex; gap:15px; margin-top:25px;">
+                                <button class="btn" @click="saveNote" style="width:auto; padding:14px 45px; border-radius:50px 15px 50px 15px;">
+                                    💾 保存这条笔记
+                                </button>
+                                <button class="btn" @click="clearNoteEditor" 
+                                        style="width:auto; padding:14px 35px; background:linear-gradient(90deg, #a3a3a3, #7a7a7a); border-radius:50px 15px 50px 15px;">
+                                    清空重写
                                 </button>
                             </div>
                         </div>
                         
-                        <!-- 空状态提示 -->
-                        <div v-if="filteredNotes.length === 0" style="text-align:center; padding:50px 20px; color:#c9b8a7; grid-column: 1 / -1;">
-                            <div style="font-size:4em; margin-bottom:20px; transform:rotate(-5deg);">📝</div>
-                            <p style="font-weight:bold; font-size:1.3em; margin-bottom:10px;">这里还没有笔记</p>
-                            <p>切换到"✍️ 写新笔记"标签开始记录吧！</p>
+                        <!-- 笔记列表：仅在 activeNoteTab !== 'editor' 时显示 -->
+                        <div v-if="activeNoteTab !== 'editor'" class="note-list">
+                            <div v-for="note in filteredAndSortedNotes" :key="note.id" class="note-card">
+                                <h3 style="margin-bottom:18px; color:#5a4a42; font-family:'Gochi Hand'; font-size:1.6em;">{{ note.title }}</h3>
+                                <div class="note-tags">
+                                    <span class="note-tag" v-for="tag in note.tags" :key="tag">{{ tag }}</span>
+                                </div>
+                                <div style="color:#5a4a42; line-height:1.7; margin:25px 0; white-space: pre-line; font-weight:bold; font-size:1.05em;">{{ note.content }}</div>
+                                
+                                <!-- 显示图片 -->
+                                <div v-if="note.imageData || note.imageUrl" style="margin-top:25px;">
+                                    <img :src="note.imageData || note.imageUrl" alt="笔记图片" class="note-image" @error="handleImageError">
+                                </div>
+                                
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:30px; padding-top:25px; border-top:3px dotted #e0c9b8;">
+                                    <div style="font-size:0.95em; color:#7a6a62; font-weight:bold;">
+                                        📅 {{ formatDate(note.createdAt) }}
+                                        <span style="margin-left:15px; background:#ffd6cc; padding:3px 10px; border-radius:10px; border:1px dashed #ff9a8b;">
+                                            {{ getCategoryDisplayName(note.category) }}
+                                        </span>
+                                    </div>
+                                    <button class="btn-sm" @click="deleteNote(note.id)" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d);">
+                                        删除
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 空状态提示 -->
+                            <div v-if="filteredAndSortedNotes.length === 0" style="text-align:center; padding:50px 20px; color:#c9b8a7; grid-column: 1 / -1;">
+                                <div style="font-size:4em; margin-bottom:20px; transform:rotate(-5deg);">📝</div>
+                                <p style="font-weight:bold; font-size:1.3em; margin-bottom:10px;">没有找到符合条件的笔记</p>
+                                <p>尝试调整筛选条件或切换到"✍️ 写新笔记"标签开始记录吧！</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -848,7 +1104,6 @@
                 const notes = ref([]);
                 const activeAchievementTab = ref('all');
                 const activeNoteTab = ref('editor');
-                // 动态分类列表：初始化包含 'all' 和 'editor'，其他从笔记中提取
                 const noteCategories = ref(['all', 'editor']);
                 const newNote = ref({ 
                     title: '', 
@@ -856,6 +1111,22 @@
                     tagsInput: '', 
                     imageData: null,
                     category: 'general' 
+                });
+                
+                // 新增：折叠状态
+                const collapseStatus = ref(false);
+                const collapseSkills = ref(false);
+                const collapseAchievements = ref(false);
+                const collapseNotes = ref(false);
+                const showBatchAdd = ref(false);
+                const batchAchievementInput = ref('');
+                
+                // 新增：笔记筛选器
+                const noteFilter = ref({
+                    timeRange: 'all',
+                    selectedTag: '',
+                    selectedCategory: '',
+                    keyword: ''
                 });
                 
                 // 成就系统数据
@@ -897,7 +1168,8 @@
                     'daily': '每日复盘',
                     'work': '工作笔记',
                     'study': '学习笔记',
-                    'general': '一般笔记'
+                    'general': '一般笔记',
+                    'custom': '自定义成就'
                 };
 
                 // ==================== 计算属性 ====================
@@ -916,30 +1188,91 @@
                     achievements.value.filter(a => a.unlocked).length
                 );
 
+                // 所有笔记标签
+                const allNoteTags = computed(() => {
+                    const tags = new Set();
+                    notes.value.forEach(note => {
+                        if (note.tags && Array.isArray(note.tags)) {
+                            note.tags.forEach(tag => tags.add(tag));
+                        }
+                    });
+                    return Array.from(tags).sort();
+                });
+
+                // 过滤后的成就
                 const filteredAchievements = computed(() => {
                     if (activeAchievementTab.value === 'all') return achievements.value;
                     return achievements.value.filter(a => a.category === activeAchievementTab.value);
                 });
 
-                // 智能笔记过滤：已修复逻辑，避免重复
-                const filteredNotes = computed(() => {
-                    const activeTab = activeNoteTab.value;
-                    if (activeTab === 'all') return notes.value;
-                    // 当 activeTab 为 'editor' 时，这个计算属性不应该被调用，因为模板里 v-if="activeNoteTab !== 'editor'" 已经排除了
-                    // 但为了安全，仍然返回空数组
-                    if (activeTab === 'editor') return [];
+                // 新增：过滤和排序后的笔记
+                const filteredAndSortedNotes = computed(() => {
+                    let filtered = notes.value;
                     
-                    // 正常分类筛选逻辑
-                    return notes.value.filter(note => {
-                        if (note.category === activeTab) return true;
-                        const keywords = categoryRules[activeTab];
-                        if (keywords && note.tags) {
-                            return note.tags.some(tag => 
-                                keywords.some(keyword => tag.toLowerCase().includes(keyword.toLowerCase()))
-                            );
-                        }
-                        return false;
-                    });
+                    // 按分类筛选
+                    if (activeNoteTab.value !== 'all' && activeNoteTab.value !== 'editor') {
+                        filtered = filtered.filter(note => {
+                            if (note.category === activeNoteTab.value) return true;
+                            const keywords = categoryRules[activeNoteTab.value];
+                            if (keywords && note.tags) {
+                                return note.tags.some(tag => 
+                                    keywords.some(keyword => tag.toLowerCase().includes(keyword.toLowerCase()))
+                                );
+                            }
+                            return false;
+                        });
+                    }
+                    
+                    // 应用筛选器
+                    const filter = noteFilter.value;
+                    
+                    // 时间范围筛选
+                    if (filter.timeRange !== 'all') {
+                        const now = new Date();
+                        filtered = filtered.filter(note => {
+                            const noteDate = new Date(note.createdAt);
+                            switch(filter.timeRange) {
+                                case 'today':
+                                    return noteDate.toDateString() === now.toDateString();
+                                case 'week':
+                                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                                    return noteDate >= weekAgo;
+                                case 'month':
+                                    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                                    return noteDate >= monthAgo;
+                                case 'year':
+                                    const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                                    return noteDate >= yearAgo;
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+                    
+                    // 标签筛选
+                    if (filter.selectedTag) {
+                        filtered = filtered.filter(note => 
+                            note.tags && note.tags.includes(filter.selectedTag)
+                        );
+                    }
+                    
+                    // 分类筛选
+                    if (filter.selectedCategory) {
+                        filtered = filtered.filter(note => note.category === filter.selectedCategory);
+                    }
+                    
+                    // 关键词搜索
+                    if (filter.keyword) {
+                        const keyword = filter.keyword.toLowerCase();
+                        filtered = filtered.filter(note => 
+                            note.title.toLowerCase().includes(keyword) || 
+                            note.content.toLowerCase().includes(keyword) ||
+                            (note.tags && note.tags.some(tag => tag.toLowerCase().includes(keyword)))
+                        );
+                    }
+                    
+                    // 按时间倒序排序
+                    return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 });
 
                 // ==================== 辅助函数 ====================
@@ -984,6 +1317,16 @@
                         }
                     }
                     return 'general';
+                };
+
+                // 新增：重置笔记筛选器
+                const resetNoteFilters = () => {
+                    noteFilter.value = {
+                        timeRange: 'all',
+                        selectedTag: '',
+                        selectedCategory: '',
+                        keyword: ''
+                    };
                 };
 
                 // ==================== GitHub API 函数 ====================
@@ -1381,6 +1724,127 @@
                     showStatusMessage(`已删除技能"${deletedSkill.name}"`, 'success');
                 };
 
+                // ==================== 成就系统 ====================
+                // 新增：加载示例成就
+                const loadExampleAchievements = () => {
+                    batchAchievementInput.value = `[
+  {
+    "category": "custom",
+    "name": "早起达人",
+    "icon": "🌅",
+    "description": "连续30天早上6点前起床",
+    "requirement": 30,
+    "reward": 150
+  },
+  {
+    "category": "reading",
+    "name": "读书破万卷",
+    "icon": "📚",
+    "description": "阅读100本书",
+    "requirement": 100,
+    "reward": 300
+  },
+  {
+    "category": "finance",
+    "name": "理财小能手",
+    "icon": "💰",
+    "description": "坚持记账100天",
+    "requirement": 100,
+    "reward": 200
+  },
+  {
+    "category": "language",
+    "name": "多语种达人",
+    "icon": "🌍",
+    "description": "学习3门外语",
+    "requirement": 3,
+    "reward": 250
+  },
+  {
+    "category": "coding",
+    "name": "代码工匠",
+    "icon": "💻",
+    "description": "完成50个编程项目",
+    "requirement": 50,
+    "reward": 400
+  }
+]`;
+                    showStatusMessage('已加载示例成就数据，请检查并修改后添加', 'info');
+                };
+
+                // 新增：清空批量输入
+                const clearBatchInput = () => {
+                    batchAchievementInput.value = '';
+                };
+
+                // 新增：批量添加成就
+                const addBatchAchievements = async () => {
+                    if (!batchAchievementInput.value.trim()) {
+                        showStatusMessage('请输入成就数据', 'error');
+                        return;
+                    }
+                    
+                    try {
+                        const newAchievements = JSON.parse(batchAchievementInput.value);
+                        if (!Array.isArray(newAchievements)) {
+                            throw new Error('成就数据必须是数组格式');
+                        }
+                        
+                        // 找出当前最大的id
+                        let maxId = achievements.value.reduce((max, ach) => Math.max(max, ach.id), 0);
+                        
+                        // 添加新成就
+                        const addedCount = newAchievements.length;
+                        newAchievements.forEach(ach => {
+                            maxId++;
+                            
+                            // 检查成就是否已存在（通过名称）
+                            const exists = achievements.value.some(a => a.name === ach.name);
+                            if (exists) {
+                                showStatusMessage(`成就"${ach.name}"已存在，跳过添加`, 'warning');
+                                return;
+                            }
+                            
+                            achievements.value.push({
+                                id: maxId,
+                                category: ach.category || 'custom',
+                                name: ach.name || '新成就',
+                                icon: ach.icon || '🏆',
+                                description: ach.description || '',
+                                requirement: ach.requirement || 1,
+                                current: ach.current || 0,
+                                unlocked: ach.unlocked || false,
+                                reward: ach.reward || 0
+                            });
+                        });
+                        
+                        // 保存到GitHub
+                        const saveSuccess = await saveGameDataToGitHub();
+                        if (saveSuccess) {
+                            batchAchievementInput.value = '';
+                            showBatchAdd.value = false;
+                            showStatusMessage(`成功添加${addedCount}个新成就！`, 'success');
+                        }
+                    } catch (error) {
+                        console.error('添加成就失败:', error);
+                        showStatusMessage(`添加失败: ${error.message}，请检查JSON格式`, 'error');
+                    }
+                };
+
+                // 新增：删除成就
+                const deleteAchievement = async (achievementId) => {
+                    if (!confirm("确定要删除这个成就吗？此操作不可撤销！")) return;
+                    
+                    const index = achievements.value.findIndex(a => a.id === achievementId);
+                    if (index !== -1) {
+                        const deletedName = achievements.value[index].name;
+                        achievements.value.splice(index, 1);
+                        
+                        await saveGameDataToGitHub();
+                        showStatusMessage(`已删除成就"${deletedName}"`, 'success');
+                    }
+                };
+
                 // ==================== 游戏逻辑 ====================
                 const calculateNextLevelXp = (level) => {
                     return Math.floor(100 * Math.pow(1.5, level - 1));
@@ -1441,18 +1905,34 @@
                     config, player, skills, achievements, notes, newNote,
                     activeAchievementTab, activeNoteTab, noteCategories,
                     
-                    totalXpEarned, totalSkills, totalNotes, completedAchievementsCount,
-                    filteredAchievements, filteredNotes,
+                    // 新增：折叠状态和批量添加
+                    collapseStatus, collapseSkills, collapseAchievements, collapseNotes,
+                    showBatchAdd, batchAchievementInput, noteFilter,
                     
+                    // 计算属性
+                    totalXpEarned, totalSkills, totalNotes, completedAchievementsCount,
+                    filteredAchievements, filteredAndSortedNotes, allNoteTags,
+                    
+                    // 配置和GitHub操作
                     saveConfigAndLoad, loadDemoData, 
                     openRepoInGitHub, forceLoadFromGitHub, forceSaveToGitHub,
                     exportLocalData, importLocalData,
                     
+                    // 笔记系统
                     handleImageUpload, clearUploadedImage, handleImageError,
-                    getCategoryDisplayName,
+                    getCategoryDisplayName, resetNoteFilters,
                     
+                    // 技能系统
                     getSkillXpPerPractice, addNewSkill, practiceSkill, deleteSkill,
-                    saveNote, clearNoteEditor, deleteNote, formatDate, resetData
+                    
+                    // 笔记系统
+                    saveNote, clearNoteEditor, deleteNote, formatDate,
+                    
+                    // 成就系统
+                    loadExampleAchievements, clearBatchInput, addBatchAchievements, deleteAchievement,
+                    
+                    // 其他
+                    resetData
                 };
             }
         }).mount('#app');
