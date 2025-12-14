@@ -1856,6 +1856,7 @@
                             </div>
                             
                             <!-- 思维导图节点列表 -->
+                            
                             <div class="mindmap-nodes-list" v-if="mindmapNodes.length > 0">
                                 <h4 style="margin-bottom:10px; color:#5a4a42;">节点列表 ({{ mindmapNodes.length }})</h4>
                                 <div v-for="(node, index) in mindmapNodes" :key="node.id" class="mindmap-node-item" :style="{borderLeftColor: mindmapSelectedNode === node.id ? '#ff6b6b' : '#ff9a8b'}">
@@ -1881,7 +1882,7 @@
                             </div>
                             
                             <!-- 思维导图画布 -->
-                            <div class="mindmap-container" ref="mindmapContainer" @click="addNodeAtPosition">
+                            <div class="mindmap-container" ref="mindmapContainer" @mousedown="handleContainerMouseDown">
                                 <div 
                                     v-for="node in mindmapNodes" 
                                     :key="node.id"
@@ -4394,3 +4395,4 @@
     </script>
 </body>
 </html>
+
