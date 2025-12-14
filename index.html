@@ -1198,6 +1198,7 @@
                     </div>
                 </div>
             </div>
+            
             <!-- 读书笔记系统 -->
             <div class="card" style="margin-top: 40px;">
                 <h2>
@@ -1355,8 +1356,7 @@
                 </div>
             </div>
 
-            
-            <!-- 智能笔记系统 --
+            <!-- 智能笔记系统 -->
             <div class="note-section">
                 <div class="card">
                     <h2>
@@ -1639,7 +1639,7 @@
                                         :y2="line.y2"
                                         :stroke="line.type === 'parent-child' ? '#4ecdc4' : '#ff9a8b'" 
                                         stroke-width="2"
-                                        :stroke-dasharray="line.type === 'parent-child' ? 'none' : '5,5'"
+                                        :stroke-dasharray="line.type === 'parent-child' ? 'none' : '5,5'}"
                                     />
                                 </svg>
                             </div>
@@ -1945,6 +1945,7 @@
                     { id: 13, category: 'skill', name: '多面手', icon: '🔧', description: '拥有5个不同技能', requirement: 5, current: 0, unlocked: false, reward: 150 },
                     { id: 14, category: 'skill', name: '技能大师', icon: '👑', description: '拥有3个达到5级的技能', requirement: 3, current: 0, unlocked: false, reward: 500 }
                 ]);
+                
                 // 读书笔记数据
                 const bookNotes = ref([]);
                 const collapseBookNotes = ref(false);
@@ -1960,6 +1961,7 @@
                 const bookNoteSortBy = ref('date');
                 const bookNoteSearch = ref('');
                 const editingBookNoteId = ref(null);
+                
                 // ==================== 智能分类配置 ====================
                 const categoryRules = {
                     'bazi': ['八字', '命理', '十神', '干支', '五行'],
@@ -2018,6 +2020,7 @@
                     });
                     return count;
                 });
+                
                 // 过滤和排序后的读书笔记
                 const filteredBookNotes = computed(() => {
                     let filtered = [...bookNotes.value];
@@ -2045,6 +2048,7 @@
                             return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                     }
                 });
+                
                 // 所有笔记标签
                 const allNoteTags = computed(() => {
                     const tags = new Set();
@@ -2223,7 +2227,8 @@
                     }
                     return 'general';
                 };
-                                // 保存读书笔记
+                
+                // 保存读书笔记
                 const saveBookNote = async () => {
                     if (!newBookNote.value.title.trim() || !newBookNote.value.author.trim()) {
                         showStatusMessage("请填写书名和作者", "error");
@@ -3111,7 +3116,7 @@
                         if (gameData.skills) skills.value = gameData.skills;
                         if (gameData.achievements) achievements.value = gameData.achievements;
                         if (gameData.notes) notes.value = gameData.notes;
-                         if (gameData.bookNotes) bookNotes.value = gameData.bookNotes; 
+                        if (gameData.bookNotes) bookNotes.value = gameData.bookNotes;
                         
                         updateNoteCategoriesFromNotes();
                         
@@ -3156,7 +3161,7 @@
                             skills: skills.value,
                             achievements: achievements.value,
                             notes: notes.value,
-                            bookNotes: bookNotes.value, // 新增这行
+                            bookNotes: bookNotes.value,
                             savedAt: new Date().toISOString()
                         };
                         
@@ -3247,32 +3252,32 @@
                             createdAt: new Date().toISOString()
                         }
                     ];
-                     bookNotes.value = [
-        { 
-            id: 1, 
-            title: "活着", 
-            author: "余华", 
-            content: "人是为活着本身而活着的，而不是为了活着之外的任何事物所活着。\n\n生命中其实是没有幸福或者不幸的，生命只是活着，静静地活着。", 
-            insights: "读完后久久不能平静。福贵的一生告诉我们，活着本身就是一种力量。无论遭遇多少苦难，只要活着就有希望。", 
-            rating: 5,
-            tags: ["小说", "人生", "苦难", "中国文学"],
-            category: 'book',
-            createdAt: new Date(Date.now() - 172800000).toISOString()
-        },
-        { 
-            id: 2, 
-            title: "小王子", 
-            author: "安托万·德·圣-埃克苏佩里", 
-            content: "所有的大人都曾经是小孩，虽然，只有少数的人记得。\n\n如果你驯养了我，我们就会彼此需要。对我来说，你就是我的世界里独一无二的了；我对你来说，也是你的世界里的唯一了。", 
-            insights: "这是一本写给大人的童话。狐狸关于驯养的理论让我明白，真正的联结需要时间和责任。", 
-            rating: 4,
-            tags: ["童话", "哲学", "成长", "经典"],
-            category: 'book',
-            createdAt: new Date().toISOString()
-        }
-    ];
-                     // ======== 添加结束 ========
-    
+                    
+                    bookNotes.value = [
+                        { 
+                            id: 1, 
+                            title: "活着", 
+                            author: "余华", 
+                            content: "人是为活着本身而活着的，而不是为了活着之外的任何事物所活着。\n\n生命中其实是没有幸福或者不幸的，生命只是活着，静静地活着。", 
+                            insights: "读完后久久不能平静。福贵的一生告诉我们，活着本身就是一种力量。无论遭遇多少苦难，只要活着就有希望。", 
+                            rating: 5,
+                            tags: ["小说", "人生", "苦难", "中国文学"],
+                            category: 'book',
+                            createdAt: new Date(Date.now() - 172800000).toISOString()
+                        },
+                        { 
+                            id: 2, 
+                            title: "小王子", 
+                            author: "安托万·德·圣-埃克苏佩里", 
+                            content: "所有的大人都曾经是小孩，虽然，只有少数的人记得。\n\n如果你驯养了我，我们就会彼此需要。对我来说，你就是我的世界里独一无二的了；我对你来说，也是你的世界里的唯一了。", 
+                            insights: "这是一本写给大人的童话。狐狸关于驯养的理论让我明白，真正的联结需要时间和责任。", 
+                            rating: 4,
+                            tags: ["童话", "哲学", "成长", "经典"],
+                            category: 'book',
+                            createdAt: new Date().toISOString()
+                        }
+                    ];
+                    
                     updateNoteCategoriesFromNotes();
                     
                     isConfigured.value = true;
@@ -3716,6 +3721,7 @@
                     // 计算属性
                     totalXpEarned, totalSkills, totalNotes, completedAchievementsCount,
                     totalHighlights, filteredAchievements, filteredAndSortedNotes, allNoteTags,
+                    filteredBookNotes,
                     
                     // 配置和GitHub操作
                     saveConfigAndLoad, loadDemoData, 
@@ -3756,9 +3762,9 @@
                     
                     // 读书笔记相关
                     bookNotes, collapseBookNotes, newBookNote, 
-                    bookNoteSortBy, bookNoteSearch, filteredBookNotes,
+                    bookNoteSortBy, bookNoteSearch,
                     saveBookNote, clearBookNoteForm, editBookNote, 
-                    deleteBookNote, shareBookNote
+                    deleteBookNote, shareBookNote,
                     
                     // 其他
                     resetData
@@ -3768,4 +3774,3 @@
     </script>
 </body>
 </html>
-
