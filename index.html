@@ -705,154 +705,7 @@
             border-radius: 0 10px 10px 0;
         }
 
-        // 在思维导图状态部分修改
-// 找到这部分（大约在第253行）：
-// 新增：思维导图状态
-const mindmapNodeText = ref('');
-const mindmapNodes = ref([]);
-const mindmapLines = ref([]);
-
-// 修改为：
-const mindmapNodeText = ref('');
-const mindmapNodes = ref([]);
-const mindmapLines = ref([]);
-const mindmapSelectedNode = ref(null);
-const mindmapRootNode = ref(null);
-
-// 添加节点时支持层级
-const addMindmapNode = () => {
-    if (!mindmapNodeText.value.trim()) return;
-    
-    const container = mindmapContainer.value;
-    if (!container) return;
-    
-    const centerX = container.clientWidth / 2;
-    const centerY = container.clientHeight / 2;
-    
-    let x, y;
-    if (mindmapNodes.value.length === 0) {
-        // 第一个节点作为根节点
-        x = centerX - 60;
-        y = centerY - 30;
-        mindmapRootNode.value = Date.now();
-    } else if (mindmapSelectedNode.value) {
-        // 作为选中节点的子节点
-        const parentNode = mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value);
-        if (parentNode) {
-            const angle = (parentNode.children?.length || 0) * 30 * (Math.PI / 180);
-            const radius = 120;
-            x = parentNode.x + Math.cos(angle) * radius;
-            y = parentNode.y + Math.sin(angle) * radius;
-        } else {
-            x = centerX + (Math.random() - 0.5) * 200;
-            y = centerY + (Math.random() - 0.5) * 200;
-        }
-    } else {
-        // 随机位置
-        const angle = (mindmapNodes.value.length * 45) * (Math.PI / 180);
-        const radius = 150;
-        x = centerX + Math.cos(angle) * radius - 60;
-        y = centerY + Math.sin(angle) * radius - 30;
-    }
-    
-    const nodeId = Date.now();
-    const newNode = {
-        id: nodeId,
-        text: mindmapNodeText.value.trim(),
-        x: x,
-        y: y,
-        color: getRandomNodeColor(),
-        parentId: mindmapSelectedNode.value,
-        children: [],
-        level: mindmapSelectedNode.value ? 
-            (mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value)?.level || 0) + 1 : 0
-    };
-    
-    mindmapNodes.value.push(newNode);
-    
-    // 如果是子节点，添加到父节点的children中
-    if (mindmapSelectedNode.value) {
-        const parentIndex = mindmapNodes.value.findIndex(n => n.id === mindmapSelectedNode.value);
-        if (parentIndex !== -1) {
-            if (!mindmapNodes.value[parentIndex].children) {
-                mindmapNodes.value[parentIndex].children = [];
-            }
-            mindmapNodes.value[parentIndex].children.push(nodeId);
-        }
-    }
-    
-    mindmapNodeText.value = '';
-    mindmapSelectedNode.value = nodeId;
-    
-    // 更新连接线
-    updateMindmapLines();
-};
-
-// 更新连接线函数
-const updateMindmapLines = () => {
-    if (mindmapNodes.value.length <= 1) {
-        mindmapLines.value = [];
-        return;
-    }
-    
-    const lines = [];
-    
-    // 连接所有父子节点
-    mindmapNodes.value.forEach(node => {
-        if (node.parentId) {
-            const parentNode = mindmapNodes.value.find(n => n.id === node.parentId);
-            if (parentNode) {
-                lines.push({
-                    x1: parentNode.x + 60,
-                    y1: parentNode.y + 15,
-                    x2: node.x + 60,
-                    y2: node.y + 15,
-                    type: 'parent-child'
-                });
-            }
-        } else if (mindmapRootNode.value && node.id !== mindmapRootNode.value) {
-            // 如果设置了根节点，连接到根节点
-            const rootNode = mindmapNodes.value.find(n => n.id === mindmapRootNode.value);
-            if (rootNode) {
-                lines.push({
-                    x1: rootNode.x + 60,
-                    y1: rootNode.y + 15,
-                    x2: node.x + 60,
-                    y2: node.y + 15,
-                    type: 'to-root'
-                });
-            }
-        }
-    });
-    
-    mindmapLines.value = lines;
-};
-
-// 选择节点
-const selectMindmapNode = (nodeId) => {
-    mindmapSelectedNode.value = nodeId;
-    showStatusMessage(`已选择节点: ${mindmapNodes.value.find(n => n.id === nodeId)?.text}`, 'info');
-};
-
-// 设置/取消根节点
-const toggleRootNode = (nodeId) => {
-    if (mindmapRootNode.value === nodeId) {
-        mindmapRootNode.value = null;
-        showStatusMessage('已取消根节点', 'info');
-    } else {
-        mindmapRootNode.value = nodeId;
-        showStatusMessage('已设置为根节点', 'info');
-    }
-    updateMindmapLines();
-};
-
-// 在思维导图控制面板中添加相关按钮
-// 在 mindmap-controls 部分添加：
-const mindmapControls = () => {
-    // 在 mindmap-controls div 中添加这些按钮
-};
-
-        /* ====== 新增：高亮内容提取面板 ====== */
+        /* ====== 新增：高亮内容提取面板样式 ====== */
         .highlight-extract-panel {
             background: linear-gradient(135deg, #fff9f0 0%, #fffaf5 100%);
             border: 3px solid #ffd6cc;
@@ -956,6 +809,79 @@ const mindmapControls = () => {
         .code-block .comment { color: #7a6a62; font-style: italic; }
         .code-block .function { color: #4ecdc4; }
         .code-block .number { color: #ffd166; }
+        
+        /* ====== 思维导图样式 ====== */
+        .mindmap-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: #fffaf5;
+            border: 2.5px solid #e0c9b8;
+            border-radius: 15px 5px 15px 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .mindmap-node {
+            position: absolute;
+            width: 120px;
+            height: 30px;
+            padding: 10px 15px;
+            background: #fffefc;
+            border-radius: 10px 5px 10px 5px;
+            border: 2px solid #5a4a42;
+            box-shadow: 3px 3px 0px #d4b8a7;
+            font-family: 'Comic Neue', cursive;
+            font-weight: bold;
+            color: #5a4a42;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .mindmap-node:hover {
+            box-shadow: 4px 4px 0px #c9a58f;
+            transform: translateY(-2px);
+        }
+        .mindmap-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .mindmap-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0c9b8;
+            border-radius: 10px;
+            font-family: 'Comic Neue', cursive;
+            background: #fffefc;
+            color: #5a4a42;
+        }
+        .mindmap-input:focus {
+            outline: none;
+            border-color: #ff9a8b;
+            box-shadow: 2px 2px 0px #ffd6cc;
+        }
+        .mindmap-nodes-list {
+            margin: 20px 0;
+            padding: 15px;
+            background: #fffaf5;
+            border-radius: 15px;
+            border: 2px solid #e0c9b8;
+        }
+        .mindmap-node-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #ff9a8b;
+        }
     </style>
 </head>
 <body>
@@ -1472,6 +1398,9 @@ const mindmapControls = () => {
                                 <button class="btn-sm" @click="addMindmapNode" style="background:linear-gradient(90deg, #a3de83, #4ecdc4);">
                                     ➕ 添加节点
                                 </button>
+                                <button class="btn-sm" @click="selectMindmapNode(null)" :style="{background: mindmapSelectedNode === null ? '#ff9a8b' : 'linear-gradient(90deg, #4a9fff, #2d73cc)'}">
+                                    🎯 {{ mindmapSelectedNode === null ? '选择根节点' : '取消选择' }}
+                                </button>
                                 <button class="btn-sm" @click="clearMindmap" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d);">
                                     🗑️ 清空
                                 </button>
@@ -1483,12 +1412,38 @@ const mindmapControls = () => {
                                 </button>
                             </div>
                             
+                            <div style="margin: 15px 0; padding: 10px; background: #fffaf5; border-radius: 10px; border: 2px dashed #ffc8a3;">
+                                <p style="font-weight: bold; color: #5a4a42; margin-bottom: 5px;">当前选中节点: 
+                                    <span v-if="mindmapSelectedNode">
+                                        {{ mindmapNodes.find(n => n.id === mindmapSelectedNode)?.text || '无' }}
+                                        <button class="btn-sm" @click="toggleRootNode(mindmapSelectedNode)" style="margin-left: 10px; padding: 3px 10px; font-size: 0.8em;">
+                                            {{ mindmapRootNode === mindmapSelectedNode ? '👑 取消根节点' : '👑 设为根节点' }}
+                                        </button>
+                                    </span>
+                                    <span v-else>无（点击节点进行选择）</span>
+                                </p>
+                                <p style="font-size: 0.9em; color: #7a6a62;">💡 提示：先选中一个节点，然后添加新节点会自动成为其子节点</p>
+                            </div>
+                            
                             <!-- 思维导图节点列表 -->
                             <div class="mindmap-nodes-list" v-if="mindmapNodes.length > 0">
                                 <h4 style="margin-bottom:10px; color:#5a4a42;">节点列表 ({{ mindmapNodes.length }})</h4>
-                                <div v-for="(node, index) in mindmapNodes" :key="node.id" class="mindmap-node-item">
-                                    <span>{{ node.text }}</span>
+                                <div v-for="(node, index) in mindmapNodes" :key="node.id" class="mindmap-node-item" :style="{borderLeftColor: mindmapSelectedNode === node.id ? '#ff6b6b' : '#ff9a8b'}">
+                                    <div>
+                                        <strong>{{ node.text }}</strong>
+                                        <div style="font-size:0.8em; color:#7a6a62;">
+                                            层级: {{ node.level }} | 
+                                            子节点: {{ node.children?.length || 0 }} |
+                                            <span v-if="mindmapRootNode === node.id">👑 根节点</span>
+                                        </div>
+                                    </div>
                                     <div style="display:flex; gap:5px;">
+                                        <button class="toolbar-btn" @click="selectMindmapNode(node.id)" :style="{background: mindmapSelectedNode === node.id ? '#ff9a8b' : '#fffefc'}">
+                                            {{ mindmapSelectedNode === node.id ? '✓ 已选' : '选择' }}
+                                        </button>
+                                        <button class="toolbar-btn" @click="toggleRootNode(node.id)" :style="{background: mindmapRootNode === node.id ? '#ffd166' : '#fffefc'}">
+                                            {{ mindmapRootNode === node.id ? '👑' : '设为根' }}
+                                        </button>
                                         <button class="toolbar-btn" @click="editMindmapNode(index)" style="padding:4px 10px; font-size:0.8em;">编辑</button>
                                         <button class="toolbar-btn" @click="removeMindmapNode(index)" style="padding:4px 10px; font-size:0.8em; background:#ffd6cc;">删除</button>
                                     </div>
@@ -1504,12 +1459,16 @@ const mindmapControls = () => {
                                     :style="{
                                         left: node.x + 'px',
                                         top: node.y + 'px',
-                                        backgroundColor: node.color || '#fffefc'
+                                        backgroundColor: node.color || '#fffefc',
+                                        borderColor: mindmapSelectedNode === node.id ? '#ff6b6b' : (mindmapRootNode === node.id ? '#ffd166' : '#5a4a42'),
+                                        boxShadow: mindmapSelectedNode === node.id ? '0 0 10px #ff6b6b' : '3px 3px 0px #d4b8a7'
                                     }"
                                     @mousedown="startNodeDrag(node, $event)"
                                     @dblclick="editMindmapNodeById(node.id)"
+                                    @click="selectMindmapNode(node.id)"
                                 >
                                     {{ node.text }}
+                                    <div v-if="mindmapRootNode === node.id" style="position: absolute; top: -5px; right: -5px; font-size: 12px; background: #ffd166; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">👑</div>
                                 </div>
                                 
                                 <!-- 连接线 -->
@@ -1521,9 +1480,9 @@ const mindmapControls = () => {
                                         :y1="line.y1" 
                                         :x2="line.x2" 
                                         :y2="line.y2"
-                                        stroke="#ff9a8b" 
+                                        :stroke="line.type === 'parent-child' ? '#4ecdc4' : '#ff9a8b'" 
                                         stroke-width="2"
-                                        stroke-dasharray="5,5"
+                                        :stroke-dasharray="line.type === 'parent-child' ? 'none' : '5,5'"
                                     />
                                 </svg>
                             </div>
@@ -1531,10 +1490,11 @@ const mindmapControls = () => {
                             <div style="margin-top:20px; padding:15px; background:#fffaf5; border-radius:10px;">
                                 <p style="font-weight:bold; color:#5a4a42; margin-bottom:10px;">💡 使用提示：</p>
                                 <ul style="color:#7a6a62; font-size:0.9em;">
-                                    <li>点击画布任意位置添加新节点</li>
+                                    <li>点击节点选择它，然后添加新节点会成为其子节点</li>
                                     <li>双击节点可以编辑内容</li>
                                     <li>拖动节点可以重新布局</li>
-                                    <li>节点会自动连线到中心</li>
+                                    <li>点击"设为根节点"设置中心节点</li>
+                                    <li>绿色线表示父子关系，橙色线表示连接到根节点</li>
                                 </ul>
                             </div>
                         </div>
@@ -1786,13 +1746,15 @@ const mindmapControls = () => {
                 const fontSize = ref('16');
                 const richTextEditor = ref(null);
                 
-                // 新增：思维导图状态
+                // 新增：思维导图状态（已更新）
                 const mindmapNodeText = ref('');
                 const mindmapNodes = ref([]);
                 const mindmapLines = ref([]);
                 const mindmapContainer = ref(null);
                 const draggingNode = ref(null);
                 const dragOffset = ref({ x: 0, y: 0 });
+                const mindmapSelectedNode = ref(null);
+                const mindmapRootNode = ref(null);
                 
                 // 新增：高亮提取状态
                 const extractedHighlights = ref([]);
@@ -2207,7 +2169,15 @@ const mindmapControls = () => {
                     previewWindow.document.close();
                 };
 
-                // ==================== 思维导图功能 ====================
+                // ==================== 思维导图功能（已更新） ====================
+                const getRandomNodeColor = () => {
+                    const colors = [
+                        '#fffefc', '#fffaf5', '#ffd6cc', '#ff9a8b', 
+                        '#a3de83', '#4ecdc4', '#4a9fff', '#ffd166'
+                    ];
+                    return colors[Math.floor(Math.random() * colors.length)];
+                };
+
                 const addMindmapNode = () => {
                     if (!mindmapNodeText.value.trim()) return;
                     
@@ -2217,12 +2187,26 @@ const mindmapControls = () => {
                     const centerX = container.clientWidth / 2;
                     const centerY = container.clientHeight / 2;
                     
-                    // 如果有节点，围绕中心布局
                     let x, y;
                     if (mindmapNodes.value.length === 0) {
+                        // 第一个节点作为根节点
                         x = centerX - 60;
                         y = centerY - 30;
+                        mindmapRootNode.value = Date.now();
+                    } else if (mindmapSelectedNode.value) {
+                        // 作为选中节点的子节点
+                        const parentNode = mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value);
+                        if (parentNode) {
+                            const angle = (parentNode.children?.length || 0) * 30 * (Math.PI / 180);
+                            const radius = 120;
+                            x = parentNode.x + Math.cos(angle) * radius;
+                            y = parentNode.y + Math.sin(angle) * radius;
+                        } else {
+                            x = centerX + (Math.random() - 0.5) * 200;
+                            y = centerY + (Math.random() - 0.5) * 200;
+                        }
                     } else {
+                        // 随机位置
                         const angle = (mindmapNodes.value.length * 45) * (Math.PI / 180);
                         const radius = 150;
                         x = centerX + Math.cos(angle) * radius - 60;
@@ -2230,26 +2214,59 @@ const mindmapControls = () => {
                     }
                     
                     const nodeId = Date.now();
-                    mindmapNodes.value.push({
+                    const newNode = {
                         id: nodeId,
                         text: mindmapNodeText.value.trim(),
                         x: x,
                         y: y,
-                        color: getRandomNodeColor()
-                    });
+                        color: getRandomNodeColor(),
+                        parentId: mindmapSelectedNode.value,
+                        children: [],
+                        level: mindmapSelectedNode.value ? 
+                            (mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value)?.level || 0) + 1 : 0
+                    };
+                    
+                    mindmapNodes.value.push(newNode);
+                    
+                    // 如果是子节点，添加到父节点的children中
+                    if (mindmapSelectedNode.value) {
+                        const parentIndex = mindmapNodes.value.findIndex(n => n.id === mindmapSelectedNode.value);
+                        if (parentIndex !== -1) {
+                            if (!mindmapNodes.value[parentIndex].children) {
+                                mindmapNodes.value[parentIndex].children = [];
+                            }
+                            mindmapNodes.value[parentIndex].children.push(nodeId);
+                        }
+                    }
                     
                     mindmapNodeText.value = '';
+                    mindmapSelectedNode.value = nodeId;
                     
                     // 更新连接线
                     updateMindmapLines();
                 };
 
-                const getRandomNodeColor = () => {
-                    const colors = [
-                        '#fffefc', '#fffaf5', '#ffd6cc', '#ff9a8b', 
-                        '#a3de83', '#4ecdc4', '#4a9fff', '#ffd166'
-                    ];
-                    return colors[Math.floor(Math.random() * colors.length)];
+                const selectMindmapNode = (nodeId) => {
+                    mindmapSelectedNode.value = nodeId;
+                    if (nodeId) {
+                        const node = mindmapNodes.value.find(n => n.id === nodeId);
+                        if (node) {
+                            showStatusMessage(`已选择节点: ${node.text}`, 'info');
+                        }
+                    } else {
+                        showStatusMessage('已取消节点选择', 'info');
+                    }
+                };
+
+                const toggleRootNode = (nodeId) => {
+                    if (mindmapRootNode.value === nodeId) {
+                        mindmapRootNode.value = null;
+                        showStatusMessage('已取消根节点', 'info');
+                    } else {
+                        mindmapRootNode.value = nodeId;
+                        showStatusMessage('已设置为根节点', 'info');
+                    }
+                    updateMindmapLines();
                 };
 
                 const editMindmapNode = (index) => {
@@ -2268,7 +2285,28 @@ const mindmapControls = () => {
 
                 const removeMindmapNode = (index) => {
                     if (confirm('确定删除这个节点吗？')) {
+                        const nodeId = mindmapNodes.value[index].id;
+                        
+                        // 删除该节点
                         mindmapNodes.value.splice(index, 1);
+                        
+                        // 从父节点的children中移除
+                        mindmapNodes.value.forEach(node => {
+                            if (node.children && node.children.includes(nodeId)) {
+                                node.children = node.children.filter(id => id !== nodeId);
+                            }
+                        });
+                        
+                        // 如果删除的是选中节点，清空选中状态
+                        if (mindmapSelectedNode.value === nodeId) {
+                            mindmapSelectedNode.value = null;
+                        }
+                        
+                        // 如果删除的是根节点，清空根节点状态
+                        if (mindmapRootNode.value === nodeId) {
+                            mindmapRootNode.value = null;
+                        }
+                        
                         updateMindmapLines();
                     }
                 };
@@ -2277,17 +2315,63 @@ const mindmapControls = () => {
                     if (confirm('确定清空整个思维导图吗？')) {
                         mindmapNodes.value = [];
                         mindmapLines.value = [];
+                        mindmapSelectedNode.value = null;
+                        mindmapRootNode.value = null;
                     }
                 };
 
                 const loadSampleMindmap = () => {
                     mindmapNodes.value = [
-                        { id: 1, text: '核心主题', x: 300, y: 200, color: '#fffefc' },
-                        { id: 2, text: '主要分支1', x: 150, y: 100, color: '#ffd6cc' },
-                        { id: 3, text: '主要分支2', x: 450, y: 100, color: '#a3de83' },
-                        { id: 4, text: '子分支1-1', x: 100, y: 50, color: '#ff9a8b' },
-                        { id: 5, text: '子分支2-1', x: 500, y: 50, color: '#4ecdc4' }
+                        { 
+                            id: 1, 
+                            text: '核心主题', 
+                            x: 300, 
+                            y: 200, 
+                            color: '#fffefc',
+                            children: [2, 3],
+                            level: 0
+                        },
+                        { 
+                            id: 2, 
+                            text: '主要分支1', 
+                            x: 150, 
+                            y: 100, 
+                            color: '#ffd6cc',
+                            parentId: 1,
+                            children: [4],
+                            level: 1
+                        },
+                        { 
+                            id: 3, 
+                            text: '主要分支2', 
+                            x: 450, 
+                            y: 100, 
+                            color: '#a3de83',
+                            parentId: 1,
+                            children: [5],
+                            level: 1
+                        },
+                        { 
+                            id: 4, 
+                            text: '子分支1-1', 
+                            x: 100, 
+                            y: 50, 
+                            color: '#ff9a8b',
+                            parentId: 2,
+                            level: 2
+                        },
+                        { 
+                            id: 5, 
+                            text: '子分支2-1', 
+                            x: 500, 
+                            y: 50, 
+                            color: '#4ecdc4',
+                            parentId: 3,
+                            level: 2
+                        }
                     ];
+                    mindmapRootNode.value = 1;
+                    mindmapSelectedNode.value = 1;
                     updateMindmapLines();
                 };
 
@@ -2298,17 +2382,34 @@ const mindmapControls = () => {
                     }
                     
                     const lines = [];
-                    const centerNode = mindmapNodes.value[0];
                     
-                    for (let i = 1; i < mindmapNodes.value.length; i++) {
-                        const node = mindmapNodes.value[i];
-                        lines.push({
-                            x1: centerNode.x + 60, // 节点中心
-                            y1: centerNode.y + 15,
-                            x2: node.x + 60,
-                            y2: node.y + 15
-                        });
-                    }
+                    // 连接所有父子节点
+                    mindmapNodes.value.forEach(node => {
+                        if (node.parentId) {
+                            const parentNode = mindmapNodes.value.find(n => n.id === node.parentId);
+                            if (parentNode) {
+                                lines.push({
+                                    x1: parentNode.x + 60,
+                                    y1: parentNode.y + 15,
+                                    x2: node.x + 60,
+                                    y2: node.y + 15,
+                                    type: 'parent-child'
+                                });
+                            }
+                        } else if (mindmapRootNode.value && node.id !== mindmapRootNode.value) {
+                            // 如果设置了根节点，连接到根节点
+                            const rootNode = mindmapNodes.value.find(n => n.id === mindmapRootNode.value);
+                            if (rootNode) {
+                                lines.push({
+                                    x1: rootNode.x + 60,
+                                    y1: rootNode.y + 15,
+                                    x2: node.x + 60,
+                                    y2: node.y + 15,
+                                    type: 'to-root'
+                                });
+                            }
+                        }
+                    });
                     
                     mindmapLines.value = lines;
                 };
@@ -2354,13 +2455,32 @@ const mindmapControls = () => {
                     
                     const text = prompt('输入节点内容:', '新节点');
                     if (text && text.trim()) {
-                        mindmapNodes.value.push({
-                            id: Date.now(),
+                        const nodeId = Date.now();
+                        const newNode = {
+                            id: nodeId,
                             text: text.trim(),
                             x: x,
                             y: y,
-                            color: getRandomNodeColor()
-                        });
+                            color: getRandomNodeColor(),
+                            parentId: mindmapSelectedNode.value,
+                            children: [],
+                            level: mindmapSelectedNode.value ? 
+                                (mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value)?.level || 0) + 1 : 0
+                        };
+                        
+                        mindmapNodes.value.push(newNode);
+                        
+                        if (mindmapSelectedNode.value) {
+                            const parentIndex = mindmapNodes.value.findIndex(n => n.id === mindmapSelectedNode.value);
+                            if (parentIndex !== -1) {
+                                if (!mindmapNodes.value[parentIndex].children) {
+                                    mindmapNodes.value[parentIndex].children = [];
+                                }
+                                mindmapNodes.value[parentIndex].children.push(nodeId);
+                            }
+                        }
+                        
+                        mindmapSelectedNode.value = nodeId;
                         updateMindmapLines();
                     }
                 };
@@ -2375,11 +2495,27 @@ const mindmapControls = () => {
                     if (!title || !title.trim()) return;
                     
                     // 将思维导图转换为HTML描述
-                    let htmlContent = '<h2>思维导图结构</h2><ul>';
-                    mindmapNodes.value.forEach(node => {
-                        htmlContent += `<li><strong>${node.text}</strong></li>`;
+                    let htmlContent = `<h2>思维导图结构 (${mindmapNodes.value.length}个节点)</h2>`;
+                    
+                    // 按层级组织显示
+                    const rootNodes = mindmapNodes.value.filter(n => n.level === 0);
+                    const buildTreeHtml = (node, depth = 0) => {
+                        const indent = '&nbsp;&nbsp;'.repeat(depth * 2);
+                        let html = `<div style="margin-left: ${depth * 20}px; margin-bottom: 5px;">`;
+                        html += `${indent}<strong>${node.text}</strong>`;
+                        if (node.children && node.children.length > 0) {
+                            const childNodes = mindmapNodes.value.filter(n => node.children.includes(n.id));
+                            childNodes.forEach(child => {
+                                html += buildTreeHtml(child, depth + 1);
+                            });
+                        }
+                        html += '</div>';
+                        return html;
+                    };
+                    
+                    rootNodes.forEach(rootNode => {
+                        htmlContent += buildTreeHtml(rootNode);
                     });
-                    htmlContent += '</ul>';
                     
                     const tags = prompt('输入标签，用逗号分隔:', '思维导图,脑图,思考').split(',').map(t => t.trim());
                     
@@ -2398,6 +2534,7 @@ const mindmapControls = () => {
                     const saveSuccess = await saveGameDataToGitHub();
                     if (saveSuccess) {
                         showStatusMessage(`思维导图已保存为笔记"${title.trim()}"`, 'success');
+                        activeNoteTab.value = 'all';
                     }
                 };
 
@@ -3181,6 +3318,10 @@ const mindmapControls = () => {
                         ach.unlocked = false;
                     });
                     extractedHighlights.value = [];
+                    mindmapNodes.value = [];
+                    mindmapLines.value = [];
+                    mindmapSelectedNode.value = null;
+                    mindmapRootNode.value = null;
                     
                     if (config.value.token) {
                         const saveSuccess = await saveGameDataToGitHub();
@@ -3226,6 +3367,7 @@ const mindmapControls = () => {
                     
                     // 思维导图相关
                     mindmapNodeText, mindmapNodes, mindmapLines,
+                    mindmapSelectedNode, mindmapRootNode,
                     
                     // 高亮提取相关
                     extractedHighlights, highlightSourceNote, newNoteFromHighlights,
@@ -3248,6 +3390,7 @@ const mindmapControls = () => {
                     addMindmapNode, editMindmapNode, editMindmapNodeById,
                     removeMindmapNode, clearMindmap, loadSampleMindmap,
                     startNodeDrag, addNodeAtPosition, saveMindmapAsNote,
+                    selectMindmapNode, toggleRootNode,
                     
                     // 高亮提取功能
                     extractHighlights, extractAllHighlights, extractHighlightsFromNote,
@@ -3279,4 +3422,3 @@ const mindmapControls = () => {
     </script>
 </body>
 </html>
-
