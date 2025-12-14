@@ -19,6 +19,8 @@
             color: #5a4a42;
             padding: 20px;
             line-height: 1.6;
+            direction: ltr; /* 确保整个页面方向正确 */
+            text-align: left;
         }
         .container { max-width: 1400px; margin: 0 auto; }
 
@@ -52,12 +54,14 @@
             color: #5a4a42;
             text-shadow: 3px 3px 0px #ffd6cc;
             letter-spacing: 1px;
+            direction: ltr;
         }
         .header p {
             font-size: 1.2em;
             opacity: 0.9;
             max-width: 700px;
             margin: 0 auto;
+            direction: ltr;
         }
 
         /* ====== 手绘网格布局 ====== */
@@ -106,6 +110,7 @@
             color: #5a4a42;
             font-size: 1.6em;
             font-family: 'Gochi Hand', cursive;
+            direction: ltr;
         }
         .card h2 .collapse-btn {
             background: none;
@@ -274,6 +279,7 @@
             border: 2px solid #e0c9b8;
             font-family: 'Comic Neue', cursive;
             color: #5a4a42;
+            direction: ltr;
         }
         .note-tab.active {
             background: linear-gradient(90deg, #a3de83, #4ecdc4);
@@ -289,6 +295,7 @@
             box-shadow: 6px 6px 0px #d4b8a7;
             border: 2.5px solid #5a4a42;
             margin-bottom: 30px;
+            direction: ltr;
         }
         .note-input, .tag-input {
             width: 100%;
@@ -300,6 +307,7 @@
             margin-bottom: 25px;
             transition: all 0.3s;
             background: #fffaf9;
+            direction: ltr !important;
         }
         .note-input:focus, .tag-input:focus {
             outline: none;
@@ -319,6 +327,7 @@
             box-shadow: 6px 6px 0px #d4b8a7;
             border: 2.5px solid #5a4a42;
             position: relative;
+            direction: ltr;
         }
         .note-card::before {
             content: '📌';
@@ -356,6 +365,7 @@
             border-radius: 20px 8px 20px 8px;
             background: rgba(255, 248, 240, 0.7);
             text-align: center;
+            direction: ltr;
         }
         .image-preview {
             margin-top: 20px;
@@ -529,6 +539,7 @@
             background: #fffaf5;
             border-radius: 15px;
             border: 2px solid #e0c9b8;
+            direction: ltr;
         }
         .filter-group {
             display: flex;
@@ -548,6 +559,7 @@
             font-family: 'Comic Neue', cursive;
             background: #fffefc;
             color: #5a4a42;
+            direction: ltr !important;
         }
         .filter-group select:focus, .filter-group input:focus {
             outline: none;
@@ -562,6 +574,7 @@
             border-radius: 20px;
             padding: 25px;
             margin-top: 25px;
+            direction: ltr;
         }
         .batch-textarea {
             width: 100%;
@@ -575,6 +588,7 @@
             color: #5a4a42;
             margin-bottom: 15px;
             resize: vertical;
+            direction: ltr !important;
         }
         .batch-textarea:focus {
             outline: none;
@@ -602,6 +616,7 @@
             border-radius: 15px;
             border: 2px solid #e0c9b8;
             align-items: center;
+            direction: ltr;
         }
         .toolbar-btn {
             padding: 8px 16px;
@@ -643,70 +658,115 @@
             background: #fffefc;
             font-family: 'Comic Neue', cursive;
             color: #5a4a42;
+            direction: ltr;
         }
+        
+        /* 富文本编辑器核心样式 - 修复文本方向问题 */
         .rich-text-editor {
-    min-height: 300px;
-    padding: 20px;
-    border: 2.5px solid #e0c9b8;
-    border-radius: 15px 5px 15px 5px;
-    background: #fffaf9;
-    font-family: 'Comic Neue', 'Microsoft YaHei', 'SimHei', sans-serif, cursive;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #5a4a42;
-    outline: none;
-    overflow-y: auto;
-    margin-bottom: 25px;
-    
-    /* 修复RTL问题 */
-    direction: ltr !important;
-    text-align: left !important;
-    unicode-bidi: embed !important;
-}
+            min-height: 300px;
+            padding: 20px;
+            border: 2.5px solid #e0c9b8;
+            border-radius: 15px 5px 15px 5px;
+            background: #fffaf9;
+            font-family: 'Comic Neue', 'Microsoft YaHei', 'SimHei', sans-serif, cursive;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #5a4a42;
+            outline: none;
+            overflow-y: auto;
+            margin-bottom: 25px;
+            
+            /* 强制确保文本方向正确 */
+            direction: ltr !important;
+            text-align: left !important;
+            unicode-bidi: embed !important;
+            text-align-last: left !important;
+        }
+        
+        /* 针对contenteditable元素强制应用方向 */
+        [contenteditable="true"] {
+            direction: ltr !important;
+            text-align: left !important;
+            unicode-bidi: embed !important;
+        }
+        
+        /* 防止浏览器自动改变方向 */
+        .rich-text-editor[dir] {
+            direction: ltr !important;
+        }
+        
         .rich-text-editor:focus {
             border-color: #ff9a8b;
             box-shadow: 3px 3px 0px #ffd6cc;
         }
-        .rich-text-editor b, .rich-text-editor strong {
+        
+        /* 针对富文本编辑器内特定元素的样式 */
+        .rich-text-editor b, 
+        .rich-text-editor strong {
             color: #ff6b6b;
             font-weight: 800;
+            direction: inherit;
+            unicode-bidi: embed;
         }
-        .rich-text-editor i, .rich-text-editor em {
+        
+        .rich-text-editor i, 
+        .rich-text-editor em {
             color: #4ecdc4;
             font-style: italic;
+            direction: inherit;
+            unicode-bidi: embed;
         }
+        
         .rich-text-editor u {
             text-decoration: underline;
             text-decoration-color: #ff9a8b;
+            direction: inherit;
+            unicode-bidi: embed;
         }
+        
         .rich-text-editor .highlight {
             background: linear-gradient(120deg, #ffd6cc 0%, #ffd6cc 100%);
             padding: 0 4px;
             border-radius: 4px;
+            direction: inherit;
+            unicode-bidi: embed;
         }
-        .rich-text-editor h1, .rich-text-editor h2, .rich-text-editor h3 {
+        
+        .rich-text-editor h1, 
+        .rich-text-editor h2, 
+        .rich-text-editor h3 {
             font-family: 'Gochi Hand', cursive;
             margin: 20px 0 10px 0;
             color: #5a4a42;
+            direction: inherit !important;
+            text-align: left !important;
+            unicode-bidi: embed !important;
         }
-        /* 在 .rich-text-editor 样式中添加 */
-.rich-text-editor {
-    direction: ltr !important; /* 强制从左到右 */
-    text-align: left !important; /* 强制左对齐 */
-    unicode-bidi: embed !important; /* 确保正确的双向文本处理 */
-    /* ... 其他现有样式保持不变 ... */
-}
         
-        .rich-text-editor h1 { font-size: 1.8em; }
-        .rich-text-editor h2 { font-size: 1.5em; }
-        .rich-text-editor h3 { font-size: 1.3em; }
-        .rich-text-editor ul, .rich-text-editor ol {
+        .rich-text-editor h1 { 
+            font-size: 1.8em; 
+        }
+        .rich-text-editor h2 { 
+            font-size: 1.5em; 
+        }
+        .rich-text-editor h3 { 
+            font-size: 1.3em; 
+        }
+        
+        .rich-text-editor ul, 
+        .rich-text-editor ol {
             margin-left: 25px;
             margin-bottom: 15px;
+            direction: inherit;
+            unicode-bidi: embed;
         }
+        
         .rich-text-editor li {
             margin-bottom: 8px;
+            direction: inherit;
+            unicode-bidi: embed;
         }
+        
         .rich-text-editor blockquote {
             border-left: 4px solid #ff9a8b;
             padding-left: 20px;
@@ -716,6 +776,15 @@
             background: rgba(255, 214, 204, 0.1);
             padding: 15px;
             border-radius: 0 10px 10px 0;
+            direction: inherit;
+            unicode-bidi: embed;
+        }
+        
+        /* 为所有富文本编辑器内的元素设置继承方向 */
+        .rich-text-editor * {
+            direction: inherit !important;
+            text-align: inherit !important;
+            unicode-bidi: embed !important;
         }
         
 
@@ -1057,6 +1126,7 @@
             transition: all 0.3s;
             background: #fffaf9;
             resize: vertical;
+            direction: ltr !important;
         }
         
         .book-textarea:focus {
@@ -1121,6 +1191,7 @@
             font-size: 16px;
             font-family: 'Comic Neue', cursive;
             background: #fffaf9;
+            direction: ltr !important;
         }
         
         .book-search-input:focus {
@@ -1163,6 +1234,23 @@
             margin-top: 8px;
             font-weight: bold;
         }
+        
+        /* 新增：富文本编辑器辅助样式 */
+        .force-ltr {
+            direction: ltr !important;
+            text-align: left !important;
+            unicode-bidi: embed !important;
+        }
+        
+        /* 针对阿拉伯语等RTL语言的额外覆盖 */
+        [dir="rtl"] .rich-text-editor,
+        [dir="rtl"] .note-input,
+        [dir="rtl"] .tag-input,
+        [dir="rtl"] .book-textarea,
+        [dir="rtl"] .book-search-input {
+            direction: ltr !important;
+            text-align: left !important;
+        }
     </style>
 </head>
 <body>
@@ -1184,17 +1272,17 @@
                 
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold;">GitHub 用户名</label>
-                    <input type="text" v-model="config.username" class="note-input" placeholder="例如：zhangsan">
+                    <input type="text" v-model="config.username" class="note-input" placeholder="例如：zhangsan" dir="ltr">
                 </div>
                 
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold;">数据仓库名称</label>
-                    <input type="text" v-model="config.repo" class="note-input" placeholder="例如：my-growth-data">
+                    <input type="text" v-model="config.repo" class="note-input" placeholder="例如：my-growth-data" dir="ltr">
                 </div>
                 
                 <div style="margin-bottom: 30px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold;">个人访问令牌 (Token)</label>
-                    <input type="password" v-model="config.token" class="note-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                    <input type="password" v-model="config.token" class="note-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" dir="ltr">
                     <p style="font-size: 0.9em; color: #7a6a62; margin-top: 5px;">
                         ⚠️ Token仅用于本次会话通信，刷新页面后需重新输入。
                     </p>
@@ -1411,7 +1499,7 @@
     "requirement": 30,
     "reward": 150
   }
-]'>
+]' dir="ltr">
                             </textarea>
                             <div class="batch-example">
                                 <strong>字段说明：</strong><br>
@@ -1497,6 +1585,7 @@
                                 class="book-search-input" 
                                 placeholder="🔍 搜索书名、作者、标签..."
                                 @input="searchBooks"
+                                dir="ltr"
                             >
                         </div>
                         
@@ -1529,11 +1618,11 @@
                             <div class="book-form-row">
                                 <div>
                                     <label style="display:block; margin-bottom:8px; font-weight:bold; color:#5a4a42;">书名</label>
-                                    <input type="text" v-model="newBookNote.title" class="note-input" placeholder="请输入书名">
+                                    <input type="text" v-model="newBookNote.title" class="note-input" placeholder="请输入书名" dir="ltr">
                                 </div>
                                 <div>
                                     <label style="display:block; margin-bottom:8px; font-weight:bold; color:#5a4a42;">作者</label>
-                                    <input type="text" v-model="newBookNote.author" class="note-input" placeholder="请输入作者">
+                                    <input type="text" v-model="newBookNote.author" class="note-input" placeholder="请输入作者" dir="ltr">
                                 </div>
                             </div>
                             
@@ -1543,6 +1632,7 @@
                                     v-model="newBookNote.note" 
                                     class="book-textarea" 
                                     placeholder="记录读书时的重点、摘录、思考..."
+                                    dir="ltr"
                                 ></textarea>
                             </div>
                             
@@ -1552,6 +1642,7 @@
                                     v-model="newBookNote.reflection" 
                                     class="book-textarea" 
                                     placeholder="写下读完这本书的感悟、收获、启示..."
+                                    dir="ltr"
                                 ></textarea>
                             </div>
                             
@@ -1593,6 +1684,7 @@
                                     placeholder="输入自定义标签，按回车添加"
                                     @keyup.enter="addCustomBookTag"
                                     style="margin-top:10px;"
+                                    dir="ltr"
                                 >
                                 <div style="font-size:0.9em; color:#7a6a62; margin-top:5px;">
                                     已选标签: {{ newBookNote.tags.join(', ') || '无' }}
@@ -1711,7 +1803,7 @@
                         <div class="note-filters" v-if="activeNoteTab !== 'editor' && notes.length > 0">
                             <div class="filter-group">
                                 <label>📅 时间范围</label>
-                                <select v-model="noteFilter.timeRange">
+                                <select v-model="noteFilter.timeRange" dir="ltr">
                                     <option value="all">全部时间</option>
                                     <option value="today">今天</option>
                                     <option value="week">本周</option>
@@ -1722,7 +1814,7 @@
                             
                             <div class="filter-group">
                                 <label>🏷️ 标签筛选</label>
-                                <select v-model="noteFilter.selectedTag">
+                                <select v-model="noteFilter.selectedTag" dir="ltr">
                                     <option value="">所有标签</option>
                                     <option v-for="tag in allNoteTags" :value="tag">{{ tag }}</option>
                                 </select>
@@ -1730,7 +1822,7 @@
                             
                             <div class="filter-group">
                                 <label>📁 分类筛选</label>
-                                <select v-model="noteFilter.selectedCategory">
+                                <select v-model="noteFilter.selectedCategory" dir="ltr">
                                     <option value="">所有分类</option>
                                     <option v-for="cat in noteCategories.filter(c => c !== 'all' && c !== 'editor')" :value="cat">
                                         {{ getCategoryDisplayName(cat) }}
@@ -1740,12 +1832,12 @@
                             
                             <div class="filter-group">
                                 <label>🔍 关键词搜索</label>
-                                <input type="text" v-model="noteFilter.keyword" placeholder="搜索标题或内容...">
+                                <input type="text" v-model="noteFilter.keyword" placeholder="搜索标题或内容..." dir="ltr">
                             </div>
                             
                             <div class="filter-group">
                                 <label>✨ 格式筛选</label>
-                                <select v-model="noteFilter.formatType">
+                                <select v-model="noteFilter.formatType" dir="ltr">
                                     <option value="">所有格式</option>
                                     <option value="highlight">包含高亮</option>
                                     <option value="bold">包含加粗</option>
@@ -1776,7 +1868,7 @@
                         
                         <!-- 富文本编辑器 -->
                         <div v-if="activeNoteTab === 'editor'" class="note-editor">
-                            <input type="text" class="note-input" v-model="newNote.title" placeholder="笔记标题...">
+                            <input type="text" class="note-input" v-model="newNote.title" placeholder="笔记标题..." dir="ltr">
                             
                             <!-- 富文本工具栏 -->
                             <div class="rich-text-toolbar">
@@ -1818,7 +1910,7 @@
                                 
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <label style="font-weight: bold; color: #5a4a42;">字号:</label>
-                                    <select v-model="fontSize" class="font-size-select" @change="changeFontSize">
+                                    <select v-model="fontSize" class="font-size-select" @change="changeFontSize" dir="ltr">
                                         <option value="14">小</option>
                                         <option value="16">正常</option>
                                         <option value="18">中</option>
@@ -1835,20 +1927,21 @@
                                 </button>
                             </div>
                             
-                            <!-- 富文本编辑区域 -->
+                            <!-- 富文本编辑区域 - 关键修复 -->
                             <div 
                                 ref="richTextEditor"
                                 class="rich-text-editor" 
                                 contenteditable="true"
                                 @input="updateRichTextContent"
-                                @focus="editorFocused = true"
+                                @focus="onEditorFocus"
                                 @blur="editorFocused = false"
                                 :style="{ fontSize: fontSize + 'px' }"
+                                spellcheck="true"
                             >
                                 {{ newNote.content }}
                             </div>
                             
-                            <input type="text" class="tag-input" v-model="newNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 学习, 复盘, 灵感)">
+                            <input type="text" class="tag-input" v-model="newNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 学习, 复盘, 灵感)" dir="ltr">
                             
                             <!-- 图片上传区域 -->
                             <div class="image-upload-area">
@@ -1891,6 +1984,7 @@
                                     class="mindmap-input" 
                                     placeholder="输入节点内容..."
                                     @keyup.enter="addMindmapNode"
+                                    dir="ltr"
                                 >
                                 <button class="btn-sm" @click="addMindmapNode" style="background:linear-gradient(90deg, #a3de83, #4ecdc4);">
                                     ➕ 添加节点
@@ -2002,7 +2096,7 @@
                             
                             <div style="margin-bottom: 30px;">
                                 <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px;">
-                                    <select v-model="highlightSourceNote" class="note-input" style="flex-grow:1;">
+                                    <select v-model="highlightSourceNote" class="note-input" style="flex-grow:1;" dir="ltr">
                                         <option value="">选择笔记来源...</option>
                                         <option v-for="note in notes" :value="note.id">{{ note.title }}</option>
                                     </select>
@@ -2044,6 +2138,7 @@
                                             class="note-input" 
                                             placeholder="在这里编辑高亮笔记内容..."
                                             rows="6"
+                                            dir="ltr"
                                         ></textarea>
                                         <div style="display:flex; gap:15px; margin-top:15px;">
                                             <button class="btn" @click="saveHighlightsNote" style="width:auto; padding:12px 30px;">
@@ -2066,7 +2161,7 @@
                             <h3 style="margin-bottom:20px; color:#5a4a42; font-family:'Gochi Hand';">📄 Word式文档预览</h3>
                             
                             <div style="margin-bottom: 25px; display: flex; gap: 15px;">
-                                <select v-model="selectedNoteForPreview" class="note-input" style="flex-grow:1;">
+                                <select v-model="selectedNoteForPreview" class="note-input" style="flex-grow:1;" dir="ltr">
                                     <option value="">选择要预览的笔记...</option>
                                     <option v-for="note in notes" :value="note.id">{{ note.title }}</option>
                                 </select>
@@ -2523,7 +2618,8 @@
                         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
                         .replace(/on\w+="[^"]*"/g, '')
                         .replace(/on\w+='[^']*'/g, '')
-                        .replace(/javascript:/gi, '');
+                        .replace(/javascript:/gi, '')
+                        .replace(/dir=".*?"/gi, ''); // 移除所有dir属性，避免RTL影响
                 };
 
                 // 检查笔记是否有高亮
@@ -2596,6 +2692,27 @@
                             (book.tags && book.tags.some(tag => tag.toLowerCase().includes(query)))
                         );
                     });
+                };
+
+                // ==================== 富文本编辑器焦点处理 ====================
+                const onEditorFocus = (event) => {
+                    editorFocused.value = true;
+                    // 强制设置编辑器的方向为LTR
+                    const editor = event.target;
+                    editor.style.direction = 'ltr';
+                    editor.style.textAlign = 'left';
+                    editor.style.unicodeBidi = 'embed';
+                    editor.style.textAlignLast = 'left';
+                    
+                    // 为编辑器内的所有元素强制设置LTR
+                    setTimeout(() => {
+                        const allElements = editor.querySelectorAll('*');
+                        allElements.forEach(el => {
+                            el.style.direction = 'ltr';
+                            el.style.textAlign = 'left';
+                            el.style.unicodeBidi = 'embed';
+                        });
+                    }, 10);
                 };
 
                 // ==================== 读书笔记功能 ====================
@@ -2726,9 +2843,16 @@
                     activeFormat.value = command;
                     const editor = richTextEditor.value;
                     
+                    // 确保编辑器获得焦点
+                    editor.focus();
+                    
+                    // 保存当前选择范围
                     const selection = window.getSelection();
+                    if (!selection.rangeCount) return;
+                    
                     const range = selection.getRangeAt(0);
                     
+                    // 应用格式
                     document.execCommand('styleWithCSS', false, true);
                     
                     switch(command) {
@@ -2747,9 +2871,17 @@
                             span.style.backgroundColor = '#ffd6cc';
                             span.style.padding = '0 2px';
                             span.style.borderRadius = '2px';
-                            try {
-                                document.execCommand('insertHTML', false, span.outerHTML);
-                            } catch (e) {
+                            span.style.direction = 'ltr';
+                            span.style.textAlign = 'left';
+                            
+                            // 检查是否有选中文本
+                            if (range.toString().trim() === '') {
+                                // 如果没有选中文本，插入一个占位符
+                                const textNode = document.createTextNode('高亮文本');
+                                span.appendChild(textNode);
+                                range.insertNode(span);
+                            } else {
+                                // 如果有选中文本，包裹它
                                 range.surroundContents(span);
                             }
                             break;
@@ -2773,7 +2905,10 @@
                             break;
                     }
                     
-                    editor.focus();
+                    // 强制重新设置方向
+                    editor.style.direction = 'ltr';
+                    editor.style.textAlign = 'left';
+                    
                     updateRichTextContent();
                 };
 
@@ -2793,7 +2928,7 @@
                     if (!richTextEditor.value) return;
                     
                     const codeBlock = `
-                        <div class="code-block">
+                        <div class="code-block" style="direction: ltr; text-align: left;">
                             <pre><span class="keyword">function</span> <span class="function">example</span>() {
     <span class="comment">// 这里是代码</span>
     <span class="keyword">const</span> <span class="variable">message</span> = <span class="string">"Hello World"</span>;
@@ -2818,6 +2953,24 @@
                 const updateRichTextContent = () => {
                     if (richTextEditor.value) {
                         newNote.value.content = richTextEditor.value.innerHTML;
+                        
+                        // 强制确保内容中的方向正确
+                        setTimeout(() => {
+                            const editor = richTextEditor.value;
+                            if (editor) {
+                                // 确保编辑器本身的方向
+                                editor.style.direction = 'ltr';
+                                editor.style.textAlign = 'left';
+                                
+                                // 确保所有子元素的方向
+                                const allElements = editor.querySelectorAll('*');
+                                allElements.forEach(el => {
+                                    el.style.direction = 'ltr';
+                                    el.style.textAlign = 'left';
+                                    el.style.unicodeBidi = 'embed';
+                                });
+                            }
+                        }, 10);
                     }
                 };
 
@@ -2829,13 +2982,13 @@
                         <head>
                             <title>${newNote.value.title || '笔记预览'}</title>
                             <style>
-                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; }
+                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; direction: ltr; text-align: left; }
                                 h1, h2, h3 { font-family: 'Gochi Hand', cursive; }
                                 .highlight { background: #ffd6cc; padding: 0 2px; border-radius: 2px; }
                                 blockquote { border-left: 4px solid #ff9a8b; padding-left: 20px; margin: 20px 0; font-style: italic; }
                             </style>
                         </head>
-                        <body>
+                        <body dir="ltr">
                             <h1>${newNote.value.title || '无标题笔记'}</h1>
                             <div>${newNote.value.content || ''}</div>
                         </body>
@@ -3343,17 +3496,17 @@
                             <title>打印: ${note.title}</title>
                             <style>
                                 @media print {
-                                    body { font-family: 'Times New Roman', serif; padding: 2cm; }
+                                    body { font-family: 'Times New Roman', serif; padding: 2cm; direction: ltr; text-align: left; }
                                     h1 { text-align: center; margin-bottom: 2cm; }
                                     .note-tags { display: none; }
                                 }
-                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; }
+                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; direction: ltr; }
                                 h1, h2, h3 { font-family: 'Gochi Hand', cursive; }
                                 .highlight { background: #ffd6cc; padding: 0 2px; }
                                 .code-block { background: #f5f5f5; padding: 15px; border-left: 4px solid #ccc; }
                             </style>
                         </head>
-                        <body>
+                        <body dir="ltr">
                             <h1>${note.title}</h1>
                             <div>${note.content || ''}</div>
                             <div style="margin-top: 3cm; text-align: right; color: #666;">
@@ -3382,7 +3535,7 @@
                             <meta charset="UTF-8">
                             <title>${note.title}</title>
                             <style>
-                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; }
+                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; direction: ltr; text-align: left; }
                                 h1, h2, h3 { font-family: 'Gochi Hand', cursive; color: #5a4a42; }
                                 .highlight { background: #ffd6cc; padding: 0 2px; border-radius: 2px; }
                                 blockquote { border-left: 4px solid #ff9a8b; padding-left: 20px; margin: 20px 0; font-style: italic; }
@@ -3391,7 +3544,7 @@
                                 .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0c9b8; text-align: right; color: #7a6a62; font-size: 0.9em; }
                             </style>
                         </head>
-                        <body>
+                        <body dir="ltr">
                             <div class="header">
                                 <h1>${note.title}</h1>
                                 <div>创建于: ${formatDate(note.createdAt)}</div>
@@ -3771,6 +3924,9 @@
                     };
                     if (richTextEditor.value) {
                         richTextEditor.value.innerHTML = '';
+                        // 确保编辑器方向正确
+                        richTextEditor.value.style.direction = 'ltr';
+                        richTextEditor.value.style.textAlign = 'left';
                     }
                 };
 
@@ -3790,6 +3946,9 @@
                         
                         if (richTextEditor.value) {
                             richTextEditor.value.innerHTML = note.content || '';
+                            // 确保编辑器方向正确
+                            richTextEditor.value.style.direction = 'ltr';
+                            richTextEditor.value.style.textAlign = 'left';
                         }
                         
                         const noteIndex = notes.value.findIndex(n => n.id === noteId);
@@ -4077,6 +4236,7 @@
                     // 富文本编辑功能
                     formatText, changeTextColor, changeFontSize, insertCodeBlock,
                     clearFormatting, updateRichTextContent, previewNote,
+                    onEditorFocus, // 新增：编辑器焦点处理
                     
                     // 思维导图功能
                     addMindmapNode, editMindmapNode, editMindmapNodeById,
@@ -4114,4 +4274,3 @@
     </script>
 </body>
 </html>
-
