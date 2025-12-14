@@ -645,19 +645,24 @@
             color: #5a4a42;
         }
         .rich-text-editor {
-            min-height: 300px;
-            padding: 20px;
-            border: 2.5px solid #e0c9b8;
-            border-radius: 15px 5px 15px 5px;
-            background: #fffaf9;
-            font-family: 'Comic Neue', cursive;
-            font-size: 16px;
-            line-height: 1.6;
-            color: #5a4a42;
-            outline: none;
-            overflow-y: auto;
-            margin-bottom: 25px;
-        }
+    min-height: 300px;
+    padding: 20px;
+    border: 2.5px solid #e0c9b8;
+    border-radius: 15px 5px 15px 5px;
+    background: #fffaf9;
+    font-family: 'Comic Neue', 'Microsoft YaHei', 'SimHei', sans-serif, cursive;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #5a4a42;
+    outline: none;
+    overflow-y: auto;
+    margin-bottom: 25px;
+    
+    /* 修复RTL问题 */
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: embed !important;
+}
         .rich-text-editor:focus {
             border-color: #ff9a8b;
             box-shadow: 3px 3px 0px #ffd6cc;
@@ -684,6 +689,14 @@
             margin: 20px 0 10px 0;
             color: #5a4a42;
         }
+        /* 在 .rich-text-editor 样式中添加 */
+.rich-text-editor {
+    direction: ltr !important; /* 强制从左到右 */
+    text-align: left !important; /* 强制左对齐 */
+    unicode-bidi: embed !important; /* 确保正确的双向文本处理 */
+    /* ... 其他现有样式保持不变 ... */
+}
+        
         .rich-text-editor h1 { font-size: 1.8em; }
         .rich-text-editor h2 { font-size: 1.5em; }
         .rich-text-editor h3 { font-size: 1.3em; }
@@ -704,6 +717,7 @@
             padding: 15px;
             border-radius: 0 10px 10px 0;
         }
+        
 
         /* ====== 新增：高亮内容提取面板样式 ====== */
         .highlight-extract-panel {
@@ -4100,3 +4114,4 @@
     </script>
 </body>
 </html>
+
