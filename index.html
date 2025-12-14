@@ -882,6 +882,192 @@
             border-radius: 8px;
             border-left: 4px solid #ff9a8b;
         }
+
+        /* ====== 新增：读书笔记样式 ====== */
+        .reading-notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .reading-note-card {
+            background: #fffefc;
+            border-radius: 20px 8px 20px 8px;
+            padding: 25px;
+            box-shadow: 6px 6px 0px #d4b8a7;
+            border: 2.5px solid #5a4a42;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .reading-note-card:hover {
+            transform: translateY(-5px) rotate(0.5deg);
+            box-shadow: 8px 8px 0px #c9a58f, 15px 15px 25px rgba(0, 0, 0, 0.09);
+        }
+        .reading-note-card::before {
+            content: '📖';
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            font-size: 1.5em;
+            transform: rotate(15deg);
+        }
+        .reading-note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .reading-note-title {
+            font-family: 'Gochi Hand', cursive;
+            font-size: 1.8em;
+            color: #5a4a42;
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+        .reading-note-author {
+            font-size: 1em;
+            color: #7a6a62;
+            font-weight: bold;
+        }
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+            margin: 15px 0;
+        }
+        .star {
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #e0c9b8;
+        }
+        .star.filled {
+            color: #ffd166;
+            text-shadow: 0 0 5px rgba(255, 209, 102, 0.5);
+        }
+        .star:hover {
+            transform: scale(1.2);
+        }
+        .reading-note-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fffaf5;
+            border-radius: 15px 5px 15px 5px;
+            border: 2px solid #e0c9b8;
+        }
+        .reading-note-section h4 {
+            font-family: 'Gochi Hand', cursive;
+            color: #5a4a42;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px dotted #ff9a8b;
+            padding-bottom: 8px;
+        }
+        .reading-note-content {
+            color: #5a4a42;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+        .reading-note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px dashed #ffc8a3;
+            font-size: 0.9em;
+            color: #7a6a62;
+        }
+        .reading-note-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .reading-editor {
+            background: #fffefc;
+            border-radius: 20px 10px 20px 10px;
+            padding: 30px;
+            box-shadow: 6px 6px 0px #d4b8a7;
+            border: 2.5px solid #5a4a42;
+            margin-bottom: 30px;
+        }
+        .reading-editor-section {
+            margin-bottom: 25px;
+        }
+        .reading-editor-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #5a4a42;
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.1em;
+        }
+        .reading-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2.5px solid #e0c9b8;
+            border-radius: 15px 5px 15px 5px;
+            font-size: 16px;
+            font-family: 'Comic Neue', cursive;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+            background: #fffaf9;
+            resize: vertical;
+        }
+        .reading-textarea:focus {
+            outline: none;
+            border-color: #ff9a8b;
+            box-shadow: 3px 3px 0px #ffd6cc;
+            background: #fff;
+        }
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .rating-value {
+            font-family: 'Gochi Hand', cursive;
+            font-size: 1.5em;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .reading-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #fffaf5;
+            border-radius: 15px;
+            border: 2px solid #e0c9b8;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .reading-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .reading-stat {
+            padding: 20px;
+            background: #fffaf5;
+            border-radius: 15px;
+            border: 2px solid #e0c9b8;
+        }
+        .reading-stat-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            font-family: 'Gochi Hand', cursive;
+            color: #ff6b6b;
+            line-height: 1;
+        }
+        .reading-stat-label {
+            margin-top: 10px;
+            font-size: 1em;
+            color: #7a6a62;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -1266,10 +1452,11 @@
                         <div class="note-tabs">
                             <div class="note-tab" :class="{active: activeNoteTab === 'all'}" @click="activeNoteTab = 'all'">📚 全部笔记</div>
                             <div class="note-tab" :class="{active: activeNoteTab === 'editor'}" @click="activeNoteTab = 'editor'">✍️ 富文本编辑</div>
+                            <div class="note-tab" :class="{active: activeNoteTab === 'reading'}" @click="activeNoteTab = 'reading'">📖 读书笔记</div>
                             <div class="note-tab" :class="{active: activeNoteTab === 'mindmap'}" @click="activeNoteTab = 'mindmap'">🧠 思维导图</div>
                             <div class="note-tab" :class="{active: activeNoteTab === 'highlights'}" @click="activeNoteTab = 'highlights'">🌟 高亮提取</div>
                             <div class="note-tab" :class="{active: activeNoteTab === 'wordview'}" @click="activeNoteTab = 'wordview'">📄 Word预览</div>
-                            <div v-for="cat in noteCategories.filter(c => c !== 'all' && c !== 'editor' && c !== 'mindmap' && c !== 'highlights' && c !== 'wordview')" :key="cat" 
+                            <div v-for="cat in noteCategories.filter(c => c !== 'all' && c !== 'editor' && c !== 'reading' && c !== 'mindmap' && c !== 'highlights' && c !== 'wordview')" :key="cat" 
                                  class="note-tab" 
                                  :class="{active: activeNoteTab === cat}" 
                                  @click="activeNoteTab = cat">
@@ -1380,6 +1567,249 @@
                                         style="width:auto; padding:14px 35px; background:linear-gradient(90deg, #4a9fff, #2d73cc); border-radius:50px 15px 50px 15px;">
                                     👁️ 预览效果
                                 </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 读书笔记板块 -->
+                        <div v-if="activeNoteTab === 'reading'" class="note-editor">
+                            <h3 style="margin-bottom:20px; color:#5a4a42; font-family:'Gochi Hand';">📖 我的读书笔记</h3>
+                            
+                            <!-- 读书笔记统计 -->
+                            <div class="reading-stats">
+                                <div class="reading-stat">
+                                    <div class="reading-stat-value">{{ totalReadingNotes }}</div>
+                                    <div class="reading-stat-label">总读书笔记</div>
+                                </div>
+                                <div class="reading-stat">
+                                    <div class="reading-stat-value">{{ averageRating.toFixed(1) }}</div>
+                                    <div class="reading-stat-label">平均评分</div>
+                                </div>
+                                <div class="reading-stat">
+                                    <div class="reading-stat-value">{{ totalAuthors }}</div>
+                                    <div class="reading-stat-label">不同作者</div>
+                                </div>
+                                <div class="reading-stat">
+                                    <div class="reading-stat-value">{{ readingTags.length }}</div>
+                                    <div class="reading-stat-label">标签数量</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 读书笔记筛选器 -->
+                            <div class="reading-filter">
+                                <div class="filter-group">
+                                    <label>🔍 搜索书名/作者</label>
+                                    <input type="text" v-model="readingFilter.keyword" placeholder="输入关键词...">
+                                </div>
+                                
+                                <div class="filter-group">
+                                    <label>⭐ 评分筛选</label>
+                                    <select v-model="readingFilter.minRating">
+                                        <option value="0">全部评分</option>
+                                        <option value="5">5星</option>
+                                        <option value="4">4星及以上</option>
+                                        <option value="3">3星及以上</option>
+                                        <option value="2">2星及以上</option>
+                                        <option value="1">1星及以上</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="filter-group">
+                                    <label>🏷️ 标签筛选</label>
+                                    <select v-model="readingFilter.selectedTag">
+                                        <option value="">全部标签</option>
+                                        <option v-for="tag in readingTags" :value="tag">{{ tag }}</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="filter-group">
+                                    <label>📅 排序方式</label>
+                                    <select v-model="readingFilter.sortBy">
+                                        <option value="date">最新添加</option>
+                                        <option value="rating">评分最高</option>
+                                        <option value="title">书名 A-Z</option>
+                                    </select>
+                                </div>
+                                
+                                <button class="btn-sm" @click="resetReadingFilters" style="align-self: flex-end; background:linear-gradient(90deg, #a3a3a3, #7a7a7a);">
+                                    重置筛选
+                                </button>
+                            </div>
+                            
+                            <!-- 读书笔记编辑器 -->
+                            <div class="reading-editor" v-if="!editingReadingNote">
+                                <h4 style="margin-bottom:25px; color:#5a4a42; font-family:'Gochi Hand';">📝 添加新读书笔记</h4>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="bookTitle">📚 书名</label>
+                                    <input type="text" id="bookTitle" class="note-input" v-model="newReadingNote.title" placeholder="请输入书名...">
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="bookAuthor">✍️ 作者</label>
+                                    <input type="text" id="bookAuthor" class="note-input" v-model="newReadingNote.author" placeholder="请输入作者...">
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="bookNotes">📒 笔记内容</label>
+                                    <textarea id="bookNotes" class="reading-textarea" v-model="newReadingNote.notes" placeholder="记录书中的精彩内容、知识点、摘录等..."></textarea>
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="bookReflections">💭 我的感悟</label>
+                                    <textarea id="bookReflections" class="reading-textarea" v-model="newReadingNote.reflections" placeholder="记录阅读后的思考、感悟、启发等..."></textarea>
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label>⭐ 评分</label>
+                                    <div class="rating-display">
+                                        <div class="rating-stars">
+                                            <span 
+                                                v-for="star in 5" 
+                                                :key="star"
+                                                class="star"
+                                                :class="{ filled: star <= newReadingNote.rating }"
+                                                @click="newReadingNote.rating = star"
+                                            >
+                                                ★
+                                            </span>
+                                        </div>
+                                        <div class="rating-value">{{ newReadingNote.rating }} 星</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="bookTags">🏷️ 标签</label>
+                                    <input type="text" id="bookTags" class="note-input" v-model="newReadingNote.tagsInput" placeholder="添加标签，用逗号分隔 (例如: 小说, 心理学, 成长)">
+                                </div>
+                                
+                                <div style="display:flex; gap:15px; margin-top:30px;">
+                                    <button class="btn" @click="saveReadingNote" style="background:linear-gradient(90deg, #a3de83, #4ecdc4); width:auto; padding:14px 45px;">
+                                        💾 保存读书笔记
+                                    </button>
+                                    <button class="btn" @click="clearReadingEditor" 
+                                            style="background:linear-gradient(90deg, #a3a3a3, #7a7a7a); width:auto; padding:14px 35px;">
+                                        清空重写
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 读书笔记编辑模式 -->
+                            <div class="reading-editor" v-if="editingReadingNote">
+                                <h4 style="margin-bottom:25px; color:#5a4a42; font-family:'Gochi Hand';">✏️ 编辑读书笔记</h4>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="editBookTitle">📚 书名</label>
+                                    <input type="text" id="editBookTitle" class="note-input" v-model="editingReadingNote.title" placeholder="请输入书名...">
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="editBookAuthor">✍️ 作者</label>
+                                    <input type="text" id="editBookAuthor" class="note-input" v-model="editingReadingNote.author" placeholder="请输入作者...">
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="editBookNotes">📒 笔记内容</label>
+                                    <textarea id="editBookNotes" class="reading-textarea" v-model="editingReadingNote.notes" placeholder="记录书中的精彩内容、知识点、摘录等..."></textarea>
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="editBookReflections">💭 我的感悟</label>
+                                    <textarea id="editBookReflections" class="reading-textarea" v-model="editingReadingNote.reflections" placeholder="记录阅读后的思考、感悟、启发等..."></textarea>
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label>⭐ 评分</label>
+                                    <div class="rating-display">
+                                        <div class="rating-stars">
+                                            <span 
+                                                v-for="star in 5" 
+                                                :key="star"
+                                                class="star"
+                                                :class="{ filled: star <= editingReadingNote.rating }"
+                                                @click="editingReadingNote.rating = star"
+                                            >
+                                                ★
+                                            </span>
+                                        </div>
+                                        <div class="rating-value">{{ editingReadingNote.rating }} 星</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="reading-editor-section">
+                                    <label for="editBookTags">🏷️ 标签</label>
+                                    <input type="text" id="editBookTags" class="note-input" v-model="editingReadingNote.tagsInput" placeholder="添加标签，用逗号分隔">
+                                </div>
+                                
+                                <div style="display:flex; gap:15px; margin-top:30px;">
+                                    <button class="btn" @click="updateReadingNote" style="background:linear-gradient(90deg, #4a9fff, #2d73cc); width:auto; padding:14px 45px;">
+                                        💾 更新读书笔记
+                                    </button>
+                                    <button class="btn" @click="cancelEditReadingNote" 
+                                            style="background:linear-gradient(90deg, #a3a3a3, #7a7a7a); width:auto; padding:14px 35px;">
+                                        取消编辑
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 读书笔记列表 -->
+                            <div v-if="filteredReadingNotes.length > 0" class="reading-notes-grid">
+                                <div v-for="note in filteredReadingNotes" :key="note.id" class="reading-note-card">
+                                    <div class="reading-note-header">
+                                        <div>
+                                            <div class="reading-note-title">{{ note.title }}</div>
+                                            <div class="reading-note-author">作者: {{ note.author }}</div>
+                                        </div>
+                                        <div class="rating-stars">
+                                            <span 
+                                                v-for="star in 5" 
+                                                :key="star"
+                                                class="star"
+                                                :class="{ filled: star <= note.rating }"
+                                            >
+                                                ★
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="note-tags">
+                                        <span class="note-tag" v-for="tag in note.tags" :key="tag">{{ tag }}</span>
+                                    </div>
+                                    
+                                    <div class="reading-note-section">
+                                        <h4>📒 笔记内容</h4>
+                                        <div class="reading-note-content">{{ note.notes }}</div>
+                                    </div>
+                                    
+                                    <div class="reading-note-section">
+                                        <h4>💭 我的感悟</h4>
+                                        <div class="reading-note-content">{{ note.reflections }}</div>
+                                    </div>
+                                    
+                                    <div class="reading-note-meta">
+                                        <div>
+                                            <div>添加时间: {{ formatDate(note.createdAt) }}</div>
+                                            <div>评分: {{ note.rating }} 星</div>
+                                        </div>
+                                        <div class="reading-note-actions">
+                                            <button class="btn-sm" @click="editReadingNote(note.id)" style="background:linear-gradient(90deg, #4a9fff, #2d73cc);">
+                                                编辑
+                                            </button>
+                                            <button class="btn-sm" @click="deleteReadingNote(note.id)" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d);">
+                                                删除
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 空状态提示 -->
+                            <div v-if="filteredReadingNotes.length === 0" style="text-align:center; padding:50px 20px; color:#c9b8a7; margin-top: 30px;">
+                                <div style="font-size:4em; margin-bottom:20px; transform:rotate(-5deg);">📖</div>
+                                <p style="font-weight:bold; font-size:1.3em; margin-bottom:10px;">还没有读书笔记</p>
+                                <p v-if="readingFilter.keyword || readingFilter.minRating > 0 || readingFilter.selectedTag">
+                                    没有找到符合条件的读书笔记，尝试调整筛选条件
+                                </p>
+                                <p v-else>点击上方表单添加你的第一本读书笔记吧！</p>
                             </div>
                         </div>
                         
@@ -1606,7 +2036,7 @@
                         </div>
                         
                         <!-- 笔记列表：其他标签页时显示 -->
-                        <div v-if="!['editor', 'mindmap', 'highlights', 'wordview'].includes(activeNoteTab)" class="note-list">
+                        <div v-if="!['editor', 'reading', 'mindmap', 'highlights', 'wordview'].includes(activeNoteTab)" class="note-list">
                             <div v-for="note in filteredAndSortedNotes" :key="note.id" class="note-card">
                                 <h3 style="margin-bottom:18px; color:#5a4a42; font-family:'Gochi Hand'; font-size:1.6em;">{{ note.title }}</h3>
                                 <div class="note-tags">
@@ -1678,6 +2108,10 @@
                         <div class="stat-label">笔记数量</div>
                     </div>
                     <div class="stat-box">
+                        <div class="stat-value">{{ totalReadingNotes }}</div>
+                        <div class="stat-label">读书笔记</div>
+                    </div>
+                    <div class="stat-box">
                         <div class="stat-value">{{ completedAchievementsCount }}</div>
                         <div class="stat-label">成就达成</div>
                     </div>
@@ -1720,15 +2154,34 @@
                 const player = ref({ level: 1, xp: 0, nextLevelXp: 100, streak: 1 });
                 const skills = ref([]);
                 const notes = ref([]);
+                const readingNotes = ref([]); // 新增：读书笔记数据
                 const activeAchievementTab = ref('all');
                 const activeNoteTab = ref('editor');
-                const noteCategories = ref(['all', 'editor', 'mindmap', 'highlights', 'wordview']);
+                const noteCategories = ref(['all', 'editor', 'reading', 'mindmap', 'highlights', 'wordview']);
                 const newNote = ref({ 
                     title: '', 
                     content: '', 
                     tagsInput: '', 
                     imageData: null,
                     category: 'general' 
+                });
+                
+                // 新增：读书笔记编辑状态
+                const newReadingNote = ref({
+                    title: '',
+                    author: '',
+                    notes: '',
+                    reflections: '',
+                    rating: 0,
+                    tagsInput: ''
+                });
+                
+                const editingReadingNote = ref(null);
+                const readingFilter = ref({
+                    keyword: '',
+                    minRating: 0,
+                    selectedTag: '',
+                    sortBy: 'date'
                 });
                 
                 // 新增：折叠状态
@@ -1786,7 +2239,9 @@
                     { id: 11, category: 'meditation', name: '冥想初体验', icon: '🧘', description: '完成20次冥想练习', requirement: 20, current: 0, unlocked: false, reward: 80 },
                     { id: 12, category: 'meditation', name: '心灵平静', icon: '🌿', description: '完成50次冥想练习', requirement: 50, current: 0, unlocked: false, reward: 200 },
                     { id: 13, category: 'skill', name: '多面手', icon: '🔧', description: '拥有5个不同技能', requirement: 5, current: 0, unlocked: false, reward: 150 },
-                    { id: 14, category: 'skill', name: '技能大师', icon: '👑', description: '拥有3个达到5级的技能', requirement: 3, current: 0, unlocked: false, reward: 500 }
+                    { id: 14, category: 'skill', name: '技能大师', icon: '👑', description: '拥有3个达到5级的技能', requirement: 3, current: 0, unlocked: false, reward: 500 },
+                    { id: 15, category: 'reading', name: '阅读爱好者', icon: '📚', description: '完成10篇读书笔记', requirement: 10, current: 0, unlocked: false, reward: 200 },
+                    { id: 16, category: 'reading', name: '深度阅读者', icon: '📖', description: '完成30篇读书笔记', requirement: 30, current: 0, unlocked: false, reward: 500 }
                 ]);
 
                 // ==================== 智能分类配置 ====================
@@ -1797,12 +2252,14 @@
                     'english': ['英语', '单词', '阅读', '听力', '口语', '雅思'],
                     'daily': ['每日', '日记', '总结', '反思', '计划', '日常'],
                     'work': ['工作', '项目', '任务', '汇报', '会议', '职场'],
-                    'study': ['学习', '读书', '课程', '考试', '论文', '知识']
+                    'study': ['学习', '读书', '课程', '考试', '论文', '知识'],
+                    'reading': ['读书', '阅读', '书籍', '小说', '文学', '知识']
                 };
 
                 const categoryDisplayNames = {
                     'all': '全部',
                     'editor': '富文本编辑',
+                    'reading': '读书笔记',
                     'mindmap': '思维导图',
                     'highlights': '高亮提取',
                     'wordview': 'Word预览',
@@ -1829,6 +2286,7 @@
 
                 const totalSkills = computed(() => skills.value.length);
                 const totalNotes = computed(() => notes.value.length);
+                const totalReadingNotes = computed(() => readingNotes.value.length);
                 const completedAchievementsCount = computed(() => 
                     achievements.value.filter(a => a.unlocked).length
                 );
@@ -1859,6 +2317,78 @@
                     return Array.from(tags).sort();
                 });
 
+                // 读书笔记相关计算属性
+                const readingTags = computed(() => {
+                    const tags = new Set();
+                    readingNotes.value.forEach(note => {
+                        if (note.tags && Array.isArray(note.tags)) {
+                            note.tags.forEach(tag => tags.add(tag));
+                        }
+                    });
+                    return Array.from(tags).sort();
+                });
+
+                const totalAuthors = computed(() => {
+                    const authors = new Set();
+                    readingNotes.value.forEach(note => {
+                        if (note.author) {
+                            authors.add(note.author);
+                        }
+                    });
+                    return authors.size;
+                });
+
+                const averageRating = computed(() => {
+                    if (readingNotes.value.length === 0) return 0;
+                    const total = readingNotes.value.reduce((sum, note) => sum + (note.rating || 0), 0);
+                    return total / readingNotes.value.length;
+                });
+
+                // 过滤后的读书笔记
+                const filteredReadingNotes = computed(() => {
+                    let filtered = [...readingNotes.value];
+                    const filter = readingFilter.value;
+                    
+                    // 关键词搜索
+                    if (filter.keyword) {
+                        const keyword = filter.keyword.toLowerCase();
+                        filtered = filtered.filter(note => 
+                            note.title.toLowerCase().includes(keyword) || 
+                            note.author.toLowerCase().includes(keyword) ||
+                            note.notes.toLowerCase().includes(keyword) ||
+                            note.reflections.toLowerCase().includes(keyword) ||
+                            (note.tags && note.tags.some(tag => tag.toLowerCase().includes(keyword)))
+                        );
+                    }
+                    
+                    // 评分筛选
+                    if (filter.minRating > 0) {
+                        filtered = filtered.filter(note => note.rating >= filter.minRating);
+                    }
+                    
+                    // 标签筛选
+                    if (filter.selectedTag) {
+                        filtered = filtered.filter(note => 
+                            note.tags && note.tags.includes(filter.selectedTag)
+                        );
+                    }
+                    
+                    // 排序
+                    switch(filter.sortBy) {
+                        case 'date':
+                            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                            break;
+                        case 'rating':
+                            filtered.sort((a, b) => b.rating - a.rating);
+                            break;
+                        case 'title':
+                            filtered.sort((a, b) => a.title.localeCompare(b.title));
+                            break;
+                    }
+                    
+                    return filtered;
+                });
+
                 // 过滤后的成就
                 const filteredAchievements = computed(() => {
                     if (activeAchievementTab.value === 'all') return achievements.value;
@@ -1870,7 +2400,7 @@
                     let filtered = notes.value;
                     
                     // 按分类筛选
-                    if (activeNoteTab.value !== 'all' && !['editor', 'mindmap', 'highlights', 'wordview'].includes(activeNoteTab.value)) {
+                    if (activeNoteTab.value !== 'all' && !['editor', 'reading', 'mindmap', 'highlights', 'wordview'].includes(activeNoteTab.value)) {
                         filtered = filtered.filter(note => {
                             if (note.category === activeNoteTab.value) return true;
                             const keywords = categoryRules[activeNoteTab.value];
@@ -1997,9 +2527,14 @@
                     return notes.value.find(note => note.id == id) || {};
                 };
 
+                // 根据ID获取读书笔记
+                const getReadingNoteById = (id) => {
+                    return readingNotes.value.find(note => note.id == id) || {};
+                };
+
                 // 从现有笔记中提取所有分类，更新分类列表
                 const updateNoteCategoriesFromNotes = () => {
-                    const categories = new Set(['all', 'editor', 'mindmap', 'highlights', 'wordview']);
+                    const categories = new Set(['all', 'editor', 'reading', 'mindmap', 'highlights', 'wordview']);
                     notes.value.forEach(note => {
                         if (note.category && note.category !== 'general') {
                             categories.add(note.category);
@@ -2035,6 +2570,16 @@
                         selectedCategory: '',
                         keyword: '',
                         formatType: ''
+                    };
+                };
+
+                // 新增：重置读书笔记筛选器
+                const resetReadingFilters = () => {
+                    readingFilter.value = {
+                        keyword: '',
+                        minRating: 0,
+                        selectedTag: '',
+                        sortBy: 'date'
                     };
                 };
 
@@ -2169,6 +2714,148 @@
                     previewWindow.document.close();
                 };
 
+                // ==================== 读书笔记功能 ====================
+                const saveReadingNote = async () => {
+                    if (!newReadingNote.value.title.trim() || !newReadingNote.value.author.trim()) {
+                        showStatusMessage("请填写书名和作者", "error");
+                        return;
+                    }
+
+                    const tags = newReadingNote.value.tagsInput
+                        .split(',')
+                        .map(tag => tag.trim())
+                        .filter(tag => tag.length > 0);
+
+                    const noteToSave = {
+                        id: Date.now(),
+                        title: newReadingNote.value.title,
+                        author: newReadingNote.value.author,
+                        notes: newReadingNote.value.notes,
+                        reflections: newReadingNote.value.reflections,
+                        rating: newReadingNote.value.rating || 0,
+                        tags: tags,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    readingNotes.value.unshift(noteToSave);
+                    
+                    // 更新阅读相关的成就进度
+                    updateReadingAchievements();
+
+                    const saveSuccess = await saveGameDataToGitHub();
+                    if (saveSuccess) {
+                        clearReadingEditor();
+                        showStatusMessage(`📖 读书笔记"${noteToSave.title}"保存成功！`, "success", 5000);
+                    }
+                };
+
+                const clearReadingEditor = () => {
+                    newReadingNote.value = {
+                        title: '',
+                        author: '',
+                        notes: '',
+                        reflections: '',
+                        rating: 0,
+                        tagsInput: ''
+                    };
+                };
+
+                const editReadingNote = (noteId) => {
+                    const note = getReadingNoteById(noteId);
+                    if (!note) return;
+                    
+                    editingReadingNote.value = {
+                        ...note,
+                        tagsInput: note.tags ? note.tags.join(', ') : ''
+                    };
+                    
+                    // 删除原笔记
+                    const noteIndex = readingNotes.value.findIndex(n => n.id === noteId);
+                    if (noteIndex !== -1) {
+                        readingNotes.value.splice(noteIndex, 1);
+                    }
+                };
+
+                const updateReadingNote = async () => {
+                    if (!editingReadingNote.value) return;
+                    
+                    const tags = editingReadingNote.value.tagsInput
+                        .split(',')
+                        .map(tag => tag.trim())
+                        .filter(tag => tag.length > 0);
+
+                    const updatedNote = {
+                        ...editingReadingNote.value,
+                        tags: tags,
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    // 删除tagsInput属性
+                    delete updatedNote.tagsInput;
+
+                    readingNotes.value.unshift(updatedNote);
+                    editingReadingNote.value = null;
+                    
+                    // 更新阅读相关的成就进度
+                    updateReadingAchievements();
+
+                    const saveSuccess = await saveGameDataToGitHub();
+                    if (saveSuccess) {
+                        showStatusMessage(`📖 读书笔记"${updatedNote.title}"更新成功！`, "success");
+                    }
+                };
+
+                const cancelEditReadingNote = () => {
+                    if (editingReadingNote.value) {
+                        // 将编辑中的笔记重新添加回列表
+                        const tags = editingReadingNote.value.tagsInput
+                            .split(',')
+                            .map(tag => tag.trim())
+                            .filter(tag => tag.length > 0);
+                        
+                        const noteToRestore = {
+                            ...editingReadingNote.value,
+                            tags: tags
+                        };
+                        
+                        delete noteToRestore.tagsInput;
+                        
+                        readingNotes.value.unshift(noteToRestore);
+                        editingReadingNote.value = null;
+                    }
+                };
+
+                const deleteReadingNote = async (noteId) => {
+                    if (!confirm("确定要删除这篇读书笔记吗？")) return;
+                    const noteIndex = readingNotes.value.findIndex(n => n.id === noteId);
+                    if (noteIndex === -1) return;
+                    
+                    const deletedNote = readingNotes.value[noteIndex];
+                    readingNotes.value.splice(noteIndex, 1);
+                    
+                    // 更新阅读相关的成就进度
+                    updateReadingAchievements();
+                    
+                    await saveGameDataToGitHub();
+                    showStatusMessage(`已删除读书笔记"${deletedNote.title}"`, 'success');
+                };
+
+                const updateReadingAchievements = () => {
+                    // 更新阅读相关的成就进度
+                    const readingAchievements = achievements.value.filter(a => a.category === 'reading');
+                    const totalReadingNotesCount = readingNotes.value.length;
+                    
+                    readingAchievements.forEach(achievement => {
+                        achievement.current = Math.min(totalReadingNotesCount, achievement.requirement);
+                        if (!achievement.unlocked && achievement.current >= achievement.requirement) {
+                            achievement.unlocked = true;
+                            player.value.xp += achievement.reward;
+                            showStatusMessage(`🎉 成就解锁: ${achievement.name}! 获得 ${achievement.reward} XP`, 'success');
+                            checkLevelUp();
+                        }
+                    });
+                };
+
                 // ==================== 思维导图功能（已更新） ====================
                 const getRandomNodeColor = () => {
                     const colors = [
@@ -2277,212 +2964,176 @@
                 };
 
                 const editMindmapNodeById = (nodeId) => {
-                    const nodeIndex = mindmapNodes.value.findIndex(n => n.id === nodeId);
-                    if (nodeIndex !== -1) {
-                        editMindmapNode(nodeIndex);
+                    const index = mindmapNodes.value.findIndex(n => n.id === nodeId);
+                    if (index !== -1) {
+                        editMindmapNode(index);
                     }
                 };
 
                 const removeMindmapNode = (index) => {
-                    if (confirm('确定删除这个节点吗？')) {
-                        const nodeId = mindmapNodes.value[index].id;
-                        
-                        // 删除该节点
-                        mindmapNodes.value.splice(index, 1);
-                        
-                        // 从父节点的children中移除
-                        mindmapNodes.value.forEach(node => {
-                            if (node.children && node.children.includes(nodeId)) {
-                                node.children = node.children.filter(id => id !== nodeId);
+                    const node = mindmapNodes.value[index];
+                    if (!confirm(`确定要删除节点"${node.text}"及其所有子节点吗？`)) return;
+                    
+                    // 递归删除子节点
+                    const removeNodeAndChildren = (nodeId) => {
+                        const nodeIndex = mindmapNodes.value.findIndex(n => n.id === nodeId);
+                        if (nodeIndex !== -1) {
+                            const node = mindmapNodes.value[nodeIndex];
+                            if (node.children) {
+                                node.children.forEach(childId => removeNodeAndChildren(childId));
                             }
-                        });
-                        
-                        // 如果删除的是选中节点，清空选中状态
-                        if (mindmapSelectedNode.value === nodeId) {
-                            mindmapSelectedNode.value = null;
+                            mindmapNodes.value.splice(nodeIndex, 1);
                         }
-                        
-                        // 如果删除的是根节点，清空根节点状态
-                        if (mindmapRootNode.value === nodeId) {
-                            mindmapRootNode.value = null;
+                    };
+                    
+                    removeNodeAndChildren(node.id);
+                    
+                    // 从父节点的children中删除
+                    if (node.parentId) {
+                        const parentIndex = mindmapNodes.value.findIndex(n => n.id === node.parentId);
+                        if (parentIndex !== -1) {
+                            const parent = mindmapNodes.value[parentIndex];
+                            if (parent.children) {
+                                parent.children = parent.children.filter(childId => childId !== node.id);
+                            }
                         }
-                        
-                        updateMindmapLines();
                     }
+                    
+                    // 如果删除的是选中节点，取消选中
+                    if (mindmapSelectedNode.value === node.id) {
+                        mindmapSelectedNode.value = null;
+                    }
+                    
+                    // 如果删除的是根节点，重新选择根节点
+                    if (mindmapRootNode.value === node.id) {
+                        mindmapRootNode.value = mindmapNodes.value.length > 0 ? mindmapNodes.value[0].id : null;
+                    }
+                    
+                    updateMindmapLines();
+                    showStatusMessage(`已删除节点: ${node.text}`, 'success');
                 };
 
                 const clearMindmap = () => {
-                    if (confirm('确定清空整个思维导图吗？')) {
-                        mindmapNodes.value = [];
-                        mindmapLines.value = [];
-                        mindmapSelectedNode.value = null;
-                        mindmapRootNode.value = null;
-                    }
+                    if (!confirm("确定要清空整个思维导图吗？")) return;
+                    mindmapNodes.value = [];
+                    mindmapLines.value = [];
+                    mindmapSelectedNode.value = null;
+                    mindmapRootNode.value = null;
+                    showStatusMessage('已清空思维导图', 'success');
                 };
 
-                const loadSampleMindmap = () => {
-                    mindmapNodes.value = [
-                        { 
-                            id: 1, 
-                            text: '核心主题', 
-                            x: 300, 
-                            y: 200, 
-                            color: '#fffefc',
-                            children: [2, 3],
-                            level: 0
-                        },
-                        { 
-                            id: 2, 
-                            text: '主要分支1', 
-                            x: 150, 
-                            y: 100, 
-                            color: '#ffd6cc',
-                            parentId: 1,
-                            children: [4],
-                            level: 1
-                        },
-                        { 
-                            id: 3, 
-                            text: '主要分支2', 
-                            x: 450, 
-                            y: 100, 
-                            color: '#a3de83',
-                            parentId: 1,
-                            children: [5],
-                            level: 1
-                        },
-                        { 
-                            id: 4, 
-                            text: '子分支1-1', 
-                            x: 100, 
-                            y: 50, 
-                            color: '#ff9a8b',
-                            parentId: 2,
-                            level: 2
-                        },
-                        { 
-                            id: 5, 
-                            text: '子分支2-1', 
-                            x: 500, 
-                            y: 50, 
-                            color: '#4ecdc4',
-                            parentId: 3,
-                            level: 2
+                const startNodeDrag = (node, event) => {
+                    event.preventDefault();
+                    draggingNode.value = node;
+                    const rect = event.target.getBoundingClientRect();
+                    dragOffset.value = {
+                        x: event.clientX - rect.left,
+                        y: event.clientY - rect.top
+                    };
+                    
+                    const onMouseMove = (e) => {
+                        if (draggingNode.value) {
+                            const container = mindmapContainer.value;
+                            if (!container) return;
+                            
+                            const containerRect = container.getBoundingClientRect();
+                            const newX = e.clientX - containerRect.left - dragOffset.value.x;
+                            const newY = e.clientY - containerRect.top - dragOffset.value.y;
+                            
+                            // 确保节点在容器内
+                            const maxX = containerRect.width - 120;
+                            const maxY = containerRect.height - 30;
+                            
+                            draggingNode.value.x = Math.max(0, Math.min(newX, maxX));
+                            draggingNode.value.y = Math.max(0, Math.min(newY, maxY));
+                            
+                            updateMindmapLines();
                         }
-                    ];
-                    mindmapRootNode.value = 1;
-                    mindmapSelectedNode.value = 1;
-                    updateMindmapLines();
+                    };
+                    
+                    const onMouseUp = () => {
+                        draggingNode.value = null;
+                        window.removeEventListener('mousemove', onMouseMove);
+                        window.removeEventListener('mouseup', onMouseUp);
+                    };
+                    
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('mouseup', onMouseUp);
                 };
 
                 const updateMindmapLines = () => {
-                    if (mindmapNodes.value.length <= 1) {
-                        mindmapLines.value = [];
-                        return;
-                    }
-                    
                     const lines = [];
-                    
-                    // 连接所有父子节点
                     mindmapNodes.value.forEach(node => {
+                        // 连接到父节点
                         if (node.parentId) {
-                            const parentNode = mindmapNodes.value.find(n => n.id === node.parentId);
-                            if (parentNode) {
+                            const parent = mindmapNodes.value.find(n => n.id === node.parentId);
+                            if (parent) {
                                 lines.push({
-                                    x1: parentNode.x + 60,
-                                    y1: parentNode.y + 15,
-                                    x2: node.x + 60,
+                                    x1: parent.x + 60,
+                                    y1: parent.y + 15,
+                                    x2: node.x,
                                     y2: node.y + 15,
                                     type: 'parent-child'
                                 });
                             }
-                        } else if (mindmapRootNode.value && node.id !== mindmapRootNode.value) {
-                            // 如果设置了根节点，连接到根节点
+                        }
+                        
+                        // 连接到根节点（如果设置了根节点）
+                        if (mindmapRootNode.value && node.id !== mindmapRootNode.value) {
                             const rootNode = mindmapNodes.value.find(n => n.id === mindmapRootNode.value);
-                            if (rootNode) {
+                            if (rootNode && !node.parentId) {
                                 lines.push({
                                     x1: rootNode.x + 60,
                                     y1: rootNode.y + 15,
                                     x2: node.x + 60,
                                     y2: node.y + 15,
-                                    type: 'to-root'
+                                    type: 'root-connection'
                                 });
                             }
                         }
                     });
-                    
                     mindmapLines.value = lines;
                 };
 
-                const startNodeDrag = (node, event) => {
-                    draggingNode.value = node;
-                    const container = mindmapContainer.value.getBoundingClientRect();
-                    dragOffset.value = {
-                        x: event.clientX - container.left - node.x,
-                        y: event.clientY - container.top - node.y
+                const addNodeAtPosition = (event) => {
+                    if (!mindmapSelectedNode.value) return;
+                    
+                    const container = mindmapContainer.value;
+                    if (!container) return;
+                    
+                    const rect = container.getBoundingClientRect();
+                    const x = event.clientX - rect.left - 60;
+                    const y = event.clientY - rect.top - 15;
+                    
+                    // 确保节点在容器内
+                    const maxX = rect.width - 120;
+                    const maxY = rect.height - 30;
+                    
+                    const newNode = {
+                        id: Date.now(),
+                        text: '新节点',
+                        x: Math.max(0, Math.min(x, maxX)),
+                        y: Math.max(0, Math.min(y, maxY)),
+                        color: getRandomNodeColor(),
+                        parentId: mindmapSelectedNode.value,
+                        children: [],
+                        level: mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value)?.level + 1 || 1
                     };
                     
-                    document.addEventListener('mousemove', dragNode);
-                    document.addEventListener('mouseup', stopNodeDrag);
-                };
-
-                const dragNode = (event) => {
-                    if (!draggingNode.value) return;
+                    mindmapNodes.value.push(newNode);
                     
-                    const container = mindmapContainer.value.getBoundingClientRect();
-                    draggingNode.value.x = event.clientX - container.left - dragOffset.value.x;
-                    draggingNode.value.y = event.clientY - container.top - dragOffset.value.y;
-                    
-                    // 限制在容器内
-                    draggingNode.value.x = Math.max(0, Math.min(draggingNode.value.x, container.width - 120));
-                    draggingNode.value.y = Math.max(0, Math.min(draggingNode.value.y, container.height - 60));
-                    
-                    updateMindmapLines();
-                };
-
-                const stopNodeDrag = () => {
-                    draggingNode.value = null;
-                    document.removeEventListener('mousemove', dragNode);
-                    document.removeEventListener('mouseup', stopNodeDrag);
-                };
-
-                const addNodeAtPosition = (event) => {
-                    if (event.target !== mindmapContainer.value) return;
-                    
-                    const container = mindmapContainer.value.getBoundingClientRect();
-                    const x = event.clientX - container.left - 60;
-                    const y = event.clientY - container.top - 30;
-                    
-                    const text = prompt('输入节点内容:', '新节点');
-                    if (text && text.trim()) {
-                        const nodeId = Date.now();
-                        const newNode = {
-                            id: nodeId,
-                            text: text.trim(),
-                            x: x,
-                            y: y,
-                            color: getRandomNodeColor(),
-                            parentId: mindmapSelectedNode.value,
-                            children: [],
-                            level: mindmapSelectedNode.value ? 
-                                (mindmapNodes.value.find(n => n.id === mindmapSelectedNode.value)?.level || 0) + 1 : 0
-                        };
-                        
-                        mindmapNodes.value.push(newNode);
-                        
-                        if (mindmapSelectedNode.value) {
-                            const parentIndex = mindmapNodes.value.findIndex(n => n.id === mindmapSelectedNode.value);
-                            if (parentIndex !== -1) {
-                                if (!mindmapNodes.value[parentIndex].children) {
-                                    mindmapNodes.value[parentIndex].children = [];
-                                }
-                                mindmapNodes.value[parentIndex].children.push(nodeId);
-                            }
+                    // 添加到父节点的children中
+                    const parentIndex = mindmapNodes.value.findIndex(n => n.id === mindmapSelectedNode.value);
+                    if (parentIndex !== -1) {
+                        if (!mindmapNodes.value[parentIndex].children) {
+                            mindmapNodes.value[parentIndex].children = [];
                         }
-                        
-                        mindmapSelectedNode.value = nodeId;
-                        updateMindmapLines();
+                        mindmapNodes.value[parentIndex].children.push(newNode.id);
                     }
+                    
+                    mindmapSelectedNode.value = newNode.id;
+                    updateMindmapLines();
+                    showStatusMessage('在指定位置添加了新节点', 'success');
                 };
 
                 const saveMindmapAsNote = async () => {
@@ -2490,196 +3141,286 @@
                         showStatusMessage('思维导图为空，无法保存', 'error');
                         return;
                     }
+
+                    const tags = ['思维导图', '可视化'];
+                    const category = 'mindmap';
                     
-                    const title = prompt('输入笔记标题:', '思维导图笔记');
-                    if (!title || !title.trim()) return;
+                    // 构建思维导图的文本表示
+                    let content = '<h2>思维导图</h2>';
+                    content += '<div style="background:#f9f5f0; padding:20px; border-radius:10px;">';
                     
-                    // 将思维导图转换为HTML描述
-                    let htmlContent = `<h2>思维导图结构 (${mindmapNodes.value.length}个节点)</h2>`;
-                    
-                    // 按层级组织显示
-                    const rootNodes = mindmapNodes.value.filter(n => n.level === 0);
-                    const buildTreeHtml = (node, depth = 0) => {
-                        const indent = '&nbsp;&nbsp;'.repeat(depth * 2);
-                        let html = `<div style="margin-left: ${depth * 20}px; margin-bottom: 5px;">`;
-                        html += `${indent}<strong>${node.text}</strong>`;
-                        if (node.children && node.children.length > 0) {
-                            const childNodes = mindmapNodes.value.filter(n => node.children.includes(n.id));
-                            childNodes.forEach(child => {
-                                html += buildTreeHtml(child, depth + 1);
-                            });
-                        }
-                        html += '</div>';
-                        return html;
-                    };
-                    
-                    rootNodes.forEach(rootNode => {
-                        htmlContent += buildTreeHtml(rootNode);
+                    // 添加节点信息
+                    content += '<h3>节点列表:</h3>';
+                    content += '<ul>';
+                    mindmapNodes.value.forEach(node => {
+                        const parentName = node.parentId ? 
+                            mindmapNodes.value.find(n => n.id === node.parentId)?.text || '未知' : 
+                            '根节点';
+                        content += `<li><strong>${node.text}</strong> (层级: ${node.level}, 父节点: ${parentName})</li>`;
                     });
+                    content += '</ul>';
                     
-                    const tags = prompt('输入标签，用逗号分隔:', '思维导图,脑图,思考').split(',').map(t => t.trim());
+                    // 添加结构信息
+                    if (mindmapRootNode.value) {
+                        const rootNode = mindmapNodes.value.find(n => n.id === mindmapRootNode.value);
+                        if (rootNode) {
+                            content += `<h3>根节点: ${rootNode.text}</h3>`;
+                        }
+                    }
                     
+                    content += '</div>';
+
                     const noteToSave = {
                         id: Date.now(),
-                        title: title.trim(),
-                        content: htmlContent,
+                        title: `思维导图 - ${new Date().toLocaleDateString()}`,
+                        content: content,
                         tags: tags,
-                        category: 'study',
+                        category: category,
                         createdAt: new Date().toISOString(),
-                        mindmapData: JSON.parse(JSON.stringify(mindmapNodes.value)) // 保存原始数据
+                        imageData: null,
+                        imageUrl: null
                     };
-                    
+
                     notes.value.unshift(noteToSave);
                     
+                    // 更新分类列表
+                    updateNoteCategoriesFromNotes();
+
                     const saveSuccess = await saveGameDataToGitHub();
                     if (saveSuccess) {
-                        showStatusMessage(`思维导图已保存为笔记"${title.trim()}"`, 'success');
+                        showStatusMessage(`💾 思维导图已保存为笔记"${noteToSave.title}"`, "success", 5000);
                         activeNoteTab.value = 'all';
                     }
                 };
 
-                // ==================== 高亮提取功能 ====================
+                const loadSampleMindmap = () => {
+                    mindmapNodes.value = [
+                        {
+                            id: 1,
+                            text: '中心主题',
+                            x: 300,
+                            y: 250,
+                            color: '#fffefc',
+                            parentId: null,
+                            children: [2, 3, 4],
+                            level: 0
+                        },
+                        {
+                            id: 2,
+                            text: '分支主题1',
+                            x: 150,
+                            y: 150,
+                            color: '#ffd6cc',
+                            parentId: 1,
+                            children: [5],
+                            level: 1
+                        },
+                        {
+                            id: 3,
+                            text: '分支主题2',
+                            x: 300,
+                            y: 100,
+                            color: '#a3de83',
+                            parentId: 1,
+                            children: [],
+                            level: 1
+                        },
+                        {
+                            id: 4,
+                            text: '分支主题3',
+                            x: 450,
+                            y: 150,
+                            color: '#4ecdc4',
+                            parentId: 1,
+                            children: [6],
+                            level: 1
+                        },
+                        {
+                            id: 5,
+                            text: '子主题1',
+                            x: 100,
+                            y: 50,
+                            color: '#ff9a8b',
+                            parentId: 2,
+                            children: [],
+                            level: 2
+                        },
+                        {
+                            id: 6,
+                            text: '子主题2',
+                            x: 500,
+                            y: 50,
+                            color: '#4a9fff',
+                            parentId: 4,
+                            children: [],
+                            level: 2
+                        }
+                    ];
+                    
+                    mindmapRootNode.value = 1;
+                    mindmapSelectedNode.value = 1;
+                    updateMindmapLines();
+                    showStatusMessage('示例思维导图已加载', 'success');
+                };
+
+                // ==================== 高亮内容提取功能 ====================
                 const extractHighlights = () => {
                     if (!highlightSourceNote.value) {
-                        showStatusMessage('请选择笔记来源', 'error');
+                        showStatusMessage('请选择要提取高亮的笔记', 'error');
                         return;
                     }
                     
                     const note = getNoteById(highlightSourceNote.value);
-                    if (!note || !note.content) {
-                        showStatusMessage('笔记不存在或内容为空', 'error');
+                    if (!note) {
+                        showStatusMessage('未找到指定笔记', 'error');
                         return;
                     }
                     
-                    // 解析HTML内容提取高亮
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(note.content, 'text/html');
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = note.content;
                     
                     // 查找所有高亮元素
-                    const highlightElements = doc.querySelectorAll('.highlight, mark, [style*="background"], [class*="highlight"]');
+                    const highlightElements = tempDiv.querySelectorAll('.highlight, mark, [style*="background"], [class*="highlight"]');
                     
                     if (highlightElements.length === 0) {
                         showStatusMessage('该笔记中没有找到高亮内容', 'warning');
                         return;
                     }
                     
-                    extractedHighlights.value = Array.from(highlightElements).map(el => ({
-                        content: el.outerHTML || el.textContent,
-                        sourceTitle: note.title,
-                        sourceId: note.id
-                    }));
-                    
-                    // 自动生成新的笔记内容
-                    newNoteFromHighlights.value = `<h2>从"${note.title}"提取的高亮内容</h2>\n\n`;
-                    extractedHighlights.value.forEach((h, i) => {
-                        newNoteFromHighlights.value += `<p><strong>高亮点 ${i + 1}:</strong> ${h.content}</p>\n`;
+                    highlightElements.forEach(element => {
+                        extractedHighlights.value.push({
+                            content: element.outerHTML || element.innerHTML,
+                            sourceTitle: note.title,
+                            sourceId: note.id
+                        });
                     });
                     
-                    showStatusMessage(`成功提取 ${extractedHighlights.value.length} 个高亮内容`, 'success');
+                    // 构建提取的内容
+                    newNoteFromHighlights.value = `<h2>提取自: ${note.title}</h2>\n`;
+                    highlightElements.forEach(element => {
+                        newNoteFromHighlights.value += `<div style="background:#f9f5f0; padding:10px; margin:10px 0; border-left:4px solid #ff9a8b;">\n`;
+                        newNoteFromHighlights.value += element.outerHTML || element.innerHTML;
+                        newNoteFromHighlights.value += '\n</div>\n';
+                    });
+                    
+                    showStatusMessage(`✅ 从"${note.title}"中提取了 ${highlightElements.length} 个高亮`, 'success');
                 };
 
                 const extractAllHighlights = () => {
-                    const allHighlights = [];
+                    extractedHighlights.value = [];
+                    let totalHighlights = 0;
                     
                     notes.value.forEach(note => {
                         if (note.content) {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(note.content, 'text/html');
-                            const highlightElements = doc.querySelectorAll('.highlight, mark, [style*="background"]');
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = note.content;
                             
-                            Array.from(highlightElements).forEach(el => {
-                                allHighlights.push({
-                                    content: el.outerHTML || el.textContent,
-                                    sourceTitle: note.title,
-                                    sourceId: note.id
+                            const highlightElements = tempDiv.querySelectorAll('.highlight, mark, [style*="background"], [class*="highlight"]');
+                            
+                            if (highlightElements.length > 0) {
+                                highlightElements.forEach(element => {
+                                    extractedHighlights.value.push({
+                                        content: element.outerHTML || element.innerHTML,
+                                        sourceTitle: note.title,
+                                        sourceId: note.id
+                                    });
                                 });
-                            });
+                                totalHighlights += highlightElements.length;
+                            }
                         }
                     });
                     
-                    if (allHighlights.length === 0) {
+                    if (totalHighlights === 0) {
                         showStatusMessage('所有笔记中都没有找到高亮内容', 'warning');
-                        return;
+                    } else {
+                        // 构建提取的内容
+                        newNoteFromHighlights.value = `<h2>高亮内容汇总</h2>\n<p>从 ${notes.value.length} 篇笔记中提取</p>\n`;
+                        extractedHighlights.value.forEach(highlight => {
+                            newNoteFromHighlights.value += `<div style="background:#f9f5f0; padding:10px; margin:10px 0; border-left:4px solid #ff9a8b;">\n`;
+                            newNoteFromHighlights.value += `<p><small>来源: ${highlight.sourceTitle}</small></p>\n`;
+                            newNoteFromHighlights.value += highlight.content;
+                            newNoteFromHighlights.value += '\n</div>\n';
+                        });
+                        
+                        showStatusMessage(`✅ 从所有笔记中提取了 ${totalHighlights} 个高亮`, 'success');
                     }
-                    
-                    extractedHighlights.value = allHighlights;
-                    newNoteFromHighlights.value = `<h2>从所有笔记提取的高亮内容</h2>\n\n`;
-                    allHighlights.forEach((h, i) => {
-                        newNoteFromHighlights.value += `<p><strong>${i + 1}. [${h.sourceTitle}]:</strong> ${h.content}</p>\n`;
-                    });
-                    
-                    showStatusMessage(`从所有笔记中提取了 ${allHighlights.length} 个高亮内容`, 'success');
                 };
 
                 const extractHighlightsFromNote = (noteId) => {
                     highlightSourceNote.value = noteId;
-                    activeNoteTab.value = 'highlights';
-                    setTimeout(() => {
-                        extractHighlights();
-                    }, 100);
+                    extractHighlights();
                 };
 
-                const copyHighlight = (highlight) => {
-                    const text = highlight.content.replace(/<[^>]*>/g, ''); // 移除HTML标签
-                    navigator.clipboard.writeText(text).then(() => {
-                        showStatusMessage('高亮内容已复制到剪贴板', 'success');
-                    });
+                const createNoteFromHighlights = () => {
+                    newNote.value.title = `高亮汇总 - ${new Date().toLocaleDateString()}`;
+                    newNote.value.content = newNoteFromHighlights.value;
+                    newNote.value.tagsInput = '高亮,汇总,精华';
+                    activeNoteTab.value = 'editor';
+                    
+                    // 设置富文本编辑器内容
+                    if (richTextEditor.value) {
+                        richTextEditor.value.innerHTML = newNoteFromHighlights.value;
+                        updateRichTextContent();
+                    }
+                    
+                    showStatusMessage('高亮内容已加载到编辑器', 'success');
                 };
 
-                const removeHighlight = (index) => {
-                    extractedHighlights.value.splice(index, 1);
+                const saveHighlightsNote = async () => {
+                    if (!newNoteFromHighlights.value.trim()) {
+                        showStatusMessage('请输入笔记内容', 'error');
+                        return;
+                    }
+
+                    const tags = ['高亮汇总', '精华'];
+                    const category = 'highlights';
+                    
+                    const noteToSave = {
+                        id: Date.now(),
+                        title: `高亮汇总 - ${new Date().toLocaleDateString()}`,
+                        content: newNoteFromHighlights.value,
+                        tags: tags,
+                        category: category,
+                        createdAt: new Date().toISOString(),
+                        imageData: null,
+                        imageUrl: null
+                    };
+
+                    notes.value.unshift(noteToSave);
+                    
+                    // 更新分类列表
+                    updateNoteCategoriesFromNotes();
+
+                    const saveSuccess = await saveGameDataToGitHub();
+                    if (saveSuccess) {
+                        showStatusMessage(`💾 高亮汇总已保存为笔记"${noteToSave.title}"`, "success", 5000);
+                        activeNoteTab.value = 'all';
+                        clearHighlights();
+                    }
                 };
 
                 const clearHighlights = () => {
                     extractedHighlights.value = [];
                     newNoteFromHighlights.value = '';
+                    highlightSourceNote.value = '';
                 };
 
-                const createNoteFromHighlights = () => {
-                    if (extractedHighlights.value.length === 0) {
-                        showStatusMessage('没有高亮内容可生成笔记', 'error');
-                        return;
-                    }
-                    
-                    newNoteFromHighlights.value = `<h2>高亮内容汇总</h2>\n\n`;
-                    extractedHighlights.value.forEach((h, i) => {
-                        newNoteFromHighlights.value += `<p><strong>${i + 1}. [${h.sourceTitle}]:</strong> ${h.content}</p>\n`;
-                    });
-                    
-                    showStatusMessage('已生成高亮笔记内容，请编辑后保存', 'info');
+                const copyHighlight = (highlight) => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = highlight.content.replace(/<[^>]*>/g, '');
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showStatusMessage('高亮内容已复制到剪贴板', 'success', 2000);
                 };
 
-                const saveHighlightsNote = async () => {
-                    if (!newNoteFromHighlights.value.trim()) {
-                        showStatusMessage('请先编辑笔记内容', 'error');
-                        return;
-                    }
-                    
-                    const title = prompt('输入笔记标题:', '高亮内容汇总');
-                    if (!title || !title.trim()) return;
-                    
-                    const tags = prompt('输入标签，用逗号分隔:', '高亮,汇总,摘要').split(',').map(t => t.trim());
-                    
-                    const noteToSave = {
-                        id: Date.now(),
-                        title: title.trim(),
-                        content: newNoteFromHighlights.value,
-                        tags: tags,
-                        category: 'study',
-                        createdAt: new Date().toISOString()
-                    };
-                    
-                    notes.value.unshift(noteToSave);
-                    
-                    const saveSuccess = await saveGameDataToGitHub();
-                    if (saveSuccess) {
-                        clearHighlights();
-                        showStatusMessage(`高亮笔记"${title.trim()}"已保存`, 'success');
-                        activeNoteTab.value = 'all';
-                    }
+                const removeHighlight = (index) => {
+                    extractedHighlights.value.splice(index, 1);
+                    showStatusMessage('已删除高亮', 'success');
                 };
 
-                // ==================== Word预览功能 ====================
+                // ==================== Word预览和导出功能 ====================
                 const printPreview = () => {
                     if (!selectedNoteForPreview.value) {
                         showStatusMessage('请选择要预览的笔记', 'error');
@@ -2687,37 +3428,89 @@
                     }
                     
                     const note = getNoteById(selectedNoteForPreview.value);
+                    if (!note) {
+                        showStatusMessage('未找到指定笔记', 'error');
+                        return;
+                    }
+                    
                     const printWindow = window.open('', '_blank');
                     printWindow.document.write(`
                         <!DOCTYPE html>
                         <html>
                         <head>
-                            <title>打印: ${note.title}</title>
+                            <title>${note.title} - 打印预览</title>
                             <style>
                                 @media print {
-                                    body { font-family: 'Times New Roman', serif; padding: 2cm; }
-                                    h1 { text-align: center; margin-bottom: 2cm; }
-                                    .note-tags { display: none; }
+                                    @page { margin: 2cm; }
                                 }
-                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; }
-                                h1, h2, h3 { font-family: 'Gochi Hand', cursive; }
-                                .highlight { background: #ffd6cc; padding: 0 2px; }
-                                .code-block { background: #f5f5f5; padding: 15px; border-left: 4px solid #ccc; }
+                                body { 
+                                    font-family: 'Times New Roman', serif; 
+                                    padding: 40px; 
+                                    max-width: 800px; 
+                                    margin: 0 auto; 
+                                    line-height: 1.6;
+                                }
+                                h1, h2, h3 { 
+                                    font-family: 'Georgia', serif; 
+                                    color: #333;
+                                    page-break-after: avoid;
+                                }
+                                h1 { 
+                                    font-size: 28px; 
+                                    margin-bottom: 30px;
+                                    text-align: center;
+                                    border-bottom: 2px solid #333;
+                                    padding-bottom: 15px;
+                                }
+                                h2 { font-size: 22px; margin-top: 30px; }
+                                h3 { font-size: 18px; }
+                                p { margin-bottom: 15px; }
+                                .highlight { background: #ffffcc; padding: 0 2px; }
+                                blockquote { 
+                                    border-left: 4px solid #ccc; 
+                                    padding-left: 20px; 
+                                    margin: 20px 0; 
+                                    font-style: italic;
+                                    color: #555;
+                                }
+                                .code-block {
+                                    background: #f5f5f5;
+                                    border: 1px solid #ddd;
+                                    padding: 15px;
+                                    font-family: 'Courier New', monospace;
+                                    font-size: 14px;
+                                    margin: 20px 0;
+                                    overflow-x: auto;
+                                    white-space: pre-wrap;
+                                }
+                                .note-meta {
+                                    color: #666;
+                                    font-size: 14px;
+                                    text-align: center;
+                                    margin-bottom: 40px;
+                                }
+                                .page-break {
+                                    page-break-before: always;
+                                }
                             </style>
                         </head>
                         <body>
-                            <h1>${note.title}</h1>
-                            <div>${note.content || ''}</div>
-                            <div style="margin-top: 3cm; text-align: right; color: #666;">
-                                创建于: ${formatDate(note.createdAt)}
+                            <div class="note-meta">
+                                <p>${note.title}</p>
+                                <p>创建时间: ${formatDate(note.createdAt)}</p>
                             </div>
+                            <div>${note.content}</div>
+                            <div style="page-break-before: always;"></div>
                         </body>
                         </html>
                     `);
                     printWindow.document.close();
-                    setTimeout(() => {
+                    
+                    // 等待内容加载后打印
+                    printWindow.onload = function() {
+                        printWindow.focus();
                         printWindow.print();
-                    }, 500);
+                    };
                 };
 
                 const exportAsDocument = () => {
@@ -2727,298 +3520,204 @@
                     }
                     
                     const note = getNoteById(selectedNoteForPreview.value);
-                    const content = `
+                    if (!note) {
+                        showStatusMessage('未找到指定笔记', 'error');
+                        return;
+                    }
+                    
+                    // 创建HTML内容
+                    const htmlContent = `
                         <!DOCTYPE html>
                         <html>
                         <head>
                             <meta charset="UTF-8">
                             <title>${note.title}</title>
                             <style>
-                                body { font-family: 'Comic Neue', cursive; padding: 40px; max-width: 800px; margin: 0 auto; }
-                                h1, h2, h3 { font-family: 'Gochi Hand', cursive; color: #5a4a42; }
-                                .highlight { background: #ffd6cc; padding: 0 2px; border-radius: 2px; }
-                                blockquote { border-left: 4px solid #ff9a8b; padding-left: 20px; margin: 20px 0; font-style: italic; }
-                                .code-block { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 10px; overflow-x: auto; }
-                                .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #e0c9b8; }
-                                .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0c9b8; text-align: right; color: #7a6a62; font-size: 0.9em; }
+                                body { 
+                                    font-family: 'Times New Roman', serif; 
+                                    padding: 40px; 
+                                    max-width: 800px; 
+                                    margin: 0 auto; 
+                                    line-height: 1.6;
+                                }
+                                h1, h2, h3 { 
+                                    font-family: 'Georgia', serif; 
+                                    color: #333;
+                                }
+                                h1 { 
+                                    font-size: 28px; 
+                                    margin-bottom: 30px;
+                                    text-align: center;
+                                    border-bottom: 2px solid #333;
+                                    padding-bottom: 15px;
+                                }
+                                h2 { font-size: 22px; margin-top: 30px; }
+                                h3 { font-size: 18px; }
+                                p { margin-bottom: 15px; }
+                                .highlight { background: #ffffcc; padding: 0 2px; }
+                                blockquote { 
+                                    border-left: 4px solid #ccc; 
+                                    padding-left: 20px; 
+                                    margin: 20px 0; 
+                                    font-style: italic;
+                                    color: #555;
+                                }
+                                .code-block {
+                                    background: #f5f5f5;
+                                    border: 1px solid #ddd;
+                                    padding: 15px;
+                                    font-family: 'Courier New', monospace;
+                                    font-size: 14px;
+                                    margin: 20px 0;
+                                    overflow-x: auto;
+                                }
+                                .note-meta {
+                                    color: #666;
+                                    font-size: 14px;
+                                    text-align: center;
+                                    margin-bottom: 40px;
+                                }
                             </style>
                         </head>
                         <body>
-                            <div class="header">
+                            <div class="note-meta">
                                 <h1>${note.title}</h1>
-                                <div>创建于: ${formatDate(note.createdAt)}</div>
-                                ${note.tags && note.tags.length > 0 ? `<div>标签: ${note.tags.join(', ')}</div>` : ''}
+                                <p>创建时间: ${formatDate(note.createdAt)}</p>
+                                ${note.tags && note.tags.length > 0 ? `<p>标签: ${note.tags.join(', ')}</p>` : ''}
                             </div>
-                            <div>${note.content || ''}</div>
-                            <div class="footer">
-                                <div>导出时间: ${new Date().toLocaleString()}</div>
-                                <div>来自: 智能成长手账系统</div>
-                            </div>
+                            <div>${note.content}</div>
                         </body>
                         </html>
                     `;
                     
-                    const blob = new Blob([content], { type: 'text/html' });
+                    // 创建下载链接
+                    const blob = new Blob([htmlContent], { type: 'text/html' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `${note.title.replace(/[^\w]/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
+                    a.download = `${note.title.replace(/[^\w\s]/gi, '')}.html`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                     
-                    showStatusMessage(`笔记"${note.title}"已导出为HTML文档`, 'success');
+                    showStatusMessage(`文档已导出: ${a.download}`, 'success');
                 };
 
-                // ==================== GitHub API 函数 ====================
-                // 加载数据 (使用jsDelivr CDN加速)
-                const loadGameDataFromGitHub = async () => {
-                    const { username, repo } = config.value;
-                    if (!username || !repo) return;
-                    
-                    isLoading.value = true;
-                    configError.value = '';
-                    
-                    try {
-                        const cdnUrl = `https://cdn.jsdelivr.net/gh/${username}/${repo}/main/growth_data.json`;
-                        const rawUrl = `https://raw.githubusercontent.com/${username}/${repo}/main/growth_data.json`;
-                        
-                        let response;
-                        try {
-                            response = await fetch(cdnUrl, { timeout: 8000 });
-                            if (!response.ok) throw new Error('CDN failed');
-                        } catch (cdnError) {
-                            response = await fetch(rawUrl, { timeout: 15000 });
-                            if (!response.ok) throw new Error('Raw failed: ' + response.status);
-                        }
-                        
-                        const gameData = await response.json();
-                        
-                        if (gameData.player) player.value = gameData.player;
-                        if (gameData.skills) skills.value = gameData.skills;
-                        if (gameData.achievements) achievements.value = gameData.achievements;
-                        if (gameData.notes) notes.value = gameData.notes;
-                        
-                        updateNoteCategoriesFromNotes();
-                        
-                        lastSyncTime.value = new Date().toLocaleTimeString();
-                        showStatusMessage('手账数据加载成功！', 'success');
-                    } catch (error) {
-                        console.error('加载数据失败:', error);
-                        configError.value = `加载失败: ${error.message}`;
-                        showStatusMessage(`加载失败: ${error.message}，请检查配置或网络`, 'error');
-                    } finally {
-                        isLoading.value = false;
-                    }
-                };
-
-                // 保存数据到GitHub
-                const saveGameDataToGitHub = async () => {
-                    if (isSaving.value) return;
-                    if (!config.value.token) {
-                        showStatusMessage('未提供Token，无法保存到GitHub。请在配置中设置Token。', 'warning');
-                        return false;
-                    }
-                    
-                    isSaving.value = true;
-                    const { username, repo, token } = config.value;
-                    
-                    try {
-                        const getUrl = `https://api.github.com/repos/${username}/${repo}/contents/growth_data.json`;
-                        let sha = null;
-                        try {
-                            const getRes = await fetch(getUrl, {
-                                headers: { 'Authorization': `token ${token}` }
-                            });
-                            if (getRes.ok) {
-                                const info = await getRes.json();
-                                sha = info.sha;
-                            }
-                        } catch (e) { /* 文件可能不存在 */ }
-                        
-                        const gameData = {
-                            version: '6.0',
-                            player: player.value,
-                            skills: skills.value,
-                            achievements: achievements.value,
-                            notes: notes.value,
-                            savedAt: new Date().toISOString()
-                        };
-                        
-                        const content = btoa(unescape(encodeURIComponent(JSON.stringify(gameData, null, 2))));
-                        
-                        const updateUrl = `https://api.github.com/repos/${username}/${repo}/contents/growth_data.json`;
-                        const updateRes = await fetch(updateUrl, {
-                            method: 'PUT',
-                            headers: {
-                                'Accept': 'application/vnd.github.v3+json',
-                                'Authorization': `token ${token}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                message: `手账更新 @ ${new Date().toLocaleString()}`,
-                                content: content,
-                                sha: sha
-                            })
-                        });
-                        
-                        if (!updateRes.ok) {
-                            const err = await updateRes.json().catch(() => ({}));
-                            throw new Error(err.message || '保存失败');
-                        }
-                        
-                        lastSyncTime.value = new Date().toLocaleTimeString();
-                        showStatusMessage('💾 数据已保存至GitHub！', 'success', 4000);
-                        console.log('💾 数据已保存至GitHub！');
-                        return true;
-                    } catch (error) {
-                        console.error('保存数据失败:', error);
-                        showStatusMessage(`保存失败: ${error.message}`, 'error', 6000);
-                        return false;
-                    } finally {
-                        isSaving.value = false;
-                    }
-                };
-
-                // 新增：手动触发保存函数
-                const forceSaveToGitHub = async () => {
-                    showStatusMessage('正在保存数据到GitHub...', 'info');
-                    await saveGameDataToGitHub();
-                };
-
-                // ==================== 配置管理 ====================
-                const saveConfigAndLoad = async () => {
-                    configError.value = '';
-                    if (!config.value.username || !config.value.repo) {
-                        configError.value = '请填写用户名和仓库名。';
+                // ==================== 笔记编辑功能 ====================
+                const saveRichTextNote = async () => {
+                    if (!newNote.value.title.trim()) {
+                        showStatusMessage("请填写笔记标题", "error");
                         return;
                     }
-                    
-                    localStorage.setItem('growth_system_config', JSON.stringify({
-                        username: config.value.username,
-                        repo: config.value.repo
-                    }));
-                    
-                    isConfigured.value = true;
-                    showConfig.value = false;
-                    
-                    await loadGameDataFromGitHub();
-                };
 
-                const loadDemoData = () => {
-                    if (!confirm('加载演示数据将替换当前所有数据。是否继续？')) return;
+                    const tags = newNote.value.tagsInput
+                        .split(',')
+                        .map(tag => tag.trim())
+                        .filter(tag => tag.length > 0);
+
+                    const category = determineCategoryFromTags(tags);
                     
-                    player.value = { level: 3, xp: 240, nextLevelXp: 500, streak: 7 };
-                    skills.value = [
-                        { id: 1, name: "八字命理", icon: "🌌", category: "易学", level: 2, xp: 80, maxXp: 200, xpPerPractice: 15, practiceCount: 12 },
-                        { id: 2, name: "英语词汇", icon: "📘", category: "英语", level: 3, xp: 180, maxXp: 300, xpPerPractice: 10, practiceCount: 25 },
-                        { id: 3, name: "健身训练", icon: "💪", category: "健身", level: 4, xp: 320, maxXp: 400, xpPerPractice: 20, practiceCount: 18 }
-                    ];
-                    notes.value = [
-                        { 
-                            id: 1, 
-                            title: "八字入门心得", 
-                            content: '<h2>八字学习笔记</h2><p>今天学习了八字的<strong class="highlight">基本排盘方法</strong>。</p><p><strong>重点：</strong>子午卯酉为<em>四正</em>，力量最强。</p><blockquote>命理学博大精深，需要长期学习</blockquote>', 
-                            tags: ["八字", "入门", "心得"], 
-                            category: "bazi",
-                            createdAt: new Date(Date.now() - 86400000).toISOString()
-                        },
-                        { 
-                            id: 2, 
-                            title: "今日健身记录", 
-                            content: '<h3>胸肌训练</h3><p>完成<strong class="highlight">胸肌训练</strong>：</p><ul><li>平板卧推 4组×12次</li><li>上斜哑铃推举 3组×10次</li><li>双杠臂屈伸 3组×力竭</li></ul>', 
-                            tags: ["健身", "胸肌", "计划"], 
-                            category: "fitness",
-                            createdAt: new Date().toISOString()
-                        }
-                    ];
+                    const noteToSave = {
+                        id: Date.now(),
+                        title: newNote.value.title,
+                        content: newNote.value.content || '',
+                        tags: tags,
+                        category: category,
+                        createdAt: new Date().toISOString(),
+                        imageData: newNote.value.imageData,
+                        imageUrl: null
+                    };
+
+                    notes.value.unshift(noteToSave);
                     
+                    // 更新分类列表
                     updateNoteCategoriesFromNotes();
+
+                    const saveSuccess = await saveGameDataToGitHub();
+                    if (saveSuccess) {
+                        clearNoteEditor();
+                        showStatusMessage(`💾 笔记"${noteToSave.title}"保存成功！`, "success", 5000);
+                        activeNoteTab.value = 'all';
+                    }
+                };
+
+                const clearNoteEditor = () => {
+                    newNote.value = { 
+                        title: '', 
+                        content: '', 
+                        tagsInput: '', 
+                        imageData: null,
+                        category: 'general' 
+                    };
+                    if (richTextEditor.value) {
+                        richTextEditor.value.innerHTML = '';
+                        updateRichTextContent();
+                    }
+                    activeFormat.value = '';
+                    textColor.value = '#5a4a42';
+                    fontSize.value = '16';
+                };
+
+                const editNote = (noteId) => {
+                    const note = getNoteById(noteId);
+                    if (!note) return;
                     
-                    isConfigured.value = true;
-                    showConfig.value = false;
-                    showStatusMessage('已加载演示数据！', 'success');
-                };
-
-                const openRepoInGitHub = () => {
-                    window.open(`https://github.com/${config.value.username}/${config.value.repo}`, '_blank');
-                };
-
-                const forceLoadFromGitHub = async () => {
-                    await loadGameDataFromGitHub();
-                };
-
-                // ==================== 数据导入/导出 ====================
-                const exportLocalData = () => {
-                    const gameData = {
-                        player: player.value,
-                        skills: skills.value,
-                        achievements: achievements.value,
-                        notes: notes.value,
-                        exportedAt: new Date().toISOString()
+                    newNote.value = { 
+                        title: note.title,
+                        content: note.content || '',
+                        tagsInput: note.tags ? note.tags.join(', ') : '',
+                        imageData: note.imageData || note.imageUrl || null,
+                        category: note.category || 'general'
                     };
                     
-                    const dataStr = JSON.stringify(gameData, null, 2);
-                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    if (richTextEditor.value) {
+                        richTextEditor.value.innerHTML = note.content || '';
+                        updateRichTextContent();
+                    }
                     
-                    const exportFileDefaultName = `成长手账备份_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+                    // 删除原笔记
+                    const noteIndex = notes.value.findIndex(n => n.id === noteId);
+                    if (noteIndex !== -1) {
+                        notes.value.splice(noteIndex, 1);
+                    }
                     
-                    const linkElement = document.createElement('a');
-                    linkElement.setAttribute('href', dataUri);
-                    linkElement.setAttribute('download', exportFileDefaultName);
-                    linkElement.click();
-                    
-                    showStatusMessage('数据已导出为JSON文件', 'success');
+                    activeNoteTab.value = 'editor';
+                    showStatusMessage(`正在编辑笔记: ${note.title}`, "info");
                 };
 
-                const importLocalData = (event) => {
-                    const file = event.target.files[0];
-                    if (!file) return;
+                const deleteNote = async (noteId) => {
+                    if (!confirm("确定要删除这篇笔记吗？")) return;
+                    const noteIndex = notes.value.findIndex(n => n.id === noteId);
+                    if (noteIndex === -1) return;
                     
-                    const reader = new FileReader();
-                    reader.onload = async function(e) {
-                        try {
-                            const importedData = JSON.parse(e.target.result);
-                            if (confirm("导入数据将覆盖当前所有数据，确定继续吗？")) {
-                                if (importedData.player) player.value = importedData.player;
-                                if (importedData.skills) skills.value = importedData.skills;
-                                if (importedData.achievements) achievements.value = importedData.achievements;
-                                if (importedData.notes) {
-                                    notes.value = importedData.notes;
-                                    updateNoteCategoriesFromNotes();
-                                }
-                                
-                                await saveGameDataToGitHub();
-                                showStatusMessage('数据导入成功！', 'success');
-                            }
-                        } catch (error) {
-                            console.error(error);
-                            showStatusMessage('文件格式错误，导入失败。', 'error');
-                        }
-                    };
-                    reader.readAsText(file);
-                    event.target.value = '';
+                    const deletedNote = notes.value[noteIndex];
+                    notes.value.splice(noteIndex, 1);
+                    
+                    await saveGameDataToGitHub();
+                    showStatusMessage(`已删除笔记"${deletedNote.title}"`, 'success');
                 };
 
-                // ==================== 笔记系统 ====================
                 const handleImageUpload = (event) => {
                     const file = event.target.files[0];
                     if (!file) return;
 
-                    if (!file.type.startsWith('image/')) {
-                        showStatusMessage('请选择图片文件！', 'error');
-                        return;
-                    }
+                    // 检查文件大小（最大2MB）
                     if (file.size > 2 * 1024 * 1024) {
                         showStatusMessage('图片大小不能超过2MB', 'error');
+                        return;
+                    }
+
+                    // 检查文件类型
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!validTypes.includes(file.type)) {
+                        showStatusMessage('仅支持 JPG, PNG, GIF 格式', 'error');
                         return;
                     }
 
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         newNote.value.imageData = e.target.result;
-                        showStatusMessage('图片已加载', 'success');
                     };
                     reader.readAsDataURL(file);
                 };
@@ -3029,158 +3728,64 @@
 
                 const handleImageError = (event) => {
                     event.target.style.display = 'none';
+                    showStatusMessage('图片加载失败', 'warning');
                 };
 
-                // 保存富文本笔记
-                const saveRichTextNote = async () => {
-                    if (!newNote.value.title.trim() || !newNote.value.content.trim()) {
-                        showStatusMessage("请填写标题和内容", "error");
-                        return;
-                    }
-
-                    const tags = newNote.value.tagsInput
-                        .split(',')
-                        .map(tag => tag.trim())
-                        .filter(tag => tag.length > 0);
-
-                    let finalCategory = 'general';
-                    if (tags.length > 0) {
-                        finalCategory = determineCategoryFromTags(tags);
-                    }
-
-                    const noteToSave = {
-                        id: Date.now(),
-                        title: newNote.value.title,
-                        content: newNote.value.content,
-                        tags: tags,
-                        category: finalCategory,
-                        createdAt: new Date().toISOString()
-                    };
-
-                    if (newNote.value.imageData) {
-                        noteToSave.imageData = newNote.value.imageData;
-                    }
-
-                    notes.value.unshift(noteToSave);
-                    
-                    if (!noteCategories.value.includes(finalCategory) && finalCategory !== 'general') {
-                        noteCategories.value.push(finalCategory);
-                        showStatusMessage(`📁 已创建新分类: ${getCategoryDisplayName(finalCategory)}`, 'success');
-                    }
-
-                    const saveSuccess = await saveGameDataToGitHub();
-                    if (saveSuccess) {
-                        clearNoteEditor();
-                        showStatusMessage(`📒 富文本笔记"${noteToSave.title}"保存成功！`, "success", 5000);
-                    }
-                };
-
-                const clearNoteEditor = () => {
-                    newNote.value = {
-                        title: '', 
-                        content: '', 
-                        tagsInput: '', 
-                        imageData: null,
-                        category: 'general'
-                    };
-                    if (richTextEditor.value) {
-                        richTextEditor.value.innerHTML = '';
-                    }
-                };
-
-                const editNote = (noteId) => {
-                    const note = getNoteById(noteId);
-                    if (!note) return;
-                    
-                    activeNoteTab.value = 'editor';
-                    setTimeout(() => {
-                        newNote.value = {
-                            title: note.title,
-                            content: note.content || '',
-                            tagsInput: note.tags ? note.tags.join(', ') : '',
-                            imageData: note.imageData || null,
-                            category: note.category
-                        };
-                        
-                        if (richTextEditor.value) {
-                            richTextEditor.value.innerHTML = note.content || '';
-                        }
-                        
-                        // 删除原笔记
-                        const noteIndex = notes.value.findIndex(n => n.id === noteId);
-                        if (noteIndex !== -1) {
-                            notes.value.splice(noteIndex, 1);
-                        }
-                    }, 100);
-                };
-
-                const deleteNote = async (noteId) => {
-                    if (!confirm("确定要删除这条笔记吗？")) return;
-                    const noteIndex = notes.value.findIndex(n => n.id === noteId);
-                    if (noteIndex === -1) return;
-                    
-                    const deletedNote = notes.value[noteIndex];
-                    notes.value.splice(noteIndex, 1);
-                    
-                    updateNoteCategoriesFromNotes();
-                    await saveGameDataToGitHub();
-                    showStatusMessage(`已删除笔记"${deletedNote.title}"`, 'success');
-                };
-
-                const formatDate = (dateString) => {
-                    const date = new Date(dateString);
-                    return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-                };
-
-                // ==================== 技能系统 ====================
+                // ==================== 技能系统功能 ====================
                 const getSkillXpPerPractice = (skill) => {
-                    return skill.xpPerPractice || 10;
-                };
-
-                const addNewSkill = async () => {
-                    const name = prompt("请输入新技能名称：", "例如：Python编程");
-                    if (!name || !name.trim()) return;
-                    
-                    const category = prompt("选择技能类别 (易学/英语/健身/冥想/其他)：", "其他");
-                    const icon = prompt("选一个表情图标：", "🌟");
-                    const xpPerPractice = parseInt(prompt("每次练习可获得多少经验值？", "10")) || 10;
-                    
-                    skills.value.push({
-                        id: Date.now(),
-                        name: name.trim(),
-                        category: category || "其他",
-                        icon: icon || "🌟",
-                        level: 1,
-                        xp: 0,
-                        maxXp: 100,
-                        xpPerPractice: xpPerPractice,
-                        practiceCount: 0,
-                        createdAt: new Date().toISOString()
-                    });
-                    
-                    const saveSuccess = await saveGameDataToGitHub();
-                    if (saveSuccess) {
-                        showStatusMessage(`技能"${name.trim()}"添加成功！`, 'success');
-                    }
+                    return Math.max(1, Math.floor(skill.maxXp / 10));
                 };
 
                 const practiceSkill = async (skillId) => {
                     const skill = skills.value.find(s => s.id === skillId);
                     if (!skill) return;
                     
-                    skill.xp += getSkillXpPerPractice(skill);
-                    skill.practiceCount++;
-                    player.value.xp += Math.floor(getSkillXpPerPractice(skill) * 0.5);
+                    const xpGain = getSkillXpPerPractice(skill);
+                    skill.xp += xpGain;
+                    player.value.xp += Math.floor(xpGain / 2); // 玩家获得一半经验
                     
+                    // 检查技能升级
                     if (skill.xp >= skill.maxXp) {
                         skill.level++;
-                        skill.xp = 0;
-                        skill.maxXp = Math.floor(skill.maxXp * 1.8);
-                        showStatusMessage(`🎯 【${skill.name}】提升到 ${skill.level} 级！`, 'success');
+                        skill.xp = skill.xp - skill.maxXp;
+                        skill.maxXp = Math.floor(skill.maxXp * 1.5);
+                        showStatusMessage(`🎉 ${skill.name} 升级到 Lv.${skill.level}！`, "success");
+                        
+                        // 更新技能相关的成就
+                        updateSkillAchievements();
                     }
                     
+                    // 检查玩家升级
                     checkLevelUp();
+                    
+                    // 保存数据
                     await saveGameDataToGitHub();
+                    showStatusMessage(`💪 ${skill.name} 练习完成，获得 ${xpGain} XP`, "success");
+                };
+
+                const addNewSkill = () => {
+                    const skillName = prompt('请输入新技能名称:');
+                    if (!skillName || !skillName.trim()) return;
+                    
+                    const skillIcon = prompt('请为技能选择一个表情图标 (例如: 💪, 🧠, 🎨):', '💪') || '💪';
+                    const skillCategory = prompt('请选择技能类别 (例如: 学习, 健身, 艺术):', '学习') || '学习';
+                    
+                    const newSkill = {
+                        id: Date.now(),
+                        name: skillName.trim(),
+                        icon: skillIcon,
+                        category: skillCategory,
+                        level: 1,
+                        xp: 0,
+                        maxXp: 100,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    skills.value.unshift(newSkill);
+                    showStatusMessage(`🌟 新技能"${skillName}"已添加！`, "success");
+                    
+                    // 更新技能相关的成就
+                    updateSkillAchievements();
                 };
 
                 const deleteSkill = async (skillId) => {
@@ -3195,226 +3800,593 @@
                     showStatusMessage(`已删除技能"${deletedSkill.name}"`, 'success');
                 };
 
-                // ==================== 成就系统 ====================
-                // 新增：加载示例成就
-                const loadExampleAchievements = () => {
-                    batchAchievementInput.value = `[
-  {
-    "category": "custom",
-    "name": "早起达人",
-    "icon": "🌅",
-    "description": "连续30天早上6点前起床",
-    "requirement": 30,
-    "reward": 150
-  },
-  {
-    "category": "reading",
-    "name": "读书破万卷",
-    "icon": "📚",
-    "description": "阅读100本书",
-    "requirement": 100,
-    "reward": 300
-  }
-]`;
-                    showStatusMessage('已加载示例成就数据，请检查并修改后添加', 'info');
+                // ==================== 成就系统功能 ====================
+                const addBatchAchievements = () => {
+                    try {
+                        const achievementsToAdd = JSON.parse(batchAchievementInput.value);
+                        if (!Array.isArray(achievementsToAdd)) {
+                            showStatusMessage('请输入有效的JSON数组', 'error');
+                            return;
+                        }
+                        
+                        let addedCount = 0;
+                        achievementsToAdd.forEach(achievement => {
+                            const newId = Date.now() + Math.floor(Math.random() * 1000);
+                            achievements.value.push({
+                                id: newId,
+                                category: achievement.category || 'custom',
+                                name: achievement.name || '未命名成就',
+                                icon: achievement.icon || '🏆',
+                                description: achievement.description || '自定义成就',
+                                requirement: achievement.requirement || 1,
+                                current: 0,
+                                unlocked: false,
+                                reward: achievement.reward || 50
+                            });
+                            addedCount++;
+                        });
+                        
+                        showStatusMessage(`✅ 成功添加 ${addedCount} 个成就`, 'success');
+                        batchAchievementInput.value = '';
+                        showBatchAdd.value = false;
+                    } catch (error) {
+                        showStatusMessage('JSON格式错误: ' + error.message, 'error');
+                    }
                 };
 
-                // 新增：清空批量输入
+                const loadExampleAchievements = () => {
+                    batchAchievementInput.value = JSON.stringify([
+                        {
+                            "category": "custom",
+                            "name": "早起达人",
+                            "icon": "🌅",
+                            "description": "连续30天早上6点前起床",
+                            "requirement": 30,
+                            "reward": 150
+                        },
+                        {
+                            "category": "custom",
+                            "name": "读书破万卷",
+                            "icon": "📚",
+                            "description": "读完100本书",
+                            "requirement": 100,
+                            "reward": 500
+                        },
+                        {
+                            "category": "custom",
+                            "name": "运动健将",
+                            "icon": "🏃",
+                            "description": "完成1000公里跑步",
+                            "requirement": 1000,
+                            "reward": 300
+                        }
+                    ], null, 2);
+                    showStatusMessage('示例成就已加载', 'success');
+                };
+
                 const clearBatchInput = () => {
                     batchAchievementInput.value = '';
                 };
 
-                // 新增：批量添加成就
-                const addBatchAchievements = async () => {
-                    if (!batchAchievementInput.value.trim()) {
-                        showStatusMessage('请输入成就数据', 'error');
+                const deleteAchievement = async (achievementId) => {
+                    if (!confirm("确定要删除这个成就吗？")) return;
+                    const achievementIndex = achievements.value.findIndex(a => a.id === achievementId);
+                    if (achievementIndex === -1) return;
+                    
+                    const deletedAchievement = achievements.value[achievementIndex];
+                    achievements.value.splice(achievementIndex, 1);
+                    
+                    await saveGameDataToGitHub();
+                    showStatusMessage(`已删除成就"${deletedAchievement.name}"`, 'success');
+                };
+
+                const updateSkillAchievements = () => {
+                    // 更新技能相关的成就
+                    const skillAchievements = achievements.value.filter(a => a.category === 'skill');
+                    
+                    // 多面手成就：拥有5个不同技能
+                    const multiSkillAchievement = skillAchievements.find(a => a.name === '多面手');
+                    if (multiSkillAchievement) {
+                        multiSkillAchievement.current = skills.value.length;
+                        if (!multiSkillAchievement.unlocked && multiSkillAchievement.current >= multiSkillAchievement.requirement) {
+                            multiSkillAchievement.unlocked = true;
+                            player.value.xp += multiSkillAchievement.reward;
+                            showStatusMessage(`🎉 成就解锁: ${multiSkillAchievement.name}! 获得 ${multiSkillAchievement.reward} XP`, 'success');
+                            checkLevelUp();
+                        }
+                    }
+                    
+                    // 技能大师成就：拥有3个达到5级的技能
+                    const skillMasterAchievement = skillAchievements.find(a => a.name === '技能大师');
+                    if (skillMasterAchievement) {
+                        const highLevelSkills = skills.value.filter(s => s.level >= 5).length;
+                        skillMasterAchievement.current = highLevelSkills;
+                        if (!skillMasterAchievement.unlocked && skillMasterAchievement.current >= skillMasterAchievement.requirement) {
+                            skillMasterAchievement.unlocked = true;
+                            player.value.xp += skillMasterAchievement.reward;
+                            showStatusMessage(`🎉 成就解锁: ${skillMasterAchievement.name}! 获得 ${skillMasterAchievement.reward} XP`, 'success');
+                            checkLevelUp();
+                        }
+                    }
+                };
+
+                // ==================== 等级系统 ====================
+                const checkLevelUp = () => {
+                    while (player.value.xp >= player.value.nextLevelXp) {
+                        player.value.xp -= player.value.nextLevelXp;
+                        player.value.level++;
+                        player.value.nextLevelXp = Math.floor(player.value.nextLevelXp * 1.2);
+                        showStatusMessage(`🎉 恭喜升级到 Lv.${player.value.level}！`, "success", 3000);
+                    }
+                };
+
+                // ==================== GitHub API 功能 ====================
+                const saveConfigAndLoad = async () => {
+                    if (!config.value.username || !config.value.repo || !config.value.token) {
+                        configError.value = '请填写所有配置信息';
+                        return;
+                    }
+
+                    isLoading.value = true;
+                    configError.value = '';
+
+                    try {
+                        // 测试GitHub连接
+                        const testUrl = `https://api.github.com/repos/${config.value.username}/${config.value.repo}`;
+                        const response = await fetch(testUrl, {
+                            headers: {
+                                'Authorization': `token ${config.value.token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        });
+
+                        if (!response.ok) {
+                            if (response.status === 404) {
+                                configError.value = '仓库不存在，请先创建仓库';
+                            } else if (response.status === 401) {
+                                configError.value = 'Token无效或权限不足';
+                            } else {
+                                configError.value = `连接失败: ${response.status} ${response.statusText}`;
+                            }
+                            isLoading.value = false;
+                            return;
+                        }
+
+                        // 保存配置到localStorage
+                        localStorage.setItem('growth_notebook_config', JSON.stringify(config.value));
+                        isConfigured.value = true;
+                        
+                        // 加载数据
+                        await loadGameDataFromGitHub();
+                        
+                    } catch (error) {
+                        configError.value = `连接错误: ${error.message}`;
+                    } finally {
+                        isLoading.value = false;
+                    }
+                };
+
+                const loadGameDataFromGitHub = async () => {
+                    isLoading.value = true;
+                    
+                    try {
+                        const dataUrl = `https://api.github.com/repos/${config.value.username}/${config.value.repo}/contents/growth_data.json`;
+                        const response = await fetch(dataUrl, {
+                            headers: {
+                                'Authorization': `token ${config.value.token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const content = JSON.parse(atob(data.content));
+                            
+                            player.value = content.player || { level: 1, xp: 0, nextLevelXp: 100, streak: 1 };
+                            skills.value = content.skills || [];
+                            notes.value = content.notes || [];
+                            readingNotes.value = content.readingNotes || [];
+                            achievements.value = content.achievements || achievements.value;
+                            
+                            // 更新分类列表
+                            updateNoteCategoriesFromNotes();
+                            
+                            showStatusMessage('✅ 数据加载成功', 'success');
+                        } else {
+                            // 文件不存在，使用默认数据
+                            showStatusMessage('📝 创建新的手账数据文件', 'info');
+                            await saveGameDataToGitHub();
+                        }
+                        
+                        lastSyncTime.value = new Date().toLocaleTimeString();
+                        
+                    } catch (error) {
+                        showStatusMessage(`加载数据失败: ${error.message}`, 'error');
+                    } finally {
+                        isLoading.value = false;
+                    }
+                };
+
+                const saveGameDataToGitHub = async () => {
+                    isSaving.value = true;
+                    
+                    try {
+                        // 准备数据
+                        const gameData = {
+                            player: player.value,
+                            skills: skills.value,
+                            notes: notes.value,
+                            readingNotes: readingNotes.value,
+                            achievements: achievements.value,
+                            lastUpdated: new Date().toISOString()
+                        };
+
+                        const content = JSON.stringify(gameData, null, 2);
+                        const contentBase64 = btoa(unescape(encodeURIComponent(content)));
+                        
+                        // 检查文件是否存在
+                        const dataUrl = `https://api.github.com/repos/${config.value.username}/${config.value.repo}/contents/growth_data.json`;
+                        let sha = null;
+                        
+                        try {
+                            const checkResponse = await fetch(dataUrl, {
+                                headers: {
+                                    'Authorization': `token ${config.value.token}`,
+                                    'Accept': 'application/vnd.github.v3+json'
+                                }
+                            });
+                            
+                            if (checkResponse.ok) {
+                                const existingData = await checkResponse.json();
+                                sha = existingData.sha;
+                            }
+                        } catch (e) {
+                            // 文件不存在，正常创建
+                        }
+
+                        // 创建或更新文件
+                        const updateResponse = await fetch(dataUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${config.value.token}`,
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                message: `更新手账数据 ${new Date().toLocaleString()}`,
+                                content: contentBase64,
+                                sha: sha
+                            })
+                        });
+
+                        if (updateResponse.ok) {
+                            lastSyncTime.value = new Date().toLocaleTimeString();
+                            showStatusMessage('💾 数据保存成功', 'success', 3000);
+                            return true;
+                        } else {
+                            const error = await updateResponse.json();
+                            showStatusMessage(`保存失败: ${error.message}`, 'error');
+                            return false;
+                        }
+                        
+                    } catch (error) {
+                        showStatusMessage(`保存失败: ${error.message}`, 'error');
+                        return false;
+                    } finally {
+                        isSaving.value = false;
+                    }
+                };
+
+                const forceLoadFromGitHub = async () => {
+                    await loadGameDataFromGitHub();
+                };
+
+                const forceSaveToGitHub = async () => {
+                    await saveGameDataToGitHub();
+                };
+
+                const openRepoInGitHub = () => {
+                    window.open(`https://github.com/${config.value.username}/${config.value.repo}`, '_blank');
+                };
+
+                // ==================== 数据导入导出 ====================
+                const exportLocalData = () => {
+                    const gameData = {
+                        player: player.value,
+                        skills: skills.value,
+                        notes: notes.value,
+                        readingNotes: readingNotes.value,
+                        achievements: achievements.value,
+                        config: config.value,
+                        exportedAt: new Date().toISOString()
+                    };
+
+                    const dataStr = JSON.stringify(gameData, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `growth_notebook_backup_${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    showStatusMessage('📦 数据备份已导出', 'success');
+                };
+
+                const importLocalData = (event) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        try {
+                            const importedData = JSON.parse(e.target.result);
+                            
+                            if (importedData.player) player.value = importedData.player;
+                            if (importedData.skills) skills.value = importedData.skills;
+                            if (importedData.notes) notes.value = importedData.notes;
+                            if (importedData.readingNotes) readingNotes.value = importedData.readingNotes;
+                            if (importedData.achievements) achievements.value = importedData.achievements;
+                            
+                            // 更新分类列表
+                            updateNoteCategoriesFromNotes();
+                            
+                            // 保存到GitHub
+                            await saveGameDataToGitHub();
+                            
+                            showStatusMessage('📥 数据导入成功', 'success');
+                            showImport.value = false;
+                        } catch (error) {
+                            showStatusMessage(`导入失败: ${error.message}`, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+
+                // ==================== 演示数据 ====================
+                const loadDemoData = () => {
+                    player.value = { level: 3, xp: 75, nextLevelXp: 200, streak: 7 };
+                    
+                    skills.value = [
+                        { id: 1, name: '八字命理', icon: '🌌', category: '易学', level: 2, xp: 60, maxXp: 150, createdAt: '2024-01-15T10:30:00Z' },
+                        { id: 2, name: '英语阅读', icon: '📚', category: '英语', level: 1, xp: 30, maxXp: 100, createdAt: '2024-01-20T14:45:00Z' },
+                        { id: 3, name: '健身训练', icon: '💪', category: '健身', level: 1, xp: 80, maxXp: 100, createdAt: '2024-01-25T08:15:00Z' }
+                    ];
+                    
+                    notes.value = [
+                        {
+                            id: 1,
+                            title: '八字基础知识总结',
+                            content: '<h2>八字基础知识</h2><p>八字又称<strong>四柱</strong>，由年、月、日、时四柱组成，每柱两个字，共八个字。</p><p class="highlight">核心概念：天干地支、五行生克、十神关系</p>',
+                            tags: ['八字', '命理', '学习笔记'],
+                            category: 'bazi',
+                            createdAt: '2024-01-15T10:30:00Z'
+                        },
+                        {
+                            id: 2,
+                            title: '股票复盘笔记',
+                            content: '<h3>今日大盘分析</h3><p>上证指数收于3000点，涨幅0.5%。<span class="highlight">重点关注科技板块</span>，人工智能概念持续走强。</p>',
+                            tags: ['股票', '复盘', '投资'],
+                            category: 'stock',
+                            createdAt: '2024-01-20T14:45:00Z'
+                        }
+                    ];
+                    
+                    readingNotes.value = [
+                        {
+                            id: 1,
+                            title: '思考，快与慢',
+                            author: '丹尼尔·卡尼曼',
+                            notes: '本书介绍了大脑的两套系统：系统1（快速、直觉）和系统2（缓慢、理性）',
+                            reflections: '让我更加意识到日常决策中的认知偏见，需要更多调用系统2思考',
+                            rating: 5,
+                            tags: ['心理学', '认知科学', '行为经济学'],
+                            createdAt: '2024-01-10T09:00:00Z'
+                        }
+                    ];
+                    
+                    // 更新一些成就进度
+                    achievements.value.forEach(achievement => {
+                        if (achievement.category === 'skill') {
+                            achievement.current = skills.value.length;
+                        }
+                        if (achievement.category === 'reading') {
+                            achievement.current = readingNotes.value.length;
+                        }
+                        if (achievement.category === 'fitness') {
+                            achievement.current = 15; // 假设完成了15次健身
+                        }
+                    });
+                    
+                    // 更新分类列表
+                    updateNoteCategoriesFromNotes();
+                    
+                    isConfigured.value = true;
+                    showStatusMessage('🎮 演示数据加载完成', 'success');
+                };
+
+                // ==================== 工具函数 ====================
+                const formatDate = (dateString) => {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('zh-CN', { 
+                        year: 'numeric', 
+                        month: '2-digit', 
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                };
+
+                const resetData = () => {
+                    if (!confirm("⚠️ 警告：这将重置所有数据，包括技能、笔记和成就。确定要重置吗？")) {
                         return;
                     }
                     
-                    try {
-                        const newAchievements = JSON.parse(batchAchievementInput.value);
-                        if (!Array.isArray(newAchievements)) {
-                            throw new Error('成就数据必须是数组格式');
-                        }
-                        
-                        // 找出当前最大的id
-                        let maxId = achievements.value.reduce((max, ach) => Math.max(max, ach.id), 0);
-                        
-                        // 添加新成就
-                        const addedCount = newAchievements.length;
-                        newAchievements.forEach(ach => {
-                            maxId++;
-                            
-                            // 检查成就是否已存在（通过名称）
-                            const exists = achievements.value.some(a => a.name === ach.name);
-                            if (exists) {
-                                showStatusMessage(`成就"${ach.name}"已存在，跳过添加`, 'warning');
-                                return;
-                            }
-                            
-                            achievements.value.push({
-                                id: maxId,
-                                category: ach.category || 'custom',
-                                name: ach.name || '新成就',
-                                icon: ach.icon || '🏆',
-                                description: ach.description || '',
-                                requirement: ach.requirement || 1,
-                                current: ach.current || 0,
-                                unlocked: ach.unlocked || false,
-                                reward: ach.reward || 0
-                            });
-                        });
-                        
-                        // 保存到GitHub
-                        const saveSuccess = await saveGameDataToGitHub();
-                        if (saveSuccess) {
-                            batchAchievementInput.value = '';
-                            showBatchAdd.value = false;
-                            showStatusMessage(`成功添加${addedCount}个新成就！`, 'success');
-                        }
-                    } catch (error) {
-                        console.error('添加成就失败:', error);
-                        showStatusMessage(`添加失败: ${error.message}，请检查JSON格式`, 'error');
-                    }
-                };
-
-                // 新增：删除成就
-                const deleteAchievement = async (achievementId) => {
-                    if (!confirm("确定要删除这个成就吗？此操作不可撤销！")) return;
-                    
-                    const index = achievements.value.findIndex(a => a.id === achievementId);
-                    if (index !== -1) {
-                        const deletedName = achievements.value[index].name;
-                        achievements.value.splice(index, 1);
-                        
-                        await saveGameDataToGitHub();
-                        showStatusMessage(`已删除成就"${deletedName}"`, 'success');
-                    }
-                };
-
-                // ==================== 游戏逻辑 ====================
-                const calculateNextLevelXp = (level) => {
-                    return Math.floor(100 * Math.pow(1.5, level - 1));
-                };
-
-                const checkLevelUp = () => {
-                    while (player.value.xp >= player.value.nextLevelXp) {
-                        player.value.level++;
-                        player.value.xp -= player.value.nextLevelXp;
-                        player.value.nextLevelXp = calculateNextLevelXp(player.value.level);
-                        showStatusMessage(`🎉 恭喜升级！现在是 ${player.value.level} 级！`, 'success');
-                    }
-                };
-
-                const resetData = async () => {
-                    if (!confirm("⚠️ 警告：重置将永久清除所有技能、笔记和成就数据，此操作不可撤销！确定继续吗？")) return;
-                    
-                    player.value = { level: 1, xp: 0, nextLevelXp: calculateNextLevelXp(1), streak: 1 };
+                    player.value = { level: 1, xp: 0, nextLevelXp: 100, streak: 1 };
                     skills.value = [];
                     notes.value = [];
-                    noteCategories.value = ['all', 'editor', 'mindmap', 'highlights', 'wordview'];
-                    achievements.value.forEach(ach => {
-                        ach.current = 0;
-                        ach.unlocked = false;
+                    readingNotes.value = [];
+                    achievements.value.forEach(achievement => {
+                        achievement.current = 0;
+                        achievement.unlocked = false;
                     });
-                    extractedHighlights.value = [];
-                    mindmapNodes.value = [];
-                    mindmapLines.value = [];
-                    mindmapSelectedNode.value = null;
-                    mindmapRootNode.value = null;
                     
-                    if (config.value.token) {
-                        const saveSuccess = await saveGameDataToGitHub();
-                        if (saveSuccess) {
-                            showStatusMessage('数据已重置并同步到云端', 'success');
-                        }
-                    } else {
-                        showStatusMessage('数据已重置（本地）', 'success');
-                    }
+                    showStatusMessage('🔄 所有数据已重置', 'success');
                 };
 
                 // ==================== 初始化 ====================
                 onMounted(() => {
-                    const savedConfig = localStorage.getItem('growth_system_config');
+                    // 尝试从localStorage加载配置
+                    const savedConfig = localStorage.getItem('growth_notebook_config');
                     if (savedConfig) {
                         try {
-                            const { username, repo } = JSON.parse(savedConfig);
-                            config.value.username = username;
-                            config.value.repo = repo;
+                            config.value = JSON.parse(savedConfig);
                             isConfigured.value = true;
+                            
+                            // 自动加载数据
+                            loadGameDataFromGitHub();
                         } catch (e) {
-                            console.log('本地配置读取失败');
+                            console.log('无法加载保存的配置');
                         }
                     }
-                    player.value.nextLevelXp = calculateNextLevelXp(player.value.level);
-                    console.log('✏️ 智能成长手账系统已启动！');
+                    
+                    // 初始化思维导图容器事件
+                    if (mindmapContainer.value) {
+                        updateMindmapLines();
+                    }
                 });
 
                 // ==================== 暴露给模板 ====================
                 return {
-                    isConfigured, showConfig, showImport, isSaving, isLoading, 
-                    configError, lastSyncTime, statusMessage,
-                    config, player, skills, achievements, notes, newNote,
-                    activeAchievementTab, activeNoteTab, noteCategories,
-                    
-                    // 新增：折叠状态和批量添加
-                    collapseStatus, collapseSkills, collapseAchievements, collapseNotes,
-                    showBatchAdd, batchAchievementInput, noteFilter,
-                    
-                    // 富文本编辑器相关
-                    editorFocused, activeFormat, textColor, fontSize,
-                    richTextEditor, mindmapContainer,
-                    
-                    // 思维导图相关
-                    mindmapNodeText, mindmapNodes, mindmapLines,
-                    mindmapSelectedNode, mindmapRootNode,
-                    
-                    // 高亮提取相关
-                    extractedHighlights, highlightSourceNote, newNoteFromHighlights,
+                    // 状态
+                    isConfigured,
+                    showConfig,
+                    showImport,
+                    isSaving,
+                    isLoading,
+                    configError,
+                    lastSyncTime,
+                    statusMessage,
+                    config,
+                    player,
+                    skills,
+                    notes,
+                    readingNotes,
+                    activeAchievementTab,
+                    activeNoteTab,
+                    noteCategories,
+                    newNote,
+                    newReadingNote,
+                    editingReadingNote,
+                    readingFilter,
+                    collapseStatus,
+                    collapseSkills,
+                    collapseAchievements,
+                    collapseNotes,
+                    showBatchAdd,
+                    batchAchievementInput,
+                    editorFocused,
+                    activeFormat,
+                    textColor,
+                    fontSize,
+                    richTextEditor,
+                    mindmapNodeText,
+                    mindmapNodes,
+                    mindmapLines,
+                    mindmapContainer,
+                    mindmapSelectedNode,
+                    mindmapRootNode,
+                    extractedHighlights,
+                    highlightSourceNote,
+                    newNoteFromHighlights,
                     selectedNoteForPreview,
+                    noteFilter,
+                    achievements,
                     
                     // 计算属性
-                    totalXpEarned, totalSkills, totalNotes, completedAchievementsCount,
-                    totalHighlights, filteredAchievements, filteredAndSortedNotes, allNoteTags,
+                    totalXpEarned,
+                    totalSkills,
+                    totalNotes,
+                    totalReadingNotes,
+                    completedAchievementsCount,
+                    totalHighlights,
+                    allNoteTags,
+                    readingTags,
+                    totalAuthors,
+                    averageRating,
+                    filteredReadingNotes,
+                    filteredAchievements,
+                    filteredAndSortedNotes,
                     
-                    // 配置和GitHub操作
-                    saveConfigAndLoad, loadDemoData, 
-                    openRepoInGitHub, forceLoadFromGitHub, forceSaveToGitHub,
-                    exportLocalData, importLocalData,
-                    
-                    // 富文本编辑功能
-                    formatText, changeTextColor, changeFontSize, insertCodeBlock,
-                    clearFormatting, updateRichTextContent, previewNote,
-                    
-                    // 思维导图功能
-                    addMindmapNode, editMindmapNode, editMindmapNodeById,
-                    removeMindmapNode, clearMindmap, loadSampleMindmap,
-                    startNodeDrag, addNodeAtPosition, saveMindmapAsNote,
-                    selectMindmapNode, toggleRootNode,
-                    
-                    // 高亮提取功能
-                    extractHighlights, extractAllHighlights, extractHighlightsFromNote,
-                    copyHighlight, removeHighlight, clearHighlights,
-                    createNoteFromHighlights, saveHighlightsNote,
-                    
-                    // Word预览功能
-                    printPreview, exportAsDocument,
-                    
-                    // 笔记系统
-                    handleImageUpload, clearUploadedImage, handleImageError,
-                    getCategoryDisplayName, resetNoteFilters, sanitizeHtml,
-                    hasHighlights, getNoteById,
-                    
-                    // 技能系统
-                    getSkillXpPerPractice, addNewSkill, practiceSkill, deleteSkill,
-                    
-                    // 笔记系统
-                    saveRichTextNote, clearNoteEditor, editNote, deleteNote, formatDate,
-                    
-                    // 成就系统
-                    loadExampleAchievements, clearBatchInput, addBatchAchievements, deleteAchievement,
-                    
-                    // 其他
+                    // 方法
+                    showStatusMessage,
+                    getCategoryDisplayName,
+                    sanitizeHtml,
+                    hasHighlights,
+                    getNoteById,
+                    getReadingNoteById,
+                    resetNoteFilters,
+                    resetReadingFilters,
+                    formatText,
+                    changeTextColor,
+                    changeFontSize,
+                    insertCodeBlock,
+                    clearFormatting,
+                    updateRichTextContent,
+                    previewNote,
+                    saveReadingNote,
+                    clearReadingEditor,
+                    editReadingNote,
+                    updateReadingNote,
+                    cancelEditReadingNote,
+                    deleteReadingNote,
+                    addMindmapNode,
+                    selectMindmapNode,
+                    toggleRootNode,
+                    editMindmapNode,
+                    editMindmapNodeById,
+                    removeMindmapNode,
+                    clearMindmap,
+                    startNodeDrag,
+                    addNodeAtPosition,
+                    saveMindmapAsNote,
+                    loadSampleMindmap,
+                    extractHighlights,
+                    extractAllHighlights,
+                    extractHighlightsFromNote,
+                    createNoteFromHighlights,
+                    saveHighlightsNote,
+                    clearHighlights,
+                    copyHighlight,
+                    removeHighlight,
+                    printPreview,
+                    exportAsDocument,
+                    saveRichTextNote,
+                    clearNoteEditor,
+                    editNote,
+                    deleteNote,
+                    handleImageUpload,
+                    clearUploadedImage,
+                    handleImageError,
+                    getSkillXpPerPractice,
+                    practiceSkill,
+                    addNewSkill,
+                    deleteSkill,
+                    addBatchAchievements,
+                    loadExampleAchievements,
+                    clearBatchInput,
+                    deleteAchievement,
+                    checkLevelUp,
+                    saveConfigAndLoad,
+                    forceLoadFromGitHub,
+                    forceSaveToGitHub,
+                    openRepoInGitHub,
+                    exportLocalData,
+                    importLocalData,
+                    loadDemoData,
+                    formatDate,
                     resetData
                 };
             }
