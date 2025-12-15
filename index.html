@@ -1433,7 +1433,7 @@
                         </div>
                         
                         <!-- 读书笔记列表 -->
-                        <div v-if="filteredBookNotes.length > 0" class="note-list">
+<div v-if="filteredBookNotes.length > 0" class="note-list">
     <div v-for="book in filteredBookNotes" :key="book.id" class="book-note-card">
         <div class="book-note-header">
             <div class="book-icon">
@@ -1500,7 +1500,7 @@
 </div>
                         
                         <!-- 空状态提示 -->
-                        <div v-if="filteredBookNotes.length === 0 && !showBookForm" class="book-empty-state">
+                       <div v-if="filteredBookNotes.length === 0 && !showBookForm" class="book-empty-state">
     <div class="book-empty-icon">📚</div>
     <p style="font-weight:bold; font-size:1.3em; margin-bottom:10px;">还没有读书笔记</p>
     <p>开始记录你的阅读旅程吧！</p>
@@ -2873,4 +2873,3 @@
     </script>
 </body>
 </html>
-
