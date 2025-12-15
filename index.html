@@ -668,21 +668,27 @@
 
         /* ====== 新增：读书笔记样式 ====== */
         .book-notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 25px;
-        }
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 25px;
+}
+
         
         .book-note-card {
-            background: #fffefc;
-            border-radius: 20px 8px 20px 8px;
-            padding: 25px;
-            box-shadow: 5px 5px 0px #d4b8a7;
-            border: 2.5px solid #5a4a42;
-            position: relative;
-            transition: all 0.3s;
-        }
+    background: #fffefc;
+    border-radius: 20px 8px 20px 8px;
+    padding: 25px;
+    box-shadow: 5px 5px 0px #d4b8a7;
+    border: 2.5px solid #5a4a42;
+    position: relative;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: auto; /* 自动高度 */
+    min-height: 400px; /* 最小高度保证统一 */
+}
+
         
         .book-note-card:hover {
             transform: translateY(-5px) rotate(0.5deg);
@@ -731,23 +737,27 @@
         }
         
         .book-note-content {
-            margin: 20px 0;
-            padding: 15px;
-            background: #fffaf5;
-            border-radius: 12px;
-            border: 2px solid #e0c9b8;
-            max-height: 150px;
-            overflow-y: auto;
-        }
+    margin: 15px 0;
+    padding: 15px;
+    background: #fffaf5;
+    border-radius: 12px;
+    border: 2px solid #e0c9b8;
+    flex-grow: 1; /* 让内容区域自动撑开 */
+    overflow-y: auto;
+    max-height: 200px; /* 设置最大高度，超出可滚动 */
+}
         
         .book-reflection {
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(163, 222, 131, 0.1);
-            border-radius: 12px;
-            border: 2px dashed #4ecdc4;
-            font-style: italic;
-        }
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(163, 222, 131, 0.1);
+    border-radius: 12px;
+    border: 2px dashed #4ecdc4;
+    font-style: italic;
+    flex-grow: 0; /* 不自动撑开 */
+    max-height: 150px;
+    overflow-y: auto;
+}
         
         .rating-stars {
             display: flex;
@@ -2834,6 +2844,7 @@
     </script>
 </body>
 </html>
+
 
 
 
