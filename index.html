@@ -668,14 +668,19 @@
 
         /* ====== 新增：读书笔记样式 ====== */
         .book-notes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    display: flex; /* 改为flex布局 */
+    flex-wrap: wrap; /* 允许换行 */
     gap: 25px;
     margin-top: 25px;
+    align-items: stretch; /* 让所有卡片等高对齐 */
+    justify-content: flex-start; /* 左对齐 */
 }
-
         
         .book-note-card {
+    flex: 1 1 300px; /* 基础300px，可以伸缩 */
+    min-width: 280px; /* 最小宽度 */
+    max-width: 350px; /* 最大宽度 */
+    height: 500px; /* 固定高度 */
     background: #fffefc;
     border-radius: 20px 8px 20px 8px;
     padding: 25px;
@@ -683,17 +688,15 @@
     border: 2.5px solid #5a4a42;
     position: relative;
     transition: all 0.3s;
-    display: flex;
-    flex-direction: column;
-    height: auto; /* 自动高度 */
-    min-height: 400px; /* 最小高度保证统一 */
+    display: flex; /* 添加 */
+    flex-direction: column; /* 添加 */
+    overflow: hidden; /* 添加 */
 }
-
         
         .book-note-card:hover {
-            transform: translateY(-5px) rotate(0.5deg);
-            box-shadow: 7px 7px 0px #c9a58f, 12px 12px 20px rgba(0, 0, 0, 0.08);
-        }
+    transform: translateY(-5px) rotate(0.5deg);
+    box-shadow: 7px 7px 0px #c9a58f, 12px 12px 20px rgba(0, 0, 0, 0.08);
+}
         
         .book-note-header {
             display: flex;
@@ -742,21 +745,21 @@
     background: #fffaf5;
     border-radius: 12px;
     border: 2px solid #e0c9b8;
-    flex-grow: 1; /* 让内容区域自动撑开 */
-    overflow-y: auto;
-    max-height: 200px; /* 设置最大高度，超出可滚动 */
+    flex-grow: 1; /* 自动撑开 */
+    overflow-y: auto; /* 内容过多时可滚动 */
+    max-height: 180px; /* 限制最大高度 */
+    min-height: 100px; /* 确保最小高度 */
 }
         
         .book-reflection {
-    margin: 15px 0;
+    margin: 10px 0;
     padding: 15px;
     background: rgba(163, 222, 131, 0.1);
     border-radius: 12px;
     border: 2px dashed #4ecdc4;
     font-style: italic;
-    flex-grow: 0; /* 不自动撑开 */
-    max-height: 150px;
-    overflow-y: auto;
+    max-height: 120px; /* 新增 */
+    overflow-y: auto; /* 新增 */
 }
         
         .rating-stars {
@@ -791,13 +794,13 @@
         }
         
         .book-note-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px dotted #e0c9b8;
-        }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* 关键：将页脚推到底部 */
+    padding-top: 15px;
+    border-top: 2px dotted #e0c9b8;
+}
         
         .book-date {
             font-size: 0.9em;
@@ -935,7 +938,33 @@
             color: #ff6b6b;
             font-family: 'Gochi Hand', cursive;
         }
-        
+        /* ====== 读书笔记响应式调整 ====== */
+
+/* 中等屏幕：每行显示2个 */
+@media (max-width: 1100px) {
+    .book-note-card {
+        flex: 1 1 calc(50% - 13px); /* 每行2个，减去一半的间隙 */
+        max-width: calc(50% - 13px);
+    }
+}
+
+/* 小屏幕：每行显示1个 */
+@media (max-width: 768px) {
+    .book-note-card {
+        flex: 1 1 100%; /* 每行1个 */
+        max-width: 100%;
+        height: auto; /* 小屏幕时高度自适应 */
+        min-height: 450px;
+    }
+}
+
+/* 大屏幕：每行显示4个 */
+@media (min-width: 1600px) {
+    .book-note-card {
+        flex: 1 1 calc(25% - 19px); /* 每行4个 */
+        max-width: calc(25% - 19px);
+    }
+}
         .book-stat-label {
             font-size: 0.9em;
             color: #7a6a62;
@@ -1404,9 +1433,9 @@
                         </div>
                         
                         <!-- 读书笔记列表 -->
-                        <div v-if="filteredBookNotes.length > 0" class="book-notes-grid">
-                            <div v-for="book in filteredBookNotes" :key="book.id" class="book-note-card">
-                                <div class="book-note-header">
+                        <div v-if="filteredBookNotes.length > 0" class="book-notes-flex-container">
+    <div class="book-notes-flex">
+        <div v-for="book in filteredBookNotes" :key="book.id" class="book-note-card-flex">
                                     <div class="book-icon">
                                         📚
                                     </div>
