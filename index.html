@@ -2104,50 +2104,111 @@
                 });
 
                 // ==================== GitHub API 函数 ====================
-                // 加载数据 (使用jsDelivr CDN加速)
-                const loadGameDataFromGitHub = async () => {
-                    const { username, repo } = config.value;
-                    if (!username || !repo) return;
-                    
-                    isLoading.value = true;
-                    configError.value = '';
-                    
-                    try {
-                        const cdnUrl = `https://cdn.jsdelivr.net/gh/${username}/${repo}/main/growth_data.json`;
-                        const rawUrl = `https://raw.githubusercontent.com/${username}/${repo}/main/growth_data.json`;
-                        
-                        let response;
-                        try {
-                            response = await fetch(cdnUrl, { timeout: 8000 });
-                            if (!response.ok) throw new Error('CDN failed');
-                        } catch (cdnError) {
-                            response = await fetch(rawUrl, { timeout: 15000 });
-                            if (!response.ok) throw new Error('Raw failed: ' + response.status);
-                        }
-                        
-                        const gameData = await response.json();
-                        
-                        if (gameData.player) player.value = gameData.player;
-                        if (gameData.skills) skills.value = gameData.skills;
-                        if (gameData.achievements) achievements.value = gameData.achievements;
-                        if (gameData.notes) notes.value = gameData.notes;
-                        // 新增：加载读书笔记数据
-                        if (gameData.bookNotes) bookNotes.value = gameData.bookNotes;
-                        
-                        updateNoteCategoriesFromNotes();
-                        // 初始化过滤的读书笔记
-                        filteredBookNotes.value = [...bookNotes.value];
-                        
-                        lastSyncTime.value = new Date().toLocaleTimeString();
-                        showStatusMessage('手账数据加载成功！', 'success');
-                    } catch (error) {
-                        console.error('加载数据失败:', error);
-                        configError.value = `加载失败: ${error.message}`;
-                        showStatusMessage(`加载失败: ${error.message}，请检查配置或网络`, 'error');
-                    } finally {
-                        isLoading.value = false;
-                    }
-                };
+               const loadGameDataFromGitHub = async () => {
+    const { username, repo, token } = config.value;
+    if (!username || !repo) return;
+    
+    isLoading.value = true;
+    configError.value = '';
+    
+    try {
+        // 方案1：优先使用GitHub API（支持私有仓库）
+        const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/growth_data.json`;
+        const headers = {
+            'Accept': 'application/vnd.github.v3+json'
+        };
+        
+        // 如果有token，添加到请求头
+        if (token) {
+            headers['Authorization'] = `token ${token}`;
+        }
+        
+        const response = await fetch(apiUrl, { 
+            headers: headers,
+            timeout: 15000 
+        });
+        
+        if (!response.ok) {
+            // 如果认证失败或文件不存在，尝试备用方案
+            if (response.status === 401 || response.status === 403) {
+                throw new Error('认证失败，请检查Token是否有效且有repo权限');
+            } else if (response.status === 404) {
+                // 文件不存在，返回空数据
+                console.log('数据文件不存在，将使用空数据');
+                lastSyncTime.value = new Date().toLocaleTimeString();
+                showStatusMessage('数据文件不存在，已创建初始数据', 'info');
+                return;
+            } else {
+                throw new Error(`GitHub API错误: ${response.status}`);
+            }
+        }
+        
+        const fileInfo = await response.json();
+        
+        // 解码base64内容
+        const decodedContent = decodeURIComponent(escape(atob(fileInfo.content)));
+        const gameData = JSON.parse(decodedContent);
+        
+        if (gameData.player) player.value = gameData.player;
+        if (gameData.skills) skills.value = gameData.skills;
+        if (gameData.achievements) achievements.value = gameData.achievements;
+        if (gameData.notes) notes.value = gameData.notes;
+        // 新增：加载读书笔记数据
+        if (gameData.bookNotes) bookNotes.value = gameData.bookNotes;
+        
+        updateNoteCategoriesFromNotes();
+        // 初始化过滤的读书笔记
+        filteredBookNotes.value = [...bookNotes.value];
+        
+        lastSyncTime.value = new Date().toLocaleTimeString();
+        showStatusMessage('手账数据加载成功！', 'success');
+    } catch (error) {
+        console.error('加载数据失败:', error);
+        
+        // 尝试备用方案：使用CDN（仅适用于公开仓库）
+        if (token) {
+            // 如果有token，再尝试一次带认证的raw请求
+            try {
+                const rawUrl = `https://raw.githubusercontent.com/${username}/${repo}/main/growth_data.json`;
+                const rawResponse = await fetch(rawUrl, {
+                    headers: { 'Authorization': `token ${token}` },
+                    timeout: 10000
+                });
+                
+                if (rawResponse.ok) {
+                    const gameData = await rawResponse.json();
+                    // 处理数据...
+                    showStatusMessage('通过Raw方式加载成功！', 'success');
+                    return;
+                }
+            } catch (rawError) {
+                console.error('Raw方式也失败:', rawError);
+            }
+        }
+        
+        configError.value = `加载失败: ${error.message}`;
+        showStatusMessage(`加载失败: ${error.message}，请检查配置或网络`, 'error');
+        
+        // 如果所有方式都失败，尝试从本地缓存加载
+        try {
+            const cachedData = localStorage.getItem('growth_system_cache');
+            if (cachedData) {
+                const gameData = JSON.parse(cachedData);
+                if (gameData.player) player.value = gameData.player;
+                if (gameData.skills) skills.value = gameData.skills;
+                if (gameData.achievements) achievements.value = gameData.achievements;
+                if (gameData.notes) notes.value = gameData.notes;
+                if (gameData.bookNotes) bookNotes.value = gameData.bookNotes;
+                
+                showStatusMessage('已从本地缓存加载数据', 'warning');
+            }
+        } catch (cacheError) {
+            console.log('本地缓存不可用');
+        }
+    } finally {
+        isLoading.value = false;
+    }
+};
 
                 // 保存数据到GitHub
                 const saveGameDataToGitHub = async () => {
@@ -2755,3 +2816,4 @@
     </script>
 </body>
 </html>
+
