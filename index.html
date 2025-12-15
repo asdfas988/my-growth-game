@@ -1763,13 +1763,13 @@
 
                 // ==================== 智能分类配置 ====================
                 const categoryRules = {
-                    'bazi': ['八字'],
-                    'stock': ['股票'],
-                    'fitness': ['健身'],
-                    'english': ['英语'],
-                    'daily': ['每日'],
-                    'work': ['每周'],
-                    'study': ['每月'],
+                    'bazi': ['八字', '命理', '十神', '干支', '五行'],
+                    'stock': ['股票', '复盘', 'k线', '炒股', '大盘', 'A股'],
+                    'fitness': ['健身', '运动', '跑步', '撸铁', '增肌', '减脂'],
+                    'english': ['英语', '单词', '阅读', '听力', '口语', '雅思'],
+                    'daily': ['每日', '日记', '总结', '反思', '计划', '日常'],
+                    'work': ['工作', '项目', '任务', '汇报', '会议', '职场'],
+                    'study': ['学习', '读书', '课程', '考试', '论文', '知识'],
                     'book': ['读书', '阅读', '书籍', '书评', '读后感']
                 };
 
@@ -1943,34 +1943,15 @@
 
                 // 根据标签智能判断分类
                 const determineCategoryFromTags = (tags) => {
-    // 将标签转为小写便于比较
-    const tagSet = new Set(tags.map(tag => tag.toLowerCase().trim()));
-    
-    // 精确匹配：标签完全等于关键词
-    for (const [category, keywords] of Object.entries(categoryRules)) {
-        const keywordSet = keywords.map(k => k.toLowerCase());
-        if (keywordSet.some(keyword => tagSet.has(keyword))) {
-            return category;
-        }
-    }
-    
-    // 如果精确匹配失败，尝试部分匹配（但更严格）
-    for (const tag of tags) {
-        const lowerTag = tag.toLowerCase();
-        for (const [category, keywords] of Object.entries(categoryRules)) {
-            // 只有当标签明显包含关键词时才匹配
-            if (keywords.some(keyword => 
-                lowerTag === keyword.toLowerCase() ||  // 精确相等
-                lowerTag.startsWith(keyword.toLowerCase()) ||  // 以关键词开头
-                lowerTag.endsWith(keyword.toLowerCase())  // 以关键词结尾
-            )) {
-                return category;
-            }
-        }
-    }
-    
-    return 'general';
-};
+                    for (const tag of tags) {
+                        for (const [category, keywords] of Object.entries(categoryRules)) {
+                            if (keywords.some(keyword => tag.toLowerCase().includes(keyword.toLowerCase()))) {
+                                return category;
+                            }
+                        }
+                    }
+                    return 'general';
+                };
 
                 // 重置笔记筛选器
                 const resetNoteFilters = () => {
