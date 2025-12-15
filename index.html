@@ -314,6 +314,45 @@
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 30px;
         }
+        /* 读书笔记在网格布局中的适配 */
+.note-list .book-note-card {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+/* 确保读书笔记卡片内部的间距正常 */
+.note-list .book-note-card .book-note-header {
+    margin-bottom: 20px;
+}
+
+.note-list .book-note-card .rating-stars {
+    margin: 15px 0;
+}
+
+.note-list .book-note-card .book-note-content,
+.note-list .book-note-card .book-reflection {
+    margin: 15px 0;
+}
+
+.note-list .book-note-card .book-tags {
+    margin: 15px 0;
+}
+
+.note-list .book-note-card .book-note-footer {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px dotted #e0c9b8;
+}
+
+/* 空状态样式在网格布局中的适配 */
+.note-list + .book-empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px 20px;
+    color: #c9b8a7;
+}
         .note-card {
             background: #fffefc;
             border-radius: 20px 8px 20px 8px;
@@ -1394,81 +1433,81 @@
                         </div>
                         
                         <!-- 读书笔记列表 -->
-                        <div v-if="filteredBookNotes.length > 0" class="book-notes-grid">
-                            <div v-for="book in filteredBookNotes" :key="book.id" class="book-note-card">
-                                <div class="book-note-header">
-                                    <div class="book-icon">
-                                        📚
-                                    </div>
-                                    <div class="book-info">
-                                        <div class="book-title">{{ book.title }}</div>
-                                        <div class="book-author">作者: {{ book.author }}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="rating-stars" style="justify-content:flex-start;">
-                                    <span 
-                                        v-for="star in 5" 
-                                        :key="star" 
-                                        class="star" 
-                                        :class="{filled: star <= book.rating}"
-                                    >
-                                        ★
-                                    </span>
-                                </div>
-                                
-                                <div class="book-note-content">
-                                    <strong style="color:#5a4a42; display:block; margin-bottom:10px;">📝 笔记摘要:</strong>
-                                    <div style="max-height:80px; overflow:hidden; text-overflow:ellipsis;">
-                                        {{ book.note.substring(0, 150) }}{{ book.note.length > 150 ? '...' : '' }}
-                                    </div>
-                                </div>
-                                
-                                <div class="book-reflection">
-                                    <strong style="color:#5a4a42; display:block; margin-bottom:10px;">💭 我的感悟:</strong>
-                                    <div style="max-height:80px; overflow:hidden; text-overflow:ellipsis;">
-                                        {{ book.reflection.substring(0, 120) }}{{ book.reflection.length > 120 ? '...' : '' }}
-                                    </div>
-                                </div>
-                                
-                                <div class="book-tags" v-if="book.tags && book.tags.length > 0">
-                                    <span 
-                                        v-for="tag in book.tags.slice(0, 3)" 
-                                        :key="tag"
-                                        class="book-tag"
-                                    >
-                                        {{ tag }}
-                                    </span>
-                                    <span v-if="book.tags.length > 3" class="book-tag">
-                                        +{{ book.tags.length - 3 }}
-                                    </span>
-                                </div>
-                                
-                                <div class="book-note-footer">
-                                    <div class="book-date">
-                                        📅 {{ formatDate(book.createdAt) }}
-                                    </div>
-                                    <div class="book-actions">
-                                        <button class="btn-sm" @click="editBookNote(book.id)" style="background:linear-gradient(90deg, #4a9fff, #2d73cc); padding:5px 15px;">
-                                            编辑
-                                        </button>
-                                        <button class="btn-sm" @click="deleteBookNote(book.id)" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d); padding:5px 15px;">
-                                            删除
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div v-if="filteredBookNotes.length > 0" class="note-list">
+    <div v-for="book in filteredBookNotes" :key="book.id" class="book-note-card">
+        <div class="book-note-header">
+            <div class="book-icon">
+                📚
+            </div>
+            <div class="book-info">
+                <div class="book-title">{{ book.title }}</div>
+                <div class="book-author">作者: {{ book.author }}</div>
+            </div>
+        </div>
+        
+        <div class="rating-stars" style="justify-content:flex-start;">
+            <span 
+                v-for="star in 5" 
+                :key="star" 
+                class="star" 
+                :class="{filled: star <= book.rating}"
+            >
+                ★
+            </span>
+        </div>
+        
+        <div class="book-note-content">
+            <strong style="color:#5a4a42; display:block; margin-bottom:10px;">📝 笔记摘要:</strong>
+            <div style="max-height:80px; overflow:hidden; text-overflow:ellipsis;">
+                {{ book.note.substring(0, 150) }}{{ book.note.length > 150 ? '...' : '' }}
+            </div>
+        </div>
+        
+        <div class="book-reflection">
+            <strong style="color:#5a4a42; display:block; margin-bottom:10px;">💭 我的感悟:</strong>
+            <div style="max-height:80px; overflow:hidden; text-overflow:ellipsis;">
+                {{ book.reflection.substring(0, 120) }}{{ book.reflection.length > 120 ? '...' : '' }}
+            </div>
+        </div>
+        
+        <div class="book-tags" v-if="book.tags && book.tags.length > 0">
+            <span 
+                v-for="tag in book.tags.slice(0, 3)" 
+                :key="tag"
+                class="book-tag"
+            >
+                {{ tag }}
+            </span>
+            <span v-if="book.tags.length > 3" class="book-tag">
+                +{{ book.tags.length - 3 }}
+            </span>
+        </div>
+        
+        <div class="book-note-footer">
+            <div class="book-date">
+                📅 {{ formatDate(book.createdAt) }}
+            </div>
+            <div class="book-actions">
+                <button class="btn-sm" @click="editBookNote(book.id)" style="background:linear-gradient(90deg, #4a9fff, #2d73cc); padding:5px 15px;">
+                    编辑
+                </button>
+                <button class="btn-sm" @click="deleteBookNote(book.id)" style="background:linear-gradient(90deg, #ff7b6b, #d45d5d); padding:5px 15px;">
+                    删除
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
                         
                         <!-- 空状态提示 -->
                         <div v-if="filteredBookNotes.length === 0 && !showBookForm" class="book-empty-state">
-                            <div class="book-empty-icon">📚</div>
-                            <p style="font-weight:bold; font-size:1.3em; margin-bottom:10px;">还没有读书笔记</p>
-                            <p>开始记录你的阅读旅程吧！</p>
-                            <button class="btn" @click="showBookForm = true" style="margin-top:20px; background:linear-gradient(90deg, #4ecdc4, #2ba69b);">
-                                📖 添加第一本读书笔记
-                            </button>
-                        </div>
+    <div class="book-empty-icon">📚</div>
+    <p style="font-weight:bold; font-size:1.3em; margin-bottom:10px;">还没有读书笔记</p>
+    <p>开始记录你的阅读旅程吧！</p>
+    <button class="btn" @click="showBookForm = true" style="margin-top:20px; background:linear-gradient(90deg, #4ecdc4, #2ba69b);">
+        📖 添加第一本读书笔记
+    </button>
+</div>
                         
                         <!-- 显示/隐藏表单按钮 -->
                         <div v-if="!showBookForm" style="text-align:center; margin-top:30px;">
@@ -2834,3 +2873,4 @@
     </script>
 </body>
 </html>
+
