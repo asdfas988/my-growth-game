@@ -61,7 +61,7 @@
         /* ====== 手绘网格布局 ====== */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(3, 1fr));
             gap: 30px;
             margin-bottom: 40px;
         }
@@ -1071,6 +1071,46 @@
     width: 100% !important;
     height: auto !important;
     min-height: 450px !important;
+}
+        /* ====== 成就系统单独一行 ====== */
+/* 成就系统卡片（第3个卡片）占据整行 */
+#app .grid > .card:nth-child(3) {
+    padding: 35px 40px; /* 增加内边距 */
+}
+
+/* 调整成就系统内部网格布局 */
+#app .grid > .card:nth-child(3) .achievement-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+        #app .grid > .card:nth-child(3) .note-tabs {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+/* 确保读书笔记卡片也正确布局 */
+#app .grid > .card:nth-child(4) {
+    grid-column: 1 / -1;
+    margin-top: 20px;
+}
+
+/* 调整前两个卡片的宽度 */
+#app .grid > .card:nth-child(1),
+#app .grid > .card:nth-child(2) {
+    grid-column: span 1; /* 每个卡片占据1列 */
+}
+
+/* 响应式调整：小屏幕上改为单列布局 */
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: 1fr; /* 小屏幕上单列 */
+    }
+    
+    #app .grid > .card:nth-child(1),
+    #app .grid > .card:nth-child(2),
+    #app .grid > .card:nth-child(3),
+    #app .grid > .card:nth-child(4) {
+        grid-column: 1 / -1;
+    }
 }
     </style>
 </head>
@@ -2959,5 +2999,6 @@
     </script>
 </body>
 </html>
+
 
 
